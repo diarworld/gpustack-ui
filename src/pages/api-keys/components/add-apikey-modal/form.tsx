@@ -3,6 +3,7 @@ import { PageAction } from '@/config';
 import { PageActionType } from '@/config/types';
 import {
   Input as CInput,
+  InputNumber,
   Password,
   Select as SealSelect
 } from '@gpustack/core-ui';
@@ -83,6 +84,42 @@ const APIKeyForm: React.FC<{
           scaleSize={true}
           label={intl.formatMessage({ id: 'common.table.description' })}
         ></CInput.TextArea>
+      </Form.Item>
+      <Form.Item<FormData> name="rpm_limit" rules={[{ required: false }]}>
+        <InputNumber
+          style={{ width: '100%' }}
+          min={1}
+          precision={0}
+          label={intl.formatMessage({ id: 'apikeys.form.rpm' })}
+          description={intl.formatMessage({
+            id: 'apikeys.form.rateLimits.hint'
+          })}
+          placeholder={intl.formatMessage({
+            id: 'apikeys.form.rateLimits.default'
+          })}
+        />
+      </Form.Item>
+      <Form.Item<FormData> name="tpm_limit" rules={[{ required: false }]}>
+        <InputNumber
+          style={{ width: '100%' }}
+          min={1}
+          precision={0}
+          label={intl.formatMessage({ id: 'apikeys.form.tpm' })}
+          placeholder={intl.formatMessage({
+            id: 'apikeys.form.rateLimits.default'
+          })}
+        />
+      </Form.Item>
+      <Form.Item<FormData> name="daily_token_limit" rules={[{ required: false }]}>
+        <InputNumber
+          style={{ width: '100%' }}
+          min={1}
+          precision={0}
+          label={intl.formatMessage({ id: 'apikeys.form.dailyTokens' })}
+          placeholder={intl.formatMessage({
+            id: 'apikeys.form.rateLimits.default'
+          })}
+        />
       </Form.Item>
       {action === PageAction.CREATE && (
         <>

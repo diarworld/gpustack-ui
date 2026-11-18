@@ -24,5 +24,11 @@ export default {
   'apikeys.type.auto': '自动生成',
   'apikeys.type.custom': '自定义',
   'apikeys.button.ipConfig': 'IP 访问控制',
-  'quotaLimits.button.title': '配额限制'
+  'quotaLimits.button.title': '配额限制',
+  'apikeys.form.rpm': '每分钟请求数（RPM）',
+  'apikeys.form.tpm': '每分钟 Token 数（TPM）',
+  'apikeys.form.dailyTokens': '每日 Token 预算',
+  'apikeys.form.rateLimits.default': '部署默认值',
+  'apikeys.form.rateLimits.hint':
+  '留空表示使用部署级默认值。',
 };

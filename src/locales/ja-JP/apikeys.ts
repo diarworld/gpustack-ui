@@ -25,5 +25,11 @@ export default {
   'apikeys.type.auto': '自動生成',
   'apikeys.type.custom': 'カスタム',
   'apikeys.button.ipConfig': 'IP アクセス制御',
-  'quotaLimits.button.title': 'クォータ制限'
+  'quotaLimits.button.title': 'クォータ制限',
+  'apikeys.form.rpm': '1分あたりのリクエスト数（RPM）',
+  'apikeys.form.tpm': '1分あたりのトークン数（TPM）',
+  'apikeys.form.dailyTokens': '1日のトークン予算',
+  'apikeys.form.rateLimits.default': 'デフォルト値',
+  'apikeys.form.rateLimits.hint':
+  '空欄の場合はデプロイ全体のデフォルト値が適用されます。',
 };

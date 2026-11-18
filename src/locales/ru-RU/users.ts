@@ -48,4 +48,9 @@ export default {
   'users.status.inactiveAccount': 'Неактивный аккаунт',
   'users.login.getInitialPassword':
     'Выполните следующую команду на вашем GPUStack Server, чтобы получить начальный пароль администратора.'
+,  'users.form.weeklyTokens': 'Недельный бюджет токенов',
+  'users.form.monthlyTokens': 'Месячный бюджет токенов',
+  'users.form.tokenBudgets.none': 'Без лимита',
+  'users.form.tokenBudgets.hint':
+  'Общий для всех API-ключей пользователя и сессий в интерфейсе.',
 };

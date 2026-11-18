@@ -48,4 +48,9 @@ export default {
   'users.status.inactiveAccount': '無効なアカウント',
   'users.login.getInitialPassword':
     'GPUStack Server で次のコマンドを実行し、管理者の初期パスワードを取得してください。'
+,  'users.form.weeklyTokens': '週間トークン予算',
+  'users.form.monthlyTokens': '月間トークン予算',
+  'users.form.tokenBudgets.none': '制限なし',
+  'users.form.tokenBudgets.hint':
+  'ユーザーのすべてのAPIキーとUIセッションに共通して適用されます。',
 };

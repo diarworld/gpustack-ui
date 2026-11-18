@@ -48,4 +48,9 @@ export default {
   'users.status.inactiveAccount': 'Pasif Hesap',
   'users.login.getInitialPassword':
     'Başlangıç yönetici şifresini almak için GPUStack Sunucunuzda aşağıdaki komutu çalıştırın.'
+,  'users.form.weeklyTokens': 'Haftalık token bütçesi',
+  'users.form.monthlyTokens': 'Aylık token bütçesi',
+  'users.form.tokenBudgets.none': 'Sınır yok',
+  'users.form.tokenBudgets.hint':
+  'Kullanıcının tüm API anahtarlarında ve arayüz oturumlarında geçerlidir.',
 };

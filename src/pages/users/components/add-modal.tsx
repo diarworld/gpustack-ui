@@ -4,6 +4,7 @@ import {
   Input as CInput,
   FormDrawer,
   IconFont,
+  InputNumber,
   Select as SealSelect,
   Switch as SealSwitch,
   useSubmitLock
@@ -233,6 +234,44 @@ const AddModal: React.FC<AddModalProps> = ({
             ></CInput.Password>
           </Form.Item>
         )}
+
+        <div style={{ display: 'flex', gap: '16px' }}>
+          <div style={{ flex: 1 }}>
+            <Form.Item<FormData>
+              name="weekly_token_limit"
+              rules={[{ required: false }]}
+            >
+              <InputNumber
+                style={{ width: '100%' }}
+                min={1}
+                precision={0}
+                label={intl.formatMessage({ id: 'users.form.weeklyTokens' })}
+                description={intl.formatMessage({
+                  id: 'users.form.tokenBudgets.hint'
+                })}
+                placeholder={intl.formatMessage({
+                  id: 'users.form.tokenBudgets.none'
+                })}
+              />
+            </Form.Item>
+          </div>
+          <div style={{ flex: 1 }}>
+            <Form.Item<FormData>
+              name="monthly_token_limit"
+              rules={[{ required: false }]}
+            >
+              <InputNumber
+                style={{ width: '100%' }}
+                min={1}
+                precision={0}
+                label={intl.formatMessage({ id: 'users.form.monthlyTokens' })}
+                placeholder={intl.formatMessage({
+                  id: 'users.form.tokenBudgets.none'
+                })}
+              />
+            </Form.Item>
+          </div>
+        </div>
       </Form>
     </FormDrawer>
   );
