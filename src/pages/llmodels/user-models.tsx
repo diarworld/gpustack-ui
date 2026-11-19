@@ -14,6 +14,7 @@ import useMemoizedFn from 'ahooks/lib/useMemoizedFn';
 import { Button, Input, Space } from 'antd';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PageBox from '../_components/page-box';
+import useGranfanaLink from '../resources/hooks/use-grafana-link';
 import { MY_MODELS_API, queryMyModels } from './apis';
 import APIAccessInfoModal from './components/api-access-info';
 import ModelItem from './components/model-item';
@@ -56,6 +57,10 @@ const UserModels: React.FC = () => {
   const intl = useIntl();
   const access = useAccess();
   const navigate = useNavigate();
+  // Same entry the deployments table uses: opens the Grafana model
+  // dashboard. The button renders for everyone when monitoring is
+  // configured — the dashboard itself is not admin-gated.
+  const { ActionButton } = useGranfanaLink({ type: 'model' });
   const { apiAccessInfo, openViewAPIInfo, closeViewAPIInfo } = useViewApIInfo();
   // A card action contributed by the plugin opens an overlay the plugin
   // owns (enterprise: the pricing-detail drawer). Mount it once here —
@@ -260,6 +265,7 @@ const UserModels: React.FC = () => {
               ></Button>
             </Space>
           }
+          right={<Space size={16}>{ActionButton()}</Space>}
         ></PageTools>
         <PluginExtraFields
           name="ModelBillingProvider"
