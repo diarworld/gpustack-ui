@@ -138,14 +138,15 @@ const TokenTab: React.FC = () => {
   // The rate-limits section follows the filter's user selection: with
   // exactly one user picked (admins, who can see other users' data) it pins
   // that user on the endpoint; any other state shows the caller's own
-  // picture. The option list carries the numeric id in identity.value.
+  // picture. The live entity id lives in identity.current, not the
+  // historical value snapshot.
   const rateLimitsUserId = useMemo(() => {
     if (!access.canSeeOrgAdmin) return undefined;
     if (filterBar.selectedUsers?.length !== 1) return undefined;
     const option = metaData?.users?.find(
       (item) => item.value === filterBar.selectedUsers[0]
     );
-    return option?.identity?.value?.user_id ?? undefined;
+    return option?.identity?.current?.user_id ?? undefined;
   }, [access.canSeeOrgAdmin, filterBar.selectedUsers, metaData?.users]);
 
   const handlePickerChange = (picker: DateType) => {
