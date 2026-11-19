@@ -44,6 +44,42 @@ const humanizeDuration = (seconds: number): string => {
 
 const num = (n: number) => formatLargeNumber(Math.round(n * 100) / 100);
 
+// The windows this card knows by name, in the per-key table's display order.
+// The table's metric columns and the personal-budget labels both derive from
+// this list, so every (kind, period) pair is spelled exactly once.
+const WINDOWS = [
+  { kind: 'query', period: '60s', titleId: 'usage.rateLimits.rpm' },
+  { kind: 'token_rolling', period: '60s', titleId: 'usage.rateLimits.tpm' },
+  {
+    kind: 'token_calendar',
+    period: 'each_day',
+    titleId: 'usage.rateLimits.daily'
+  },
+  {
+    kind: 'token_rolling',
+    period: '604800s',
+    titleId: 'usage.rateLimits.weekly'
+  },
+  {
+    kind: 'token_calendar',
+    period: 'each_month',
+    titleId: 'usage.rateLimits.monthly'
+  }
+] as const;
+
+// Progress-bar props shared by every used/limit display on the card: the
+// percent clamps to [0, 100] and the bar turns red at the limit. `used`
+// unknown (local mode / Redis error) yields percent 0 — callers render no
+// bar at all in that case.
+const usageProgressProps = (w: RateLimitWindowUsage) => ({
+  percent:
+    w.used == null || w.limit <= 0
+      ? 0
+      : Math.min(100, (w.used / w.limit) * 100),
+  status:
+    w.used != null && w.used >= w.limit ? ('exception' as const) : undefined
+});
+
 // One cell of the per-key table: "used / limit" over a mini bar that turns
 // red at the limit. `used` missing (local mode / usage error) degrades the
 // cell to "— / limit" — the cap is still real, only the counter is unknown —
@@ -53,8 +89,6 @@ const WindowUsageCell: React.FC<{
 }> = ({ rateWindow }) => {
   if (!rateWindow) return <span className="text-secondary">—</span>;
   const { used, limit } = rateWindow;
-  const percent =
-    used == null || limit <= 0 ? 0 : Math.min(100, (used / limit) * 100);
   return (
     <Flex vertical gap={2} style={{ minWidth: 96 }}>
       <span style={{ whiteSpace: 'nowrap' }}>
@@ -63,10 +97,42 @@ const WindowUsageCell: React.FC<{
       {used != null && (
         <Progress
           size="small"
-          percent={percent}
           showInfo={false}
-          status={used >= limit ? 'exception' : undefined}
+          {...usageProgressProps(rateWindow)}
         />
+      )}
+    </Flex>
+  );
+};
+
+// One row of the personal-budgets block: a named bar with the used/limit
+// fraction and, when the server reports it, the humanized reset time.
+const BudgetRow: React.FC<{
+  label: string;
+  rateWindow: RateLimitWindowUsage;
+}> = ({ label, rateWindow }) => {
+  const intl = useIntl();
+  const { used, limit, reset_seconds } = rateWindow;
+  return (
+    <Flex align="center" gap={16}>
+      <span className="font-600" style={{ width: 72, flexShrink: 0 }}>
+        {label}
+      </span>
+      <div style={{ flex: 1, minWidth: 160 }}>
+        {used != null && (
+          <Progress showInfo={false} {...usageProgressProps(rateWindow)} />
+        )}
+      </div>
+      <span style={{ whiteSpace: 'nowrap' }}>
+        {used == null ? '—' : num(used)} / {num(limit)}
+      </span>
+      {reset_seconds != null && (
+        <span className="text-secondary" style={{ whiteSpace: 'nowrap' }}>
+          {intl.formatMessage(
+            { id: 'usage.rateLimits.resetsIn' },
+            { time: humanizeDuration(reset_seconds) }
+          )}
+        </span>
       )}
     </Flex>
   );
@@ -87,16 +153,17 @@ const RateLimitsCard: React.FC = () => {
   // (the backend omits it in local mode and on usage errors), so every cell
   // keys off `used != null` rather than a separate mode check.
 
-  // The two token budgets an owner can set have names; anything else the
-  // server starts sending renders as its humanized period, so a new window
-  // kind stays visible instead of silently disappearing.
-  const windowLabel = (w: RateLimitWindowUsage): string => {
-    if (w.kind === 'token_rolling' && w.period === '604800s')
-      return t('usage.rateLimits.weekly');
-    if (w.kind === 'token_calendar' && w.period === 'each_month')
-      return t('usage.rateLimits.monthly');
-    if (w.kind === 'token_calendar' && w.period === 'each_day')
-      return t('usage.rateLimits.daily');
+  // Personal-budget row label: named windows resolve through WINDOWS;
+  // anything else the server starts sending renders as its humanized period,
+  // so a new window kind stays visible in the budgets list (which maps EVERY
+  // window it receives). The per-key table below has no such fallback — it
+  // only renders the columns WINDOWS defines, so an unknown kind is simply
+  // absent there.
+  const budgetLabel = (w: RateLimitWindowUsage): string => {
+    const known = WINDOWS.find(
+      (d) => d.kind === w.kind && d.period === w.period
+    );
+    if (known) return t(known.titleId);
     const secs = /^(\d+)s$/.exec(w.period);
     return secs ? humanizeDuration(Number(secs[1])) : w.period;
   };
@@ -107,61 +174,17 @@ const RateLimitsCard: React.FC = () => {
       dataIndex: 'name',
       ellipsis: true
     },
-    {
-      title: t('usage.rateLimits.rpm'),
+    ...WINDOWS.map(({ kind, period, titleId }) => ({
+      title: t(titleId),
       width: 120,
-      render: (_, record) => (
+      render: (_: unknown, record: ApiKeyRateLimits) => (
         <WindowUsageCell
           rateWindow={record.windows?.find(
-            (w) => w.kind === 'query' && w.period === '60s'
+            (w) => w.kind === kind && w.period === period
           )}
         />
       )
-    },
-    {
-      title: t('usage.rateLimits.tpm'),
-      width: 120,
-      render: (_, record) => (
-        <WindowUsageCell
-          rateWindow={record.windows?.find(
-            (w) => w.kind === 'token_rolling' && w.period === '60s'
-          )}
-        />
-      )
-    },
-    {
-      title: t('usage.rateLimits.daily'),
-      width: 120,
-      render: (_, record) => (
-        <WindowUsageCell
-          rateWindow={record.windows?.find(
-            (w) => w.kind === 'token_calendar' && w.period === 'each_day'
-          )}
-        />
-      )
-    },
-    {
-      title: t('usage.rateLimits.weekly'),
-      width: 120,
-      render: (_, record) => (
-        <WindowUsageCell
-          rateWindow={record.windows?.find(
-            (w) => w.kind === 'token_rolling' && w.period === '604800s'
-          )}
-        />
-      )
-    },
-    {
-      title: t('usage.rateLimits.monthly'),
-      width: 120,
-      render: (_, record) => (
-        <WindowUsageCell
-          rateWindow={record.windows?.find(
-            (w) => w.kind === 'token_calendar' && w.period === 'each_month'
-          )}
-        />
-      )
-    }
+    }))
   ];
 
   // Unknown mode = the first fetch has not answered yet: hold the section's
@@ -238,46 +261,13 @@ const RateLimitsCard: React.FC = () => {
                 {t('usage.rateLimits.userBudgets')}
               </div>
               <Flex vertical gap={12}>
-                {data.user.windows.map((w) => {
-                  const used = w.used;
-                  const percent =
-                    used == null || w.limit <= 0
-                      ? 0
-                      : Math.min(100, (used / w.limit) * 100);
-                  return (
-                    <Flex key={`${w.kind}:${w.period}`} align="center" gap={16}>
-                      <span
-                        className="font-600"
-                        style={{ width: 72, flexShrink: 0 }}
-                      >
-                        {windowLabel(w)}
-                      </span>
-                      <div style={{ flex: 1, minWidth: 160 }}>
-                        {used != null && (
-                          <Progress
-                            percent={percent}
-                            showInfo={false}
-                            status={used >= w.limit ? 'exception' : undefined}
-                          />
-                        )}
-                      </div>
-                      <span style={{ whiteSpace: 'nowrap' }}>
-                        {used == null ? '—' : num(used)} / {num(w.limit)}
-                      </span>
-                      {w.reset_seconds != null && (
-                        <span
-                          className="text-secondary"
-                          style={{ whiteSpace: 'nowrap' }}
-                        >
-                          {intl.formatMessage(
-                            { id: 'usage.rateLimits.resetsIn' },
-                            { time: humanizeDuration(w.reset_seconds) }
-                          )}
-                        </span>
-                      )}
-                    </Flex>
-                  );
-                })}
+                {data.user.windows.map((w) => (
+                  <BudgetRow
+                    key={`${w.kind}:${w.period}`}
+                    label={budgetLabel(w)}
+                    rateWindow={w}
+                  />
+                ))}
               </Flex>
             </div>
           )}

@@ -122,7 +122,7 @@ export default {
   'usage.summary.gbDaysOverTime': 'ГБ-дни по времени',
 
   // --- Summary tab: rate limits ---
-  'usage.rateLimits.title': 'Лимиты запросов',
+  'usage.rateLimits.title': 'Лимиты',
   'usage.rateLimits.userBudgets': 'Персональные бюджеты токенов',
   'usage.rateLimits.key': 'Ключ',
   'usage.rateLimits.resetsIn': 'Сброс через {time}',
