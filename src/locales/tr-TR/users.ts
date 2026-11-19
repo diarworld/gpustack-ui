@@ -47,10 +47,16 @@ export default {
   'users.status.deactivate': 'Hesabı Devre Dışı Bırak',
   'users.status.inactiveAccount': 'Pasif Hesap',
   'users.login.getInitialPassword':
-    'Başlangıç yönetici şifresini almak için GPUStack Sunucunuzda aşağıdaki komutu çalıştırın.'
-,  'users.form.weeklyTokens': 'Haftalık token bütçesi',
+    'Başlangıç yönetici şifresini almak için GPUStack Sunucunuzda aşağıdaki komutu çalıştırın.',
+  'users.form.rpm': 'RPM',
+  'users.form.tpm': 'TPM',
+  'users.form.rateLimits.hint':
+    'Dakika başına istek — kullanıcının tüm API anahtarlarında ortak sınır. Boş bırakılırsa dağıtım varsayılanı uygulanır.',
+  'users.form.rateLimits.tpmHint':
+    'Dakika başına token — kullanıcının tüm API anahtarlarında ortak sınır. Boş bırakılırsa dağıtım varsayılanı uygulanır.',
+  'users.form.weeklyTokens': 'Haftalık token bütçesi',
   'users.form.monthlyTokens': 'Aylık token bütçesi',
   'users.form.tokenBudgets.none': 'Sınır yok',
   'users.form.tokenBudgets.hint':
-  'Kullanıcının tüm API anahtarlarında ve arayüz oturumlarında geçerlidir.',
+    'Kullanıcının tüm API anahtarlarında ve arayüz oturumlarında geçerlidir.'
 };

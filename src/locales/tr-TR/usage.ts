@@ -133,6 +133,12 @@ export default {
   'usage.rateLimits.daily': 'Gün',
   'usage.rateLimits.weekly': 'Hafta',
   'usage.rateLimits.monthly': 'Ay',
+  'usage.rateLimits.userBucketHint':
+    'Kullanıcının tüm API anahtarlarında ortak sınır.',
+  'usage.rateLimits.duration.days': '{count, plural, other {# gün}}',
+  'usage.rateLimits.duration.hours': '{count, plural, other {# saat}}',
+  'usage.rateLimits.duration.minutes': '{count, plural, other {# dakika}}',
+  'usage.rateLimits.duration.seconds': '{count, plural, other {# saniye}}',
   'usage.rateLimits.noLimits': 'Hız sınırı yapılandırılmamış.',
 
   // --- GPU Instances / Storage filters ---

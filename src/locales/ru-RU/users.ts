@@ -47,10 +47,16 @@ export default {
   'users.status.deactivate': 'Деактивировать аккаунт',
   'users.status.inactiveAccount': 'Неактивный аккаунт',
   'users.login.getInitialPassword':
-    'Выполните следующую команду на вашем GPUStack Server, чтобы получить начальный пароль администратора.'
-,  'users.form.weeklyTokens': 'Недельный бюджет токенов',
+    'Выполните следующую команду на вашем GPUStack Server, чтобы получить начальный пароль администратора.',
+  'users.form.rpm': 'RPM',
+  'users.form.tpm': 'TPM',
+  'users.form.rateLimits.hint':
+    'Запросов в минуту — общий лимит на все API-ключи пользователя. Пусто — дефолт деплоя.',
+  'users.form.rateLimits.tpmHint':
+    'Токенов в минуту — общий лимит на все API-ключи пользователя. Пусто — дефолт деплоя.',
+  'users.form.weeklyTokens': 'Недельный бюджет токенов',
   'users.form.monthlyTokens': 'Месячный бюджет токенов',
   'users.form.tokenBudgets.none': 'Без лимита',
   'users.form.tokenBudgets.hint':
-  'Общий для всех API-ключей пользователя и сессий в интерфейсе.',
+    'Общий для всех API-ключей пользователя и сессий в интерфейсе.'
 };

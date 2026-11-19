@@ -134,6 +134,16 @@ export default {
   'usage.rateLimits.daily': 'День',
   'usage.rateLimits.weekly': 'Неделя',
   'usage.rateLimits.monthly': 'Месяц',
+  'usage.rateLimits.userBucketHint':
+    'Общий лимит на все API-ключи пользователя.',
+  'usage.rateLimits.duration.days':
+    '{count, plural, one {# день} few {# дня} many {# дней} other {# дня}}',
+  'usage.rateLimits.duration.hours':
+    '{count, plural, one {# час} few {# часа} many {# часов} other {# часа}}',
+  'usage.rateLimits.duration.minutes':
+    '{count, plural, one {# минута} few {# минуты} many {# минут} other {# минуты}}',
+  'usage.rateLimits.duration.seconds':
+    '{count, plural, one {# секунда} few {# секунды} many {# секунд} other {# секунды}}',
   'usage.rateLimits.noLimits': 'Лимиты не настроены.',
 
   // --- GPU Instances / Storage filters ---

@@ -44,10 +44,15 @@ export default {
   'users.status.deactivate': '停用账户',
   'users.status.inactiveAccount': '停用账户',
   'users.login.getInitialPassword':
-    '在 GPUStack Server 节点运行以下命令以获取初始管理员密码。'
-,  'users.form.weeklyTokens': '每周 Token 预算',
+    '在 GPUStack Server 节点运行以下命令以获取初始管理员密码。',
+  'users.form.rpm': 'RPM',
+  'users.form.tpm': 'TPM',
+  'users.form.rateLimits.hint':
+    '每分钟请求数，对该用户的所有 API 密钥生效。留空则使用部署默认值。',
+  'users.form.rateLimits.tpmHint':
+    '每分钟 Token 数，对该用户的所有 API 密钥生效。留空则使用部署默认值。',
+  'users.form.weeklyTokens': '每周 Token 预算',
   'users.form.monthlyTokens': '每月 Token 预算',
   'users.form.tokenBudgets.none': '不限制',
-  'users.form.tokenBudgets.hint':
-  '对该用户的所有 API 密钥和界面会话生效。',
+  'users.form.tokenBudgets.hint': '对该用户的所有 API 密钥和界面会话生效。'
 };

@@ -47,10 +47,16 @@ export default {
   'users.status.deactivate': 'アカウントを無効化',
   'users.status.inactiveAccount': '無効なアカウント',
   'users.login.getInitialPassword':
-    'GPUStack Server で次のコマンドを実行し、管理者の初期パスワードを取得してください。'
-,  'users.form.weeklyTokens': '週間トークン予算',
+    'GPUStack Server で次のコマンドを実行し、管理者の初期パスワードを取得してください。',
+  'users.form.rpm': 'RPM',
+  'users.form.tpm': 'TPM',
+  'users.form.rateLimits.hint':
+    '1分あたりのリクエスト数。ユーザーのすべてのAPIキーで共有される上限です。空欄の場合はデプロイのデフォルト値。',
+  'users.form.rateLimits.tpmHint':
+    '1分あたりのトークン数。ユーザーのすべてのAPIキーで共有される上限です。空欄の場合はデプロイのデフォルト値。',
+  'users.form.weeklyTokens': '週間トークン予算',
   'users.form.monthlyTokens': '月間トークン予算',
   'users.form.tokenBudgets.none': '制限なし',
   'users.form.tokenBudgets.hint':
-  'ユーザーのすべてのAPIキーとUIセッションに共通して適用されます。',
+    'ユーザーのすべてのAPIキーとUIセッションに共通して適用されます。'
 };

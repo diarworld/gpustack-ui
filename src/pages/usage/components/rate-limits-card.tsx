@@ -6,16 +6,15 @@
  * selection pins the target via ``user_id`` — the endpoint degrades a
  * foreign id back to the caller when the caller may not see it.
  *
- * Layout mirrors the Token tab: user-level rate cards (RPM / TPM, the caps
- * shared across all the user's keys) plus the token budget cards (week /
- * month) on top, the per-key table (day / week / month) below. The server's
- * `mode` drives the display:
+ * Layout mirrors the Token tab: user-level cards (RPM / TPM rate caps and
+ * the weekly / monthly token budgets — all shared across the user's keys) on
+ * top, the per-key table (its own daily quota) below. The server's `mode`
+ * drives the display:
  *   'disabled' — render nothing at all (feature off server-side);
  *   'local'    — limits without counters (no shared Redis), plus an info note;
  *   'redis'    — limits plus live usage; a `usage_error` blanks the counters
  *                again and surfaces a warning instead.
  */
-import { formatLargeNumber } from '@/utils';
 import { CardWrapper } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Alert, Flex, Progress, Spin, Table } from 'antd';
@@ -24,28 +23,43 @@ import React, { useEffect } from 'react';
 import { ApiKeyRateLimits, RateLimitWindowUsage } from '../config/types';
 import useQueryRateLimits from '../services/use-query-rate-limits';
 
-// 9075 → '2h 31m'. The two largest non-zero units are enough at a glance; a
-// full h:m:s breakdown only helps durations under a minute.
-const humanizeDuration = (seconds: number): string => {
-  if (!Number.isFinite(seconds) || seconds <= 0) return '0s';
+// 9075 → '11 дней 6 часов' (ru) / '11d 6h' (en). The two largest non-zero
+// units are enough at a glance; a full breakdown only helps under a minute.
+// Unit words come from ICU plural messages so each locale inflects properly.
+const DURATION_UNITS = [
+  { size: 86400, id: 'usage.rateLimits.duration.days' },
+  { size: 3600, id: 'usage.rateLimits.duration.hours' },
+  { size: 60, id: 'usage.rateLimits.duration.minutes' },
+  { size: 1, id: 'usage.rateLimits.duration.seconds' }
+] as const;
+
+const humanizeDuration = (
+  seconds: number,
+  intl: ReturnType<typeof useIntl>
+): string => {
+  const zero = intl.formatMessage(
+    { id: 'usage.rateLimits.duration.seconds' },
+    { count: 0 }
+  );
+  if (!Number.isFinite(seconds) || seconds <= 0) return zero;
   let rest = Math.floor(seconds);
-  const units = [
-    { size: 86400, suffix: 'd' },
-    { size: 3600, suffix: 'h' },
-    { size: 60, suffix: 'm' },
-    { size: 1, suffix: 's' }
-  ];
   const parts: string[] = [];
-  for (const { size, suffix } of units) {
+  for (const { size, id } of DURATION_UNITS) {
     if (parts.length === 2) break;
     const value = Math.floor(rest / size);
     rest -= value * size;
-    if (value > 0) parts.push(`${value}${suffix}`);
+    if (value > 0) parts.push(intl.formatMessage({ id }, { count: value }));
   }
-  return parts.length ? parts.join(' ') : '0s';
+  return parts.length ? parts.join(' ') : zero;
 };
 
-const num = (n: number) => formatLargeNumber(Math.round(n * 100) / 100);
+// Quota values in the reader's locale: 100000000 → '100M' (en) / '100 млн'
+// (ru). `notation: 'compact'` picks each locale's own scale words.
+const num = (n: number, locale: string): string =>
+  new Intl.NumberFormat(locale, {
+    notation: 'compact',
+    maximumFractionDigits: 1
+  }).format(Math.round(n * 100) / 100);
 
 // Progress-bar props shared by every used/limit display on the card: the
 // percent clamps to [0, 100] and the bar turns red at the limit. `used`
@@ -67,12 +81,14 @@ const usageProgressProps = (w: RateLimitWindowUsage) => ({
 const WindowUsageCell: React.FC<{
   rateWindow?: RateLimitWindowUsage;
 }> = ({ rateWindow }) => {
+  const intl = useIntl();
   if (!rateWindow) return <span className="text-secondary">—</span>;
   const { used, limit } = rateWindow;
   return (
     <Flex vertical gap={2} style={{ minWidth: 96 }}>
       <span style={{ whiteSpace: 'nowrap' }}>
-        {used == null ? '—' : num(used)} / {num(limit)}
+        {used == null ? '—' : num(used, intl.locale)} /{' '}
+        {num(limit, intl.locale)}
       </span>
       {used != null && (
         <Progress
@@ -85,25 +101,15 @@ const WindowUsageCell: React.FC<{
   );
 };
 
-// The windows this card knows by name, in the per-key table's display order.
-// The table's metric columns derive from this list, so every (kind, period)
-// pair is spelled exactly once. Rate limits (RPM / TPM) are user-level and
-// live on the cards; the table carries the windows a key is subject to.
+// The windows the per-key table shows, in display order. Rate caps and the
+// weekly / monthly budgets are user-level (shared across all the user's
+// keys, rendered on the cards above), so a key row only carries the window
+// that actually buckets on the key: its daily quota.
 const WINDOWS = [
   {
     kind: 'token_calendar',
     period: 'each_day',
     titleId: 'usage.rateLimits.daily'
-  },
-  {
-    kind: 'token_rolling',
-    period: '604800s',
-    titleId: 'usage.rateLimits.weekly'
-  },
-  {
-    kind: 'token_calendar',
-    period: 'each_month',
-    titleId: 'usage.rateLimits.monthly'
   }
 ] as const;
 
@@ -153,13 +159,16 @@ const UserCard: React.FC<{
       <span className="text-secondary" style={{ fontSize: 13 }}>
         {title}
       </span>
+      <span className="text-secondary" style={{ fontSize: 12 }}>
+        {intl.formatMessage({ id: 'usage.rateLimits.userBucketHint' })}
+      </span>
       <span style={{ fontSize: 20, fontWeight: 600, whiteSpace: 'nowrap' }}>
-        {used == null ? '—' : num(used)}{' '}
+        {used == null ? '—' : num(used, intl.locale)}{' '}
         <span
           className="text-secondary"
           style={{ fontSize: 13, fontWeight: 400 }}
         >
-          / {num(limit)}
+          / {num(limit, intl.locale)}
         </span>
       </span>
       {used != null && (
@@ -173,7 +182,7 @@ const UserCard: React.FC<{
         <span className="text-secondary" style={{ fontSize: 12 }}>
           {intl.formatMessage(
             { id: 'usage.rateLimits.resetsIn' },
-            { time: humanizeDuration(reset_seconds) }
+            { time: humanizeDuration(reset_seconds, intl) }
           )}
         </span>
       )}
@@ -181,17 +190,21 @@ const UserCard: React.FC<{
   );
 };
 
-const RateLimitsCard: React.FC<{ userId?: number }> = ({ userId }) => {
+const RateLimitsCard: React.FC<{
+  userId?: number;
+  // Bumped by the toolbar refresh to refetch alongside the breakdown.
+  refreshKey?: number;
+}> = ({ userId, refreshKey }) => {
   const intl = useIntl();
   const t = (id: string) => intl.formatMessage({ id });
   const { detailData: data, loading, fetchData } = useQueryRateLimits(userId);
 
-  // Refetch on a filter change: userId pins the target user (undefined =
-  // the caller). fetchData's identity changes every render, so it stays out
-  // of the dependency list on purpose.
+  // Refetch on a filter change (userId pins the target user — undefined =
+  // the caller) and on the toolbar's refresh bump. fetchData's identity
+  // changes every render, so it stays out of the dependency list on purpose.
   useEffect(() => {
     fetchData();
-  }, [userId]);
+  }, [userId, refreshKey]);
 
   // Live counters exist only when the server reads them from Redis and the
   // read succeeded — the window's own `used` absence encodes exactly that

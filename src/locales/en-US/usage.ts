@@ -133,6 +133,16 @@ export default {
   'usage.rateLimits.daily': 'Day',
   'usage.rateLimits.weekly': 'Week',
   'usage.rateLimits.monthly': 'Month',
+  'usage.rateLimits.userBucketHint':
+    "Shared across all of the user's API keys.",
+  'usage.rateLimits.duration.days':
+    '{count, plural, one {# day} other {# days}}',
+  'usage.rateLimits.duration.hours':
+    '{count, plural, one {# hour} other {# hours}}',
+  'usage.rateLimits.duration.minutes':
+    '{count, plural, one {# min} other {# mins}}',
+  'usage.rateLimits.duration.seconds':
+    '{count, plural, one {# sec} other {# secs}}',
   'usage.rateLimits.noLimits': 'No rate limits configured.',
 
   // --- GPU Instances / Storage filters ---

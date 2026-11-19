@@ -133,6 +133,12 @@ export default {
   'usage.rateLimits.daily': '日',
   'usage.rateLimits.weekly': '週',
   'usage.rateLimits.monthly': '月',
+  'usage.rateLimits.userBucketHint':
+    'ユーザーのすべてのAPIキーで共有される上限。',
+  'usage.rateLimits.duration.days': '{count, plural, other {#日}}',
+  'usage.rateLimits.duration.hours': '{count, plural, other {#時間}}',
+  'usage.rateLimits.duration.minutes': '{count, plural, other {#分}}',
+  'usage.rateLimits.duration.seconds': '{count, plural, other {#秒}}',
   'usage.rateLimits.noLimits': 'レート制限は設定されていません。',
 
   // --- GPU Instances / Storage filters ---

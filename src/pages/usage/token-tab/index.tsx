@@ -30,6 +30,7 @@ const TokenTab: React.FC = () => {
   const [openExportModal, setOpenExportModal] = useState(false);
   const [breakdownRefreshKey, setBreakdownRefreshKey] = useState(0);
   const [breakdownPageResetKey, setBreakdownPageResetKey] = useState(0);
+  const [rateLimitsRefreshKey, setRateLimitsRefreshKey] = useState(0);
 
   const summaryColumns = [
     {
@@ -163,6 +164,7 @@ const TokenTab: React.FC = () => {
   const handleSearch = () => {
     filterBar.handleSearch();
     setBreakdownRefreshKey((prev) => prev + 1);
+    setRateLimitsRefreshKey((prev) => prev + 1);
   };
 
   const handleBreakdownPageReset = () => {
@@ -216,7 +218,10 @@ const TokenTab: React.FC = () => {
       {/* Quotas and limits first: user-level day/week/month cards and the
           per-key table, before the token chart below. */}
       <div style={{ marginBottom: 24 }}>
-        <RateLimitsCard userId={rateLimitsUserId} />
+        <RateLimitsCard
+          userId={rateLimitsUserId}
+          refreshKey={rateLimitsRefreshKey}
+        />
       </div>
       <div
         style={{

@@ -46,10 +46,16 @@ export default {
   'users.status.deactivate': 'Deactivate Account',
   'users.status.inactiveAccount': 'Inactive Account',
   'users.login.getInitialPassword':
-    'Run the following command on your GPUStack Server to retrieve the initial admin password.'
-,  'users.form.weeklyTokens': 'Weekly token budget',
+    'Run the following command on your GPUStack Server to retrieve the initial admin password.',
+  'users.form.rpm': 'RPM',
+  'users.form.tpm': 'TPM',
+  'users.form.rateLimits.hint':
+    "Requests per minute, shared across all the user's API keys. Leave empty for the deployment default.",
+  'users.form.rateLimits.tpmHint':
+    "Tokens per minute, shared across all the user's API keys. Leave empty for the deployment default.",
+  'users.form.weeklyTokens': 'Weekly token budget',
   'users.form.monthlyTokens': 'Monthly token budget',
   'users.form.tokenBudgets.none': 'No budget',
   'users.form.tokenBudgets.hint':
-  "Shared across the user's API keys and UI sessions.",
+    "Shared across the user's API keys and UI sessions."
 };

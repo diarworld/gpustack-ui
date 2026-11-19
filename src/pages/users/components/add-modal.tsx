@@ -259,6 +259,9 @@ const AddModal: React.FC<AddModalProps> = ({
                 min={1}
                 precision={0}
                 label={intl.formatMessage({ id: 'users.form.tpm' })}
+                description={intl.formatMessage({
+                  id: 'users.form.rateLimits.tpmHint'
+                })}
                 placeholder={intl.formatMessage({
                   id: 'users.form.tokenBudgets.none'
                 })}

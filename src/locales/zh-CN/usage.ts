@@ -133,6 +133,11 @@ export default {
   'usage.rateLimits.daily': '日',
   'usage.rateLimits.weekly': '周',
   'usage.rateLimits.monthly': '月',
+  'usage.rateLimits.userBucketHint': '对该用户的所有 API 密钥生效。',
+  'usage.rateLimits.duration.days': '{count, plural, other {# 天}}',
+  'usage.rateLimits.duration.hours': '{count, plural, other {# 小时}}',
+  'usage.rateLimits.duration.minutes': '{count, plural, other {# 分钟}}',
+  'usage.rateLimits.duration.seconds': '{count, plural, other {# 秒}}',
   'usage.rateLimits.noLimits': '未配置速率限制。',
 
   // --- GPU Instances / Storage filters ---
