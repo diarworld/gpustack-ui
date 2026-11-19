@@ -17,6 +17,11 @@ export interface ListItem {
   custom?: string;
   scope?: string[];
   is_custom?: boolean;
+  // Gateway rate limits, admin-settable. Null/undefined means the key
+  // inherits the deployment-wide default for that limit.
+  rpm_limit?: number | null;
+  tpm_limit?: number | null;
+  daily_token_limit?: number | null;
 }
 
 export interface FormData {
@@ -28,4 +33,7 @@ export interface FormData {
   expires_in: number | null;
   custom?: string;
   scope?: string[];
+  rpm_limit?: number | null;
+  tpm_limit?: number | null;
+  daily_token_limit?: number | null;
 }

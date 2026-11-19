@@ -6,6 +6,10 @@ export interface FormData {
   password: string;
   is_active?: boolean;
   source?: string;
+  // Gateway token budgets, admin-settable. Undefined means the user has
+  // no budget of that kind.
+  weekly_token_limit?: number | null;
+  monthly_token_limit?: number | null;
 }
 
 export interface ListItem extends FormData {
