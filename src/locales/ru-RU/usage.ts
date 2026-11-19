@@ -134,8 +134,10 @@ export default {
   'usage.rateLimits.daily': 'День',
   'usage.rateLimits.weekly': 'Неделя',
   'usage.rateLimits.monthly': 'Месяц',
-  'usage.rateLimits.userBucketHint':
-    'Общий лимит на все API-ключи пользователя.',
+  'usage.rateLimits.rpmHint': 'Лимит запросов в минуту',
+  'usage.rateLimits.tpmHint': 'Лимит токенов в минуту',
+  'usage.rateLimits.weeklyHint': 'Недельный лимит токенов',
+  'usage.rateLimits.monthlyHint': 'Месячный лимит токенов',
   'usage.rateLimits.duration.days':
     '{count, plural, one {# день} few {# дня} many {# дней} other {# дня}}',
   'usage.rateLimits.duration.hours':

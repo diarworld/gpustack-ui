@@ -133,8 +133,10 @@ export default {
   'usage.rateLimits.daily': 'Day',
   'usage.rateLimits.weekly': 'Week',
   'usage.rateLimits.monthly': 'Month',
-  'usage.rateLimits.userBucketHint':
-    "Shared across all of the user's API keys.",
+  'usage.rateLimits.rpmHint': 'Requests per minute limit',
+  'usage.rateLimits.tpmHint': 'Tokens per minute limit',
+  'usage.rateLimits.weeklyHint': 'Weekly token limit',
+  'usage.rateLimits.monthlyHint': 'Monthly token limit',
   'usage.rateLimits.duration.days':
     '{count, plural, one {# day} other {# days}}',
   'usage.rateLimits.duration.hours':

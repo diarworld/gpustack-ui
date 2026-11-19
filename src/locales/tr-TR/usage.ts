@@ -133,8 +133,10 @@ export default {
   'usage.rateLimits.daily': 'Gün',
   'usage.rateLimits.weekly': 'Hafta',
   'usage.rateLimits.monthly': 'Ay',
-  'usage.rateLimits.userBucketHint':
-    'Kullanıcının tüm API anahtarlarında ortak sınır.',
+  'usage.rateLimits.rpmHint': 'Dakika başına istek sınırı',
+  'usage.rateLimits.tpmHint': 'Dakika başına token sınırı',
+  'usage.rateLimits.weeklyHint': 'Haftalık token sınırı',
+  'usage.rateLimits.monthlyHint': 'Aylık token sınırı',
   'usage.rateLimits.duration.days': '{count, plural, other {# gün}}',
   'usage.rateLimits.duration.hours': '{count, plural, other {# saat}}',
   'usage.rateLimits.duration.minutes': '{count, plural, other {# dakika}}',
