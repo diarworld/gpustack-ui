@@ -137,6 +137,15 @@ export default {
   'usage.rateLimits.tpmHint': 'Dakika başına token sınırı',
   'usage.rateLimits.weeklyHint': 'Haftalık token sınırı',
   'usage.rateLimits.monthlyHint': 'Aylık token sınırı',
+  'usage.rateLimits.resetButton': 'Sıfırla',
+  'usage.rateLimits.resetConfirmTitle': 'Emin misiniz?',
+  'usage.rateLimits.resetQuotaLeft':
+    'Bu dönemde kalan sıfırlama: {count, plural, other {#}}.',
+  'usage.rateLimits.resetReasonPlaceholder':
+    'Üzerinde çalıştığınız görevi yazın',
+  'usage.rateLimits.resetQuotaExhausted':
+    'Bu dönem için sıfırlama limiti tükendi, {date} tarihinde yenilenir',
+  'usage.rateLimits.resetSuccess': 'Limit sıfırlandı',
   'usage.rateLimits.duration.days': '{count, plural, other {# gün}}',
   'usage.rateLimits.duration.hours': '{count, plural, other {# saat}}',
   'usage.rateLimits.duration.minutes': '{count, plural, other {# dakika}}',

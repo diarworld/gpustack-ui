@@ -219,6 +219,16 @@ export interface RateLimitWindowUsage {
   reset_seconds?: number | null;
 }
 
+// Where the user stands against the floating reset quota of one window
+// kind (weekly / monthly): two presses per window, the window floating
+// with the presses themselves. `next_available_at` is set only once the
+// presses are used up.
+export interface RateLimitResetStatus {
+  quota: number;
+  available: number;
+  next_available_at?: string | null;
+}
+
 export interface UserRateLimits {
   // The user's own settings; absent = the deployment default governs that
   // axis (none for the weekly budget).
@@ -230,6 +240,9 @@ export interface UserRateLimits {
   // inherited the deployment defaults where unset, the weekly budget is
   // setting-only. Every window counts all the user's keys together.
   windows: RateLimitWindowUsage[];
+  // Reset-button state per long token window kind ('weekly' / 'monthly'),
+  // only present when the server reads live counters from Redis.
+  resets?: Record<string, RateLimitResetStatus>;
 }
 
 export interface ApiKeyRateLimits {

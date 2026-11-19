@@ -18,11 +18,26 @@
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { CardWrapper } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Alert, Flex, Progress, Spin, Table, Tooltip } from 'antd';
+import {
+  Alert,
+  Button,
+  Flex,
+  Progress,
+  Spin,
+  Table,
+  Tooltip,
+  message
+} from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import React, { useEffect } from 'react';
-import { ApiKeyRateLimits, RateLimitWindowUsage } from '../config/types';
+import React, { useEffect, useState } from 'react';
+import { resetRateLimit } from '../apis';
+import {
+  ApiKeyRateLimits,
+  RateLimitResetStatus,
+  RateLimitWindowUsage
+} from '../config/types';
 import useQueryRateLimits from '../services/use-query-rate-limits';
+import ResetLimitModal from './reset-limit-modal';
 
 // 9075 → '11 дней 6 часов' (ru) / '11d 6h' (en). The two largest non-zero
 // units are enough at a glance; a full breakdown only helps under a minute.
@@ -118,8 +133,17 @@ const WINDOWS = [
 // per minute, bucketed across all the user's keys) and the token budgets.
 // Each card's ``?`` tooltip explains the axis, mirroring the user form's
 // description tooltips. A window the server did not send (cap unset with no
-// deployment default) simply renders no card.
-const USER_CARDS = [
+// deployment default) simply renders no card. The long token budgets carry
+// a ``resetKind``: their card gets a reset button (the server records each
+// press and enforces the floating quota).
+const USER_CARDS: {
+  kind: 'query' | 'token_rolling' | 'token_calendar';
+  period: string;
+  titleId: string;
+  hintId: string;
+  // Set on the long token budgets: their card carries a reset button.
+  resetKind?: 'weekly' | 'monthly';
+}[] = [
   {
     kind: 'query',
     period: '60s',
@@ -136,25 +160,65 @@ const USER_CARDS = [
     kind: 'token_rolling',
     period: '604800s',
     titleId: 'usage.rateLimits.weekly',
-    hintId: 'usage.rateLimits.weeklyHint'
+    hintId: 'usage.rateLimits.weeklyHint',
+    resetKind: 'weekly'
   },
   {
     kind: 'token_calendar',
     period: 'each_month',
     titleId: 'usage.rateLimits.monthly',
-    hintId: 'usage.rateLimits.monthlyHint'
+    hintId: 'usage.rateLimits.monthlyHint',
+    resetKind: 'monthly'
   }
-] as const;
+];
 
 // One user-level period tile, styled after the Token tab's SimpleCard
 // items: filled tile, period label, "used / limit", progress, reset hint.
+// The long token budgets also carry a reset button in the header row:
+// enabled while presses remain, disabled (with the renewal date) once the
+// floating quota is spent.
 const UserCard: React.FC<{
   title: string;
   hint: string;
   rateWindow: RateLimitWindowUsage;
-}> = ({ title, hint, rateWindow }) => {
+  resetStatus?: RateLimitResetStatus;
+  onReset?: () => void;
+}> = ({ title, hint, rateWindow, resetStatus, onReset }) => {
   const intl = useIntl();
+  const t = (id: string) => intl.formatMessage({ id });
   const { used, limit, reset_seconds } = rateWindow;
+
+  const resetButton =
+    onReset && resetStatus ? (
+      resetStatus.available <= 0 ? (
+        <Tooltip
+          title={intl.formatMessage(
+            { id: 'usage.rateLimits.resetQuotaExhausted' },
+            {
+              date: resetStatus.next_available_at
+                ? new Intl.DateTimeFormat(intl.locale, {
+                    dateStyle: 'medium',
+                    timeStyle: 'short'
+                  }).format(new Date(resetStatus.next_available_at))
+                : '—'
+            }
+          )}
+        >
+          {/* The tooltip must survive the disabled state: a disabled button
+              swallows pointer events, the span keeps them alive. */}
+          <span>
+            <Button size="small" disabled>
+              {t('usage.rateLimits.resetButton')}
+            </Button>
+          </span>
+        </Tooltip>
+      ) : (
+        <Button size="small" onClick={onReset}>
+          {t('usage.rateLimits.resetButton')}
+        </Button>
+      )
+    ) : null;
+
   return (
     <Flex
       vertical
@@ -167,12 +231,15 @@ const UserCard: React.FC<{
         borderRadius: 6
       }}
     >
-      <Tooltip title={hint}>
-        <span className="text-secondary" style={{ fontSize: 13 }}>
-          {title}{' '}
-          <QuestionCircleOutlined style={{ color: 'gray', fontSize: 12 }} />
-        </span>
-      </Tooltip>
+      <Flex align="center" justify="space-between" gap={8}>
+        <Tooltip title={hint}>
+          <span className="text-secondary" style={{ fontSize: 13 }}>
+            {title}{' '}
+            <QuestionCircleOutlined style={{ color: 'gray', fontSize: 12 }} />
+          </span>
+        </Tooltip>
+        {resetButton}
+      </Flex>
       <span style={{ fontSize: 20, fontWeight: 600, whiteSpace: 'nowrap' }}>
         {used == null ? '—' : num(used, intl.locale)}{' '}
         <span
@@ -209,6 +276,10 @@ const RateLimitsCard: React.FC<{
   const intl = useIntl();
   const t = (id: string) => intl.formatMessage({ id });
   const { detailData: data, loading, fetchData } = useQueryRateLimits(userId);
+  // Which long budget's reset dialog is open, and whether its POST is in
+  // flight — the dialog's OK button shows the spinner and stays disabled.
+  const [resetKind, setResetKind] = useState<'weekly' | 'monthly' | null>(null);
+  const [resetLoading, setResetLoading] = useState(false);
 
   // Refetch on a filter change (userId pins the target user — undefined =
   // the caller) and on the toolbar's refresh bump. fetchData's identity
@@ -216,6 +287,27 @@ const RateLimitsCard: React.FC<{
   useEffect(() => {
     fetchData();
   }, [userId, refreshKey]);
+
+  const submitReset = async (description: string) => {
+    if (!resetKind) return;
+    setResetLoading(true);
+    try {
+      await resetRateLimit({
+        kind: resetKind,
+        description,
+        user_id: userId
+      });
+      message.success(t('usage.rateLimits.resetSuccess'));
+      setResetKind(null);
+      // The counters are gone server-side; refetch shows the fresh window.
+      await fetchData();
+    } catch {
+      // The global request handler reported the failure; keep the dialog
+      // open so the reason note is not lost to a retry.
+    } finally {
+      setResetLoading(false);
+    }
+  };
 
   // Live counters exist only when the server reads them from Redis and the
   // read succeeded — the window's own `used` absence encodes exactly that
@@ -255,19 +347,26 @@ const RateLimitsCard: React.FC<{
   }
   if (data.mode === 'disabled') return null;
 
-  const userWindows = USER_CARDS.map(({ kind, period, titleId, hintId }) => ({
-    title: t(titleId),
-    hint: t(hintId),
-    window: data.user.windows.find(
-      (w) => w.kind === kind && w.period === period
-    )
-  })).filter(
+  const userWindows = USER_CARDS.map(
+    ({ kind, period, titleId, hintId, resetKind }) => ({
+      title: t(titleId),
+      hint: t(hintId),
+      window: data.user.windows.find(
+        (w) => w.kind === kind && w.period === period
+      ),
+      resetStatus:
+        resetKind != null ? data.user.resets?.[resetKind] : undefined,
+      resetKind
+    })
+  ).filter(
     (
       card
     ): card is {
       title: string;
       hint: string;
       window: RateLimitWindowUsage;
+      resetStatus: RateLimitResetStatus | undefined;
+      resetKind: 'weekly' | 'monthly' | undefined;
     } => card.window != null
   );
   const hasKeys = (data.api_keys?.length ?? 0) > 0;
@@ -329,14 +428,22 @@ const RateLimitsCard: React.FC<{
               wrap="wrap"
               style={{ marginBottom: hasKeys ? 16 : 0 }}
             >
-              {userWindows.map(({ title, hint, window }) => (
-                <UserCard
-                  key={`${window.kind}:${window.period}`}
-                  title={title}
-                  hint={hint}
-                  rateWindow={window}
-                />
-              ))}
+              {userWindows.map(
+                ({ title, hint, window, resetStatus, resetKind }) => (
+                  <UserCard
+                    key={`${window.kind}:${window.period}`}
+                    title={title}
+                    hint={hint}
+                    rateWindow={window}
+                    resetStatus={resetStatus}
+                    onReset={
+                      resetKind != null
+                        ? () => setResetKind(resetKind)
+                        : undefined
+                    }
+                  />
+                )
+              )}
             </Flex>
           )}
           {hasKeys && (
@@ -353,6 +460,14 @@ const RateLimitsCard: React.FC<{
       ) : (
         <span className="text-secondary">{t('usage.rateLimits.noLimits')}</span>
       )}
+
+      <ResetLimitModal
+        open={resetKind != null}
+        status={resetKind ? data.user.resets?.[resetKind] : undefined}
+        confirmLoading={resetLoading}
+        onOk={submitReset}
+        onCancel={() => setResetKind(null)}
+      />
     </CardWrapper>
   );
 };

@@ -138,6 +138,15 @@ export default {
   'usage.rateLimits.tpmHint': 'Лимит токенов в минуту',
   'usage.rateLimits.weeklyHint': 'Недельный лимит токенов',
   'usage.rateLimits.monthlyHint': 'Месячный лимит токенов',
+  'usage.rateLimits.resetButton': 'Сбросить',
+  'usage.rateLimits.resetConfirmTitle': 'Вы уверены?',
+  'usage.rateLimits.resetQuotaLeft':
+    'Осталось {count, plural, one {# сброс} few {# сброса} many {# сбросов} other {# сброса}} в этом периоде.',
+  'usage.rateLimits.resetReasonPlaceholder':
+    'Напишите, какой задачей вы занимаетесь',
+  'usage.rateLimits.resetQuotaExhausted':
+    'Лимит сбросов исчерпан в этом периоде, обновление {date}',
+  'usage.rateLimits.resetSuccess': 'Лимит сброшен',
   'usage.rateLimits.duration.days':
     '{count, plural, one {# день} few {# дня} many {# дней} other {# дня}}',
   'usage.rateLimits.duration.hours':

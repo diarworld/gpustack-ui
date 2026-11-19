@@ -137,6 +137,13 @@ export default {
   'usage.rateLimits.tpmHint': '每分钟 Token 数限制',
   'usage.rateLimits.weeklyHint': '每周 Token 限制',
   'usage.rateLimits.monthlyHint': '每月 Token 限制',
+  'usage.rateLimits.resetButton': '重置',
+  'usage.rateLimits.resetConfirmTitle': '确定吗？',
+  'usage.rateLimits.resetQuotaLeft':
+    '本周期剩余重置次数：{count, plural, other {#}} 次。',
+  'usage.rateLimits.resetReasonPlaceholder': '请描述你正在进行的任务',
+  'usage.rateLimits.resetQuotaExhausted': '本周期重置次数已用完，{date} 更新',
+  'usage.rateLimits.resetSuccess': '限制已重置',
   'usage.rateLimits.duration.days': '{count, plural, other {# 天}}',
   'usage.rateLimits.duration.hours': '{count, plural, other {# 小时}}',
   'usage.rateLimits.duration.minutes': '{count, plural, other {# 分钟}}',

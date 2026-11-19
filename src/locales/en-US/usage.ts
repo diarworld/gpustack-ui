@@ -137,6 +137,15 @@ export default {
   'usage.rateLimits.tpmHint': 'Tokens per minute limit',
   'usage.rateLimits.weeklyHint': 'Weekly token limit',
   'usage.rateLimits.monthlyHint': 'Monthly token limit',
+  'usage.rateLimits.resetButton': 'Reset',
+  'usage.rateLimits.resetConfirmTitle': 'Are you sure?',
+  'usage.rateLimits.resetQuotaLeft':
+    '{count, plural, one {# reset left} other {# resets left}} in this period.',
+  'usage.rateLimits.resetReasonPlaceholder':
+    'Describe the task you were working on',
+  'usage.rateLimits.resetQuotaExhausted':
+    'Reset quota exhausted for this period, resets {date}',
+  'usage.rateLimits.resetSuccess': 'Limit reset',
   'usage.rateLimits.duration.days':
     '{count, plural, one {# day} other {# days}}',
   'usage.rateLimits.duration.hours':

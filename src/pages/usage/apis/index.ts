@@ -2,6 +2,7 @@ import { request } from '@umijs/max';
 import {
   BreakdownItem,
   FilterOptionType,
+  RateLimitResetStatus,
   RateLimitsResponse,
   UsageBreakdownResponse,
   UsageExportEstimate,
@@ -15,6 +16,7 @@ export const USAGE_BREAKDOWN_EXPORT = '/usage/breakdown/export';
 export const USAGE_BREAKDOWN_EXPORT_ESTIMATE =
   '/usage/breakdown/export/estimate';
 export const USAGE_RATE_LIMITS = '/usage/rate-limits';
+export const USAGE_RATE_LIMITS_RESET = '/usage/rate-limits/reset';
 
 export const MODEL_ROUTE_TARGETS = '/model-route-targets';
 
@@ -41,6 +43,24 @@ export async function queryRateLimits(
   return request<RateLimitsResponse>(USAGE_RATE_LIMITS, {
     method: 'GET',
     params,
+    cancelToken: options?.token
+  });
+}
+
+// One press of a reset button: forgives the target user's weekly or
+// monthly token budget and answers with the fresh quota state. The reason
+// note is required server-side. An admin may target another user.
+export async function resetRateLimit(
+  data: {
+    kind: 'weekly' | 'monthly';
+    description: string;
+    user_id?: number;
+  },
+  options?: any
+): Promise<RateLimitResetStatus> {
+  return request<RateLimitResetStatus>(USAGE_RATE_LIMITS_RESET, {
+    method: 'POST',
+    data,
     cancelToken: options?.token
   });
 }

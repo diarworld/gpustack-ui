@@ -137,6 +137,14 @@ export default {
   'usage.rateLimits.tpmHint': '1分あたりのトークン数上限',
   'usage.rateLimits.weeklyHint': '週間トークン上限',
   'usage.rateLimits.monthlyHint': '月間トークン上限',
+  'usage.rateLimits.resetButton': 'リセット',
+  'usage.rateLimits.resetConfirmTitle': 'よろしいですか？',
+  'usage.rateLimits.resetQuotaLeft':
+    'この期間の残りリセット回数: {count, plural, other {# 回}}。',
+  'usage.rateLimits.resetReasonPlaceholder': '実行中のタスクを記入してください',
+  'usage.rateLimits.resetQuotaExhausted':
+    'この期間のリセット回数を使い切りました。{date} に更新されます',
+  'usage.rateLimits.resetSuccess': '上限をリセットしました',
   'usage.rateLimits.duration.days': '{count, plural, other {#日}}',
   'usage.rateLimits.duration.hours': '{count, plural, other {#時間}}',
   'usage.rateLimits.duration.minutes': '{count, plural, other {#分}}',
