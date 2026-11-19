@@ -29,14 +29,18 @@ export async function queryUsageMetaData(
   });
 }
 
-// Self-scoped rate limits + live usage for the Summary tab. Takes no params
-// by design: the endpoint always answers for the calling user, and admin
-// per-user views are out of scope.
+// Rate limits + live usage for one user. Self-scoped by default; an admin
+// may pin another user via ``user_id`` — the backend silently degrades a
+// foreign id back to the caller for anyone who may not see it.
 export async function queryRateLimits(
+  params?: {
+    user_id?: number;
+  },
   options?: any
 ): Promise<RateLimitsResponse> {
   return request<RateLimitsResponse>(USAGE_RATE_LIMITS, {
     method: 'GET',
+    params,
     cancelToken: options?.token
   });
 }

@@ -17,8 +17,9 @@
  *   - /usage/breakdown (tokens)  → Tokens trend (token series is daily-only)
  *   - /usage/resource/breakdown  → Compute trend + active instances
  *   - /usage/storage/breakdown   → Storage trend, volumes, type donut
- *   - /usage/rate-limits         → the caller's own limits + live usage
- *                                  (NOT date/scope filtered — always self)
+ *   - /usage/rate-limits         → moved to the Token tab (see
+ *                                  components/rate-limits-card), which every
+ *                                  user sees; this tab is GPU-service-gated
  *
  * Shows quantity metrics only (no cost). Donuts use each domain's natural unit
  * (tokens / Usage hours / GB-Days); a true cross-resource split needs a common
@@ -44,7 +45,6 @@ import {
   generateBucketRange,
   Granularity
 } from '../utils/time-buckets';
-import RateLimitsCard from './components/rate-limits-card';
 import useQueryResourceBreakdown from './services/use-query-resource-breakdown';
 import useQueryStorageBreakdown from './services/use-query-storage-breakdown';
 import useQueryTimeSeriesData from './services/use-query-timeseries-data';
@@ -685,10 +685,6 @@ const SummaryTab: React.FC = () => {
               </>
             }
           />
-        </Col>
-
-        <Col span={24}>
-          <RateLimitsCard />
         </Col>
       </Row>
     </div>

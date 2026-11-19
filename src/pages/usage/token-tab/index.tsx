@@ -6,6 +6,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import DailyUsage from '../components/daily-usage';
 import ExportData from '../components/export-data';
 import FilterBar from '../components/filter-bar';
+import RateLimitsCard from '../components/rate-limits-card';
 import useExportTable from '../hooks/use-export-table';
 import { useUsageFilters } from '../hooks/use-usage-filters';
 import useQueryUsageMetaData from '../services/use-query-meta-data';
@@ -134,6 +135,19 @@ const TokenTab: React.FC = () => {
     [commonFilters.end_date, commonFilters.start_date]
   );
 
+  // The rate-limits section follows the filter's user selection: with
+  // exactly one user picked (admins, who can see other users' data) it pins
+  // that user on the endpoint; any other state shows the caller's own
+  // picture. The option list carries the numeric id in identity.value.
+  const rateLimitsUserId = useMemo(() => {
+    if (!access.canSeeOrgAdmin) return undefined;
+    if (filterBar.selectedUsers?.length !== 1) return undefined;
+    const option = metaData?.users?.find(
+      (item) => item.value === filterBar.selectedUsers[0]
+    );
+    return option?.identity?.value?.user_id ?? undefined;
+  }, [access.canSeeOrgAdmin, filterBar.selectedUsers, metaData?.users]);
+
   const handlePickerChange = (picker: DateType) => {
     setChartFilters((prev) => ({
       ...prev,
@@ -198,6 +212,11 @@ const TokenTab: React.FC = () => {
         }
         onExportChart={handleExportChart}
       />
+      {/* Quotas and limits first: user-level day/week/month cards and the
+          per-key table, before the token chart below. */}
+      <div style={{ marginBottom: 24 }}>
+        <RateLimitsCard userId={rateLimitsUserId} />
+      </div>
       <div
         style={{
           marginBlock: 24
