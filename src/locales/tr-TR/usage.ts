@@ -120,6 +120,21 @@ export default {
   'usage.summary.usageOverTime': 'Zaman içinde kullanım',
   'usage.summary.gbDaysOverTime': 'Zaman içinde GB-Gün',
 
+  // --- Summary tab: rate limits ---
+  'usage.rateLimits.title': 'Hız Sınırları',
+  'usage.rateLimits.userBudgets': 'Kişisel token bütçeleri',
+  'usage.rateLimits.key': 'Anahtar',
+  'usage.rateLimits.resetsIn': '{time} içinde sıfırlanır',
+  'usage.rateLimits.usageUnavailable':
+    'Anlık kullanım kullanılamıyor: hız sınırlama paylaşımlı bir Redis olmadan çalışıyor.',
+  'usage.rateLimits.usageError': 'Anlık kullanım geçici olarak kullanılamıyor.',
+  'usage.rateLimits.rpm': 'RPM',
+  'usage.rateLimits.tpm': 'TPM',
+  'usage.rateLimits.daily': 'Gün',
+  'usage.rateLimits.weekly': 'Hafta',
+  'usage.rateLimits.monthly': 'Ay',
+  'usage.rateLimits.noLimits': 'Hız sınırı yapılandırılmamış.',
+
   // --- GPU Instances / Storage filters ---
   'usage.filter.instance': 'Örneğe göre filtrele',
   'usage.filter.storage': 'Depolamaya göre filtrele',

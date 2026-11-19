@@ -120,6 +120,21 @@ export default {
   'usage.summary.usageOverTime': '使用量の推移',
   'usage.summary.gbDaysOverTime': 'GB·日の推移',
 
+  // --- Summary tab: rate limits ---
+  'usage.rateLimits.title': 'レート制限',
+  'usage.rateLimits.userBudgets': '個人のトークン予算',
+  'usage.rateLimits.key': 'キー',
+  'usage.rateLimits.resetsIn': '{time}後にリセット',
+  'usage.rateLimits.usageUnavailable':
+    'リアルタイムの使用量は表示できません: レート制限が共有 Redis なしで動作しています。',
+  'usage.rateLimits.usageError': 'リアルタイムの使用量は現在利用できません。',
+  'usage.rateLimits.rpm': 'RPM',
+  'usage.rateLimits.tpm': 'TPM',
+  'usage.rateLimits.daily': '日',
+  'usage.rateLimits.weekly': '週',
+  'usage.rateLimits.monthly': '月',
+  'usage.rateLimits.noLimits': 'レート制限は設定されていません。',
+
   // --- GPU Instances / Storage filters ---
   'usage.filter.instance': 'インスタンスで絞り込み',
   'usage.filter.storage': 'ストレージで絞り込み',

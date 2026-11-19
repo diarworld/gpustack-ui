@@ -202,6 +202,53 @@ export type UsageExportEstimate = {
   effective_format?: 'csv' | 'xlsx';
 };
 
+// --- Rate limits (Summary tab) ---
+
+// One enforcement window on a limit. `kind` says what is counted, `period`
+// which bucket applies ('60s' / '604800s' are rolling second windows,
+// 'each_day' / 'each_month' are calendar buckets). `used` is ABSENT from the
+// JSON when the live counter cannot be read (local mode, no Redis, or a usage
+// error) — the limit is still enforced, only the counter is unknown, so the
+// UI must not treat absence as 0.
+export interface RateLimitWindowUsage {
+  kind: 'query' | 'token_rolling' | 'token_calendar';
+  period: string;
+  window_seconds?: number | null;
+  used?: number | null;
+  limit: number;
+  reset_seconds?: number | null;
+}
+
+export interface UserRateLimits {
+  weekly_limit?: number | null;
+  monthly_limit?: number | null;
+  // Only the windows the owner has actually set.
+  windows: RateLimitWindowUsage[];
+}
+
+export interface ApiKeyRateLimits {
+  id: number;
+  name: string;
+  // Explicit per-key caps; absent = the key inherits the user/default limits.
+  rpm_limit?: number | null;
+  tpm_limit?: number | null;
+  daily_token_limit?: number | null;
+  // Which limit combination actually matches this key: its own explicit caps,
+  // the owner's budget plus the defaults, or the defaults alone.
+  source: 'key' | 'user+default' | 'default';
+  windows: RateLimitWindowUsage[];
+}
+
+export interface RateLimitsResponse {
+  // 'redis' — live usage available; 'local' — limits enforced without a
+  // shared Redis, so no counters; 'disabled' — the feature is off entirely.
+  mode: 'redis' | 'local' | 'disabled';
+  generated_at: string;
+  usage_error?: string | null;
+  user: UserRateLimits;
+  api_keys: ApiKeyRateLimits[];
+}
+
 // Structured payload on an over-limit / unsupported-format error, carried in
 // `ErrorResponse.details`. The suggestions are what make the error actionable
 // — "narrow the range" alone is true and useless.

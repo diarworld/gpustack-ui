@@ -120,6 +120,21 @@ export default {
   'usage.summary.usageOverTime': '用量趋势',
   'usage.summary.gbDaysOverTime': 'GB·天趋势',
 
+  // --- Summary tab: rate limits ---
+  'usage.rateLimits.title': '速率限制',
+  'usage.rateLimits.userBudgets': '个人 Token 预算',
+  'usage.rateLimits.key': '密钥',
+  'usage.rateLimits.resetsIn': '{time}后重置',
+  'usage.rateLimits.usageUnavailable':
+    '实时用量不可用：速率限制未使用共享 Redis 运行。',
+  'usage.rateLimits.usageError': '实时用量暂时不可用。',
+  'usage.rateLimits.rpm': 'RPM',
+  'usage.rateLimits.tpm': 'TPM',
+  'usage.rateLimits.daily': '日',
+  'usage.rateLimits.weekly': '周',
+  'usage.rateLimits.monthly': '月',
+  'usage.rateLimits.noLimits': '未配置速率限制。',
+
   // --- GPU Instances / Storage filters ---
   'usage.filter.instance': '按实例查询',
   'usage.filter.storage': '按存储查询',

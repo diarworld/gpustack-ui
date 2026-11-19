@@ -120,6 +120,21 @@ export default {
   'usage.summary.usageOverTime': 'Usage over time',
   'usage.summary.gbDaysOverTime': 'GB-Days over time',
 
+  // --- Summary tab: rate limits ---
+  'usage.rateLimits.title': 'Rate Limits',
+  'usage.rateLimits.userBudgets': 'Personal token budgets',
+  'usage.rateLimits.key': 'Key',
+  'usage.rateLimits.resetsIn': 'Resets in {time}',
+  'usage.rateLimits.usageUnavailable':
+    'Live usage is unavailable: rate limiting is running without a shared Redis.',
+  'usage.rateLimits.usageError': 'Live usage is temporarily unavailable.',
+  'usage.rateLimits.rpm': 'RPM',
+  'usage.rateLimits.tpm': 'TPM',
+  'usage.rateLimits.daily': 'Day',
+  'usage.rateLimits.weekly': 'Week',
+  'usage.rateLimits.monthly': 'Month',
+  'usage.rateLimits.noLimits': 'No rate limits configured.',
+
   // --- GPU Instances / Storage filters ---
   'usage.filter.instance': 'Filter by instance',
   'usage.filter.storage': 'Filter by storage',

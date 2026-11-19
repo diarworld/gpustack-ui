@@ -2,6 +2,7 @@ import { request } from '@umijs/max';
 import {
   BreakdownItem,
   FilterOptionType,
+  RateLimitsResponse,
   UsageBreakdownResponse,
   UsageExportEstimate,
   UsageExportRequest,
@@ -13,6 +14,7 @@ export const USAGE_BREAKDOWN = '/usage/breakdown';
 export const USAGE_BREAKDOWN_EXPORT = '/usage/breakdown/export';
 export const USAGE_BREAKDOWN_EXPORT_ESTIMATE =
   '/usage/breakdown/export/estimate';
+export const USAGE_RATE_LIMITS = '/usage/rate-limits';
 
 export const MODEL_ROUTE_TARGETS = '/model-route-targets';
 
@@ -22,6 +24,18 @@ export async function queryUsageMetaData(
 ): Promise<UsageMeta> {
   return request<UsageMeta>(USAGE_META, {
     params,
+    method: 'GET',
+    cancelToken: options?.token
+  });
+}
+
+// Self-scoped rate limits + live usage for the Summary tab. Takes no params
+// by design: the endpoint always answers for the calling user, and admin
+// per-user views are out of scope.
+export async function queryRateLimits(
+  options?: any
+): Promise<RateLimitsResponse> {
+  return request<RateLimitsResponse>(USAGE_RATE_LIMITS, {
     method: 'GET',
     cancelToken: options?.token
   });

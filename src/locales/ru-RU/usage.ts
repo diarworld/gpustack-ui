@@ -121,6 +121,21 @@ export default {
   'usage.summary.usageOverTime': 'Потребление во времени',
   'usage.summary.gbDaysOverTime': 'ГБ-дни по времени',
 
+  // --- Summary tab: rate limits ---
+  'usage.rateLimits.title': 'Лимиты запросов',
+  'usage.rateLimits.userBudgets': 'Персональные бюджеты токенов',
+  'usage.rateLimits.key': 'Ключ',
+  'usage.rateLimits.resetsIn': 'Сброс через {time}',
+  'usage.rateLimits.usageUnavailable':
+    'Текущее потребление недоступно: rate limiting работает без общего Redis.',
+  'usage.rateLimits.usageError': 'Текущее потребление временно недоступно.',
+  'usage.rateLimits.rpm': 'RPM',
+  'usage.rateLimits.tpm': 'TPM',
+  'usage.rateLimits.daily': 'День',
+  'usage.rateLimits.weekly': 'Неделя',
+  'usage.rateLimits.monthly': 'Месяц',
+  'usage.rateLimits.noLimits': 'Лимиты не настроены.',
+
   // --- GPU Instances / Storage filters ---
   'usage.filter.instance': 'Фильтр по инстансу',
   'usage.filter.storage': 'Фильтр по хранилищу',
