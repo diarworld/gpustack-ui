@@ -237,6 +237,37 @@ const AddModal: React.FC<AddModalProps> = ({
 
         <div style={{ display: 'flex', gap: '16px' }}>
           <div style={{ flex: 1 }}>
+            <Form.Item<FormData> name="rpm_limit" rules={[{ required: false }]}>
+              <InputNumber
+                style={{ width: '100%' }}
+                min={1}
+                precision={0}
+                label={intl.formatMessage({ id: 'users.form.rpm' })}
+                description={intl.formatMessage({
+                  id: 'users.form.rateLimits.hint'
+                })}
+                placeholder={intl.formatMessage({
+                  id: 'users.form.tokenBudgets.none'
+                })}
+              />
+            </Form.Item>
+          </div>
+          <div style={{ flex: 1 }}>
+            <Form.Item<FormData> name="tpm_limit" rules={[{ required: false }]}>
+              <InputNumber
+                style={{ width: '100%' }}
+                min={1}
+                precision={0}
+                label={intl.formatMessage({ id: 'users.form.tpm' })}
+                placeholder={intl.formatMessage({
+                  id: 'users.form.tokenBudgets.none'
+                })}
+              />
+            </Form.Item>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: '16px' }}>
+          <div style={{ flex: 1 }}>
             <Form.Item<FormData>
               name="weekly_token_limit"
               rules={[{ required: false }]}

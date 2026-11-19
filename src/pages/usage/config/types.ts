@@ -220,22 +220,26 @@ export interface RateLimitWindowUsage {
 }
 
 export interface UserRateLimits {
+  // The user's own settings; absent = the deployment default governs that
+  // axis (none for the weekly budget).
+  rpm_limit?: number | null;
+  tpm_limit?: number | null;
   weekly_limit?: number | null;
   monthly_limit?: number | null;
-  // Only the windows the owner has actually set.
+  // The user limit combo verbatim: per-minute caps and the monthly quota
+  // inherited the deployment defaults where unset, the weekly budget is
+  // setting-only. Every window counts all the user's keys together.
   windows: RateLimitWindowUsage[];
 }
 
 export interface ApiKeyRateLimits {
   id: number;
   name: string;
-  // Explicit per-key caps; absent = the key inherits the user/default limits.
-  rpm_limit?: number | null;
-  tpm_limit?: number | null;
+  // The key's own daily budget; absent = it inherits the deployment default.
   daily_token_limit?: number | null;
-  // Which limit combination actually matches this key: its own explicit caps,
-  // the owner's budget plus the defaults, or the defaults alone.
-  source: 'key' | 'user+default' | 'default';
+  // Which published combinations govern this key: the user's shared combo
+  // plus the key's own day quota, or the shared combo alone.
+  source: 'user+key' | 'user';
   windows: RateLimitWindowUsage[];
 }
 

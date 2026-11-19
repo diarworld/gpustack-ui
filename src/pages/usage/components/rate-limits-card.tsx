@@ -6,9 +6,10 @@
  * selection pins the target via ``user_id`` — the endpoint degrades a
  * foreign id back to the caller when the caller may not see it.
  *
- * Layout mirrors the Token tab: user-level period cards (day / week /
- * month) on top, the per-key table below. The server's `mode` drives the
- * display:
+ * Layout mirrors the Token tab: user-level rate cards (RPM / TPM, the caps
+ * shared across all the user's keys) plus the token budget cards (week /
+ * month) on top, the per-key table (day / week / month) below. The server's
+ * `mode` drives the display:
  *   'disabled' — render nothing at all (feature off server-side);
  *   'local'    — limits without counters (no shared Redis), plus an info note;
  *   'redis'    — limits plus live usage; a `usage_error` blanks the counters
@@ -86,10 +87,9 @@ const WindowUsageCell: React.FC<{
 
 // The windows this card knows by name, in the per-key table's display order.
 // The table's metric columns derive from this list, so every (kind, period)
-// pair is spelled exactly once.
+// pair is spelled exactly once. Rate limits (RPM / TPM) are user-level and
+// live on the cards; the table carries the windows a key is subject to.
 const WINDOWS = [
-  { kind: 'query', period: '60s', titleId: 'usage.rateLimits.rpm' },
-  { kind: 'token_rolling', period: '60s', titleId: 'usage.rateLimits.tpm' },
   {
     kind: 'token_calendar',
     period: 'each_day',
@@ -107,14 +107,27 @@ const WINDOWS = [
   }
 ] as const;
 
-// The user-level cards, in display order. The backend composes one window
-// per period: the owner's budget where it overrides the deployment default
-// plan, the default plan on the remaining axes. A period the server did not
-// send (cap unset) simply renders no card.
+// The user-level cards, in display order: the rate caps (requests and tokens
+// per minute, bucketed across all the user's keys) and the token budgets.
+// A window the server did not send (cap unset with no deployment default)
+// simply renders no card.
 const USER_CARDS = [
-  { period: 'each_day', titleId: 'usage.rateLimits.daily' },
-  { period: '604800s', titleId: 'usage.rateLimits.weekly' },
-  { period: 'each_month', titleId: 'usage.rateLimits.monthly' }
+  { kind: 'query', period: '60s', titleId: 'usage.rateLimits.rpm' },
+  {
+    kind: 'token_rolling',
+    period: '60s',
+    titleId: 'usage.rateLimits.tpm'
+  },
+  {
+    kind: 'token_rolling',
+    period: '604800s',
+    titleId: 'usage.rateLimits.weekly'
+  },
+  {
+    kind: 'token_calendar',
+    period: 'each_month',
+    titleId: 'usage.rateLimits.monthly'
+  }
 ] as const;
 
 // One user-level period tile, styled after the Token tab's SimpleCard
@@ -218,9 +231,11 @@ const RateLimitsCard: React.FC<{ userId?: number }> = ({ userId }) => {
   }
   if (data.mode === 'disabled') return null;
 
-  const userWindows = USER_CARDS.map(({ period, titleId }) => ({
+  const userWindows = USER_CARDS.map(({ kind, period, titleId }) => ({
     title: t(titleId),
-    window: data.user.windows.find((w) => w.period === period)
+    window: data.user.windows.find(
+      (w) => w.kind === kind && w.period === period
+    )
   })).filter(
     (card): card is { title: string; window: RateLimitWindowUsage } =>
       card.window != null
