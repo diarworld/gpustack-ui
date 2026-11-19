@@ -11,7 +11,12 @@ const useGranfanaLink = (options: {
 }) => {
   const intl = useIntl();
   const systemConfig = useAtomValue(systemConfigAtom);
-  const grafanaUrl = systemConfig?.grafana_url || 'grafana';
+  // The embedded Grafana is reached through the same-origin /grafana
+  // proxy. The base must be an absolute path: a relative URL would
+  // resolve against the current page directory (/models/...) and miss
+  // the proxy entirely. An explicit grafana_url keeps pointing at the
+  // external deployment.
+  const grafanaBase = systemConfig?.grafana_url || '/grafana';
 
   // for worker/model/instance/cluster item entry
   const goToModelGrafana = (row: { id: number }) => {
@@ -86,18 +91,18 @@ const useGranfanaLink = (options: {
   // all endpoints of grafana
   const modelEntry = () => {
     const modelURL = systemConfig?.grafana_model_dashboard_uid;
-    window.open(`${grafanaUrl}/d/${modelURL}/gpustack-model`, '_blank');
+    window.open(`${grafanaBase}/d/${modelURL}/gpustack-model`, '_blank');
   };
 
   const workerEntry = () => {
     const workerURL = systemConfig?.grafana_worker_dashboard_uid;
-    window.open(`${grafanaUrl}/d/${workerURL}/gpustack-worker`, '_blank');
+    window.open(`${grafanaBase}/d/${workerURL}/gpustack-worker`, '_blank');
   };
 
   const cacheServiceEntry = () => {
     const dashboardUid = systemConfig?.grafana_cache_service_dashboard_uid;
     window.open(
-      `${grafanaUrl}/d/${dashboardUid}/gpustack-cache-service`,
+      `${grafanaBase}/d/${dashboardUid}/gpustack-cache-service`,
       '_blank'
     );
   };
