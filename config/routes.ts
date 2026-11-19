@@ -368,20 +368,6 @@ const baseRoutes = [
         selectedIcon: 'icon-usage-filled',
         defaultIcon: 'icon-usage-outlined',
         component: './usage/index'
-      },
-      {
-        name: 'billing',
-        path: '/usage/billing',
-        key: 'billing',
-        icon: 'icon-billing-outlined',
-        selectedIcon: 'icon-billing-filled',
-        defaultIcon: 'icon-billing-outlined',
-        hideInMenu: process.env.ENABLE_ENTERPRISE === 'true',
-        // OSS exposes the menu as a teaser for the enterprise billing
-        // module. The page itself just renders an upsell notice — the real
-        // billing UI lives in the enterprise plugin and shadows this route
-        // via `routes.extensions.ts`.
-        component: './billing'
       }
     ]
   },
