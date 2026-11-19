@@ -7,7 +7,7 @@ import { logout } from '@/pages/login/apis';
 import { getGPUStackPlugin } from '@/plugins';
 import { getDocumentationUrl } from '@/utils/documentation';
 import { useModel } from '@@/plugin-model';
-import { DiscordOutlined, GithubOutlined } from '@ant-design/icons';
+import { AlertOutlined, YuqueOutlined } from '@ant-design/icons';
 import { DropdownActions, IconFont, useBodyScroll } from '@gpustack/core-ui';
 import { history, useIntl, useNavigate } from '@umijs/max';
 import { Avatar, Button, Divider, Modal } from 'antd';
@@ -15,7 +15,6 @@ import { useAtom } from 'jotai';
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { DEFAULT_ENTER_PAGE } from '../config/settings';
-import GithubStar from './github-star';
 
 // A tinted pill, not a solid orange block. `#fff` on `--ant-orange-5` measured
 // 1.91:1 — the one element on the page whose whole job is to be noticed was the
@@ -247,14 +246,14 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
     {
       key: 'site',
       icon: <IconFont type="icon-home"></IconFont>,
-      label: 'GPUStack',
+      label: 'AIPlatform',
       url: externalLinks.site
     },
     {
-      key: 'github',
-      icon: <GithubOutlined />,
+      key: 'reportIssue',
+      icon: <AlertOutlined />,
       label: intl.formatMessage({ id: 'common.issue.report' }),
-      url: externalLinks.reportIssue
+      url: externalLinks.loopAIPlatform
     },
     {
       key: 'faq',
@@ -263,10 +262,10 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
       url: getDocumentationUrl(documentationPaths.faq, intl.locale)
     },
     {
-      key: 'Discord',
-      icon: <DiscordOutlined />,
-      label: 'Discord',
-      url: externalLinks.discord
+      key: 'loopAISDLC',
+      icon: <YuqueOutlined />,
+      label: 'Loop AI SDLC',
+      url: externalLinks.loopAISDLC
     },
     {
       key: 'docs',
@@ -353,7 +352,6 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
     <Wrapper>
       {contextHolder}
       <PluginExtraField name="OrgSwitcher" isDarkTheme={isDarkTheme} />
-      {process.env.ENABLE_ENTERPRISE !== 'true' && <GithubStar />}
       <div
         style={{
           display: 'flex',

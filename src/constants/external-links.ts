@@ -1,9 +1,11 @@
 const externalLinks = {
-  github: 'https://github.com/gpustack/gpustack',
-  discord: 'https://discord.gg/VXYJzuaqwD',
-  site: 'https://gpustack.ai/',
-  release: 'https://github.com/gpustack/gpustack/releases',
-  reportIssue: 'https://github.com/gpustack/gpustack/issues/new/choose'
+  // Support channels live in the company Loop workspace.
+  loopAISDLC:
+    'https://lemanapro.loop.ru/lemanapro/channels/lmru-ai4sdlc-support',
+  loopAIPlatform:
+    'https://lemanapro.loop.ru/lemanapro/channels/lmru-aiplatform-support',
+  site: 'https://ai.data.lmru.tech/',
+  release: 'https://github.com/gpustack/gpustack/releases'
 };
 
 export default externalLinks;

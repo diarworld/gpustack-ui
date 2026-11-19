@@ -4,14 +4,14 @@ import { documentationPaths } from '@/constants/documentation';
 import externalLinks from '@/constants/external-links';
 import { getDocumentationUrl } from '@/utils/documentation';
 import {
-  DiscordOutlined,
-  GithubOutlined,
+  AlertOutlined,
   HomeOutlined,
   InfoCircleOutlined,
   LogoutOutlined,
   MoreOutlined,
   ReadOutlined,
-  SettingOutlined
+  SettingOutlined,
+  YuqueOutlined
 } from '@ant-design/icons';
 import { IconFont } from '@gpustack/core-ui';
 import { getAllLocales, history } from '@umijs/max';
@@ -84,14 +84,14 @@ export const getRightRenderContent = (opts: {
     {
       key: 'site',
       icon: <HomeOutlined />,
-      label: 'GPUStack',
+      label: 'AIPlatform',
       url: externalLinks.site
     },
     {
-      key: 'github',
-      icon: <GithubOutlined />,
+      key: 'reportIssue',
+      icon: <AlertOutlined />,
       label: intl.formatMessage({ id: 'common.issue.report' }),
-      url: externalLinks.reportIssue
+      url: externalLinks.loopAIPlatform
     },
     {
       key: 'faq',
@@ -100,10 +100,10 @@ export const getRightRenderContent = (opts: {
       url: getDocumentationUrl(documentationPaths.faq, intl.locale)
     },
     {
-      key: 'Discord',
-      icon: <DiscordOutlined />,
-      label: 'Discord',
-      url: externalLinks.discord
+      key: 'loopAISDLC',
+      icon: <YuqueOutlined />,
+      label: 'Loop AI SDLC',
+      url: externalLinks.loopAISDLC
     },
     {
       key: 'docs',
