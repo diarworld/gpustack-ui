@@ -32,6 +32,28 @@ export const formatRatioPercent = (value?: number | null): string | null => {
   return `${Math.round(value * 100)}%`;
 };
 
+export type SeverityLevel = 'success' | 'warning' | 'error';
+
+// The strip flags unhealthy values by color: strictly above the warning
+// threshold the value turns yellow, above the critical one red, otherwise
+// green. Values without data have no level and keep the default color.
+export const severityLevel = (
+  value: number | null | undefined,
+  warningAt: number,
+  criticalAt: number
+): SeverityLevel | null => {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  if (value > criticalAt) {
+    return 'error';
+  }
+  if (value > warningAt) {
+    return 'warning';
+  }
+  return 'success';
+};
+
 export const formatLatencySeconds = (value?: number | null): string | null => {
   if (value === null || value === undefined) {
     return null;

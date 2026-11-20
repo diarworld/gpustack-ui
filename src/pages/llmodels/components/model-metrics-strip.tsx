@@ -8,8 +8,23 @@ import {
   formatCount,
   formatLatencySeconds,
   formatRatioPercent,
-  formatTokensPerSecond
+  formatTokensPerSecond,
+  severityLevel,
+  type SeverityLevel
 } from '../utils/model-metrics';
+
+// Health thresholds of the strip: strictly beyond the warning bound the
+// value turns yellow, beyond the critical one red, otherwise green.
+const WAITING_WARNING = 20;
+const WAITING_CRITICAL = 50;
+const TTFT_WARNING_SECONDS = 30;
+const TTFT_CRITICAL_SECONDS = 60;
+
+const SEVERITY_VAR: Record<SeverityLevel, string> = {
+  success: 'var(--ant-color-success)',
+  warning: 'var(--ant-color-warning)',
+  error: 'var(--ant-color-error)'
+};
 
 const useStyles = createStyles(({ css }) => ({
   strip: css`
@@ -65,6 +80,16 @@ const ModelMetricsStrip: React.FC<{ metrics?: MyModelMetrics | null }> = ({
   const kvCache = formatRatioPercent(metrics.kv_cache_usage_ratio);
   const prefixHit = formatRatioPercent(metrics.prefix_cache_hit_rate);
   const ttft = formatLatencySeconds(metrics.avg_time_to_first_token_seconds);
+  const waitingLevel = severityLevel(
+    metrics.requests_waiting,
+    WAITING_WARNING,
+    WAITING_CRITICAL
+  );
+  const ttftLevel = severityLevel(
+    metrics.avg_time_to_first_token_seconds,
+    TTFT_WARNING_SECONDS,
+    TTFT_CRITICAL_SECONDS
+  );
 
   const items: MetricItem[] = [];
   if (running !== null || waiting !== null) {
@@ -81,7 +106,16 @@ const ModelMetricsStrip: React.FC<{ metrics?: MyModelMetrics | null }> = ({
         <>
           {running !== null && <span className="value">▶ {running}</span>}
           {running !== null && waiting !== null && <span>&nbsp;</span>}
-          {waiting !== null && <span className="value">⏳ {waiting}</span>}
+          {waiting !== null && (
+            <span
+              className="value"
+              style={{
+                color: waitingLevel ? SEVERITY_VAR[waitingLevel] : undefined
+              }}
+            >
+              ⏳ {waiting}
+            </span>
+          )}
         </>
       )
     });
@@ -127,7 +161,13 @@ const ModelMetricsStrip: React.FC<{ metrics?: MyModelMetrics | null }> = ({
       tooltipId: 'models.card.metrics.ttft',
       text: (
         <span>
-          TTFT&nbsp;<span className="value">{ttft}</span>
+          TTFT&nbsp;
+          <span
+            className="value"
+            style={{ color: ttftLevel ? SEVERITY_VAR[ttftLevel] : undefined }}
+          >
+            {ttft}
+          </span>
         </span>
       )
     });

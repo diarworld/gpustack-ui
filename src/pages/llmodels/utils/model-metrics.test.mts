@@ -5,7 +5,8 @@ const {
   formatCount,
   formatLatencySeconds,
   formatRatioPercent,
-  formatTokensPerSecond
+  formatTokensPerSecond,
+  severityLevel
 } = await import('./model-metrics.ts');
 
 test('unknown values render as nothing, never as a zero', () => {
@@ -39,4 +40,15 @@ test('latency switches unit at one second', () => {
   assert.equal(formatLatencySeconds(1.04), '1s');
   assert.equal(formatLatencySeconds(12.34), '12.3s');
   assert.equal(formatLatencySeconds(140), '140s');
+});
+
+test('severity is green below the warning bound and strict about it', () => {
+  assert.equal(severityLevel(null, 20, 50), null);
+  assert.equal(severityLevel(undefined, 20, 50), null);
+  assert.equal(severityLevel(0, 20, 50), 'success');
+  // The bound itself is still healthy: the value must exceed it.
+  assert.equal(severityLevel(20, 20, 50), 'success');
+  assert.equal(severityLevel(21, 20, 50), 'warning');
+  assert.equal(severityLevel(50, 20, 50), 'warning');
+  assert.equal(severityLevel(51, 20, 50), 'error');
 });
