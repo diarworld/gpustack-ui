@@ -146,8 +146,14 @@ export async function getInitialState(): Promise<{
           console.error('onUserFetched plugin hook error:', err);
         }
         businessInitializationAllowed = await canInitializeConsole(umiRequest);
-        if (data.is_admin && businessInitializationAllowed) {
-          getUpdateCheck();
+        if (businessInitializationAllowed) {
+          if (data.is_admin) {
+            getUpdateCheck();
+          }
+          // systemConfig feeds the monitoring entries (buttons, columns,
+          // links) on model, worker and cluster pages for every signed-in
+          // user, not just admins -- the server serves GET /config to any
+          // authenticated user. Only the update check is admin-facing.
           fetchSystemConfig();
         }
       }

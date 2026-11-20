@@ -140,12 +140,13 @@ for (const permission of [true, 'oss'] as const) {
     ]);
   });
 }
-test('non-admin normal access still probes capabilities without admin configuration', async () => {
+test('non-admin normal access reads system config but skips the admin update check', async () => {
   const app = application(true, '/settings', false);
   await app.getInitialState();
   assert.deepEqual(app.calls, [
     'version',
     'identity',
+    'config',
     'clusters',
     'resource-events',
     'marked'
