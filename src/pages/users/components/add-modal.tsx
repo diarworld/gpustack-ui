@@ -43,8 +43,12 @@ const ModelConcurrencyInput: React.FC<{
   onChange?: (value: ModelConcurrencyValue) => void;
   models: { name: string }[];
   loading?: boolean;
-}> = ({ value = {}, onChange, models, loading }) => {
+}> = ({ value, onChange, models, loading }) => {
   const intl = useIntl();
+  // The form field is null when the user has no overrides stored (the
+  // submit collapses an empty map to null); default-parameter syntax
+  // only fills in for undefined, so normalize here.
+  const limits = value ?? {};
   const columns = [
     {
       title: intl.formatMessage({ id: 'common.table.name' }),
@@ -59,7 +63,7 @@ const ModelConcurrencyInput: React.FC<{
           style={{ width: '100%' }}
           min={0}
           precision={0}
-          value={value[record.name]}
+          value={limits[record.name]}
           placeholder={intl.formatMessage({
             id: 'users.form.modelConcurrency.default'
           })}
@@ -67,7 +71,7 @@ const ModelConcurrencyInput: React.FC<{
             // Clearing the input returns the model to the deployment
             // default — an absent key and an explicit 1 mean the same
             // thing to the gateway, so only real overrides are kept.
-            const next = { ...value };
+            const next = { ...limits };
             if (v === null || v === undefined) {
               delete next[record.name];
             } else {
@@ -144,7 +148,10 @@ const AddModal: React.FC<AddModalProps> = ({
         ...data,
         is_admin: data?.is_admin ? UserRoles.ADMIN : UserRoles.USER,
         is_active: !!data?.is_active,
-        source: data?.source || AuthSources.LOCAL
+        source: data?.source || AuthSources.LOCAL,
+        // null (no stored overrides) and undefined mean the same thing
+        // to the form; null would defeat the input's default-parameter.
+        model_concurrency_limits: data?.model_concurrency_limits ?? undefined
       });
     } else if (action === PageAction.CREATE && open) {
       form.setFieldsValue({
