@@ -54,5 +54,9 @@ export default {
   'users.form.weeklyTokens': '每周 Token 预算',
   'users.form.monthlyTokens': '每月 Token 预算',
   'users.form.tokenBudgets.none': '不限制',
-  'users.form.tokenBudgets.hint': '对该用户的所有 API 密钥和界面会话生效。'
+  'users.form.tokenBudgets.hint': '对该用户的所有 API 密钥和界面会话生效。',
+  'users.form.modelConcurrency': '每模型并发请求数',
+  'users.form.modelConcurrency.hint':
+    '用户对每个模型可同时运行的最大请求数。0 表示不限制；1 为部署默认值。未列出的模型沿用默认值。',
+  'users.form.modelConcurrency.default': '默认值：1'
 };

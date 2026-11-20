@@ -1,5 +1,6 @@
 import { PageAction, PasswordReg } from '@/config';
 import { PageActionType } from '@/config/types';
+import { useQueryModelList } from '@/pages/llmodels/services/use-query-model-list';
 import {
   Input as CInput,
   FormDrawer,
@@ -10,7 +11,7 @@ import {
   useSubmitLock
 } from '@gpustack/core-ui';
 import { useIntl, useModel } from '@umijs/max';
-import { Form, Select } from 'antd';
+import { Form, Select, Table } from 'antd';
 import { useEffect } from 'react';
 import {
   AuthSourceOptions,
@@ -28,6 +29,69 @@ type AddModalProps = {
   data?: ListItem | null;
   onCancel: () => void;
 };
+
+type ModelConcurrencyValue = Record<string, number>;
+
+// One row per deployed model: the in-flight cap for that model. The form
+// value is the raw map; entries equal to the deployment default (1) are
+// stripped at submit — 1 is what the deployment enforces anyway, so storing
+// it would freeze an override the operator never meant to set. 0 is stored:
+// it is the explicit "unlimited" escape hatch, distinct from "follow the
+// default".
+const ModelConcurrencyInput: React.FC<{
+  value?: ModelConcurrencyValue;
+  onChange?: (value: ModelConcurrencyValue) => void;
+  models: { name: string }[];
+  loading?: boolean;
+}> = ({ value = {}, onChange, models, loading }) => {
+  const intl = useIntl();
+  const columns = [
+    {
+      title: intl.formatMessage({ id: 'common.table.name' }),
+      dataIndex: 'name',
+      ellipsis: true
+    },
+    {
+      title: intl.formatMessage({ id: 'users.form.modelConcurrency' }),
+      width: 170,
+      render: (_: unknown, record: { name: string }) => (
+        <InputNumber
+          style={{ width: '100%' }}
+          min={0}
+          precision={0}
+          value={value[record.name]}
+          placeholder={intl.formatMessage({
+            id: 'users.form.modelConcurrency.default'
+          })}
+          onChange={(v) => {
+            // Clearing the input returns the model to the deployment
+            // default — an absent key and an explicit 1 mean the same
+            // thing to the gateway, so only real overrides are kept.
+            const next = { ...value };
+            if (v === null || v === undefined) {
+              delete next[record.name];
+            } else {
+              next[record.name] = Number(v);
+            }
+            onChange?.(next);
+          }}
+        />
+      )
+    }
+  ];
+  return (
+    <Table
+      size="small"
+      rowKey="name"
+      columns={columns}
+      dataSource={models}
+      loading={loading}
+      pagination={false}
+      scroll={{ y: 240 }}
+    />
+  );
+};
+
 const AddModal: React.FC<AddModalProps> = ({
   title,
   action,
@@ -40,7 +104,17 @@ const AddModal: React.FC<AddModalProps> = ({
   const [form] = Form.useForm();
   const intl = useIntl();
   const { loading, guard, run, release } = useSubmitLock();
+  const {
+    dataList: modelList,
+    loading: modelLoading,
+    fetchData: fetchModelList
+  } = useQueryModelList();
   const selectedSource = Form.useWatch('source', form) ?? AuthSources.LOCAL;
+  // The reconciler drops the concurrency block for admins (they are
+  // exempt), so the per-model table is hidden for the admin role —
+  // editing caps that will never apply would just mislead.
+  const isAdminRole = (Form.useWatch('is_admin', form) ??
+    (data?.is_admin ? UserRoles.ADMIN : UserRoles.USER)) as string;
   const existingSource = data?.source ?? AuthSources.LOCAL;
   // Local is the only source that uses a local password row. For an
   // existing SSO user (or a brand-new SSO row at create time) the
@@ -86,11 +160,30 @@ const AddModal: React.FC<AddModalProps> = ({
   };
 
   const onFinish = async (values: FormData) => {
-    await run(() => onOk(values));
+    // Entries equal to the deployment default are not stored as
+    // overrides — 1 is what the gateway enforces anyway, and keeping
+    // them would freeze a cap the admin never meant to pin. An empty
+    // map collapses to null so the account carries no block at all.
+    const overrides = Object.fromEntries(
+      Object.entries(values.model_concurrency_limits ?? {}).filter(
+        ([, limit]) => limit !== 1
+      )
+    );
+    await run(() =>
+      onOk({
+        ...values,
+        model_concurrency_limits: Object.keys(overrides).length
+          ? overrides
+          : null
+      })
+    );
   };
 
   useEffect(() => {
     initFormValue();
+    if (open) {
+      fetchModelList({ page: -1 });
+    }
   }, [open]);
 
   return (
@@ -306,6 +399,21 @@ const AddModal: React.FC<AddModalProps> = ({
             </Form.Item>
           </div>
         </div>
+
+        {isAdminRole !== UserRoles.ADMIN && (
+          <Form.Item<FormData>
+            name="model_concurrency_limits"
+            rules={[{ required: false }]}
+            extra={intl.formatMessage({
+              id: 'users.form.modelConcurrency.hint'
+            })}
+          >
+            <ModelConcurrencyInput
+              models={modelList ?? []}
+              loading={modelLoading}
+            />
+          </Form.Item>
+        )}
       </Form>
     </FormDrawer>
   );

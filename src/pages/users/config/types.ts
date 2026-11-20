@@ -12,6 +12,10 @@ export interface FormData {
   tpm_limit?: number | null;
   weekly_token_limit?: number | null;
   monthly_token_limit?: number | null;
+  // Per-model in-flight caps: model name -> cap, 0 = explicit unlimited.
+  // Models absent from the map follow the deployment default (1). Entries
+  // equal to the default are not stored as overrides.
+  model_concurrency_limits?: Record<string, number> | null;
 }
 
 export interface ListItem extends FormData {

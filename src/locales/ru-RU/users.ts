@@ -58,5 +58,9 @@ export default {
   'users.form.monthlyTokens': 'Месячный бюджет токенов',
   'users.form.tokenBudgets.none': 'Без лимита',
   'users.form.tokenBudgets.hint':
-    'Общий для всех API-ключей пользователя и сессий в интерфейсе.'
+    'Общий для всех API-ключей пользователя и сессий в интерфейсе.',
+  'users.form.modelConcurrency': 'Одновременные запросы на модель',
+  'users.form.modelConcurrency.hint':
+    'Максимум одновременных запросов пользователя к каждой модели. 0 — без лимита; 1 — значение по умолчанию. Модели, не указанные здесь, следуют значению по умолчанию.',
+  'users.form.modelConcurrency.default': 'По умолчанию: 1'
 };
