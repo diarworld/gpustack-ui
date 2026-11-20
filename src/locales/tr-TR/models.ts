@@ -334,6 +334,19 @@ export default {
   'models.accessSettings.public.tips':
     'Herkese açık olarak ayarlandığında, herkes kimlik doğrulaması olmadan bu modele erişebilir, bu da veri ifşa risklerine yol açabilir.',
   'models.table.button.deploy': 'Şimdi Dağıt',
+  'models.card.metrics.running': 'Çalışan istekler',
+
+  'models.card.metrics.waiting': 'Bekleyen istekler',
+
+  'models.card.metrics.runningAndWaiting': 'Çalışan / bekleyen istekler',
+
+  'models.card.metrics.tokensPerSecond': 'Prompt / üretim token/sn',
+
+  'models.card.metrics.kvCacheUsage': 'KV önbellek kullanımı (en yoğun örnek)',
+
+  'models.card.metrics.prefixCacheHit': 'Ön ek önbelleği isabet oranı',
+
+  'models.card.metrics.ttft': 'İlk tokena ortalama süre',
   'models.form.backendVersion.holder': 'Sürüm girin veya seçin',
   'models.form.gpusperreplica': 'Kopya Başına GPU',
   'models.form.gpusAllocationType': 'GPU Tahsis Türü',

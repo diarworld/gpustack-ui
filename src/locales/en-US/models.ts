@@ -334,6 +334,20 @@ export default {
   'models.accessSettings.public.tips':
     'When set to public, anyone can access this model without authentication, which may lead to data exposure risks.',
   'models.table.button.deploy': 'Deploy Now',
+  'models.card.metrics.running': 'Running requests',
+
+  'models.card.metrics.waiting': 'Waiting requests',
+
+  'models.card.metrics.runningAndWaiting': 'Running / waiting requests',
+
+  'models.card.metrics.tokensPerSecond':
+    'Prompt / generation tokens per second',
+
+  'models.card.metrics.kvCacheUsage': 'KV cache usage (worst instance)',
+
+  'models.card.metrics.prefixCacheHit': 'Prefix cache hit rate',
+
+  'models.card.metrics.ttft': 'Avg time to first token',
   'models.form.backendVersion.holder': 'Enter or select a version',
   'models.form.gpusperreplica': 'GPUs per Replica',
   'models.form.gpusAllocationType': 'GPU Allocation Type',

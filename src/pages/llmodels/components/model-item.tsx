@@ -27,12 +27,14 @@ import {
   myModelActions,
   type MyModelAction
 } from '../config/button-actions';
+import type { MyModelMetrics } from '../hooks/use-my-models-metrics';
 import {
   defaultModelLogo,
   getCategoryLogo,
   getModelLogo,
   isInvertibleModelLogo
 } from '../utils/model-logo';
+import ModelMetricsStrip from './model-metrics-strip';
 
 // Light-on-dark PNG marks need inverting on light themes; dark themes
 // render them as-is (mirrors provider-logo.tsx).
@@ -152,9 +154,10 @@ const renderTag = (item: any, index = 0) => {
 
 const ModelItem: React.FC<{
   model: Record<string, any>;
+  metrics?: MyModelMetrics | null;
   onClick?: (model: Record<string, any>) => void;
 }> = (props) => {
-  const { model, onClick } = props;
+  const { model, metrics, onClick } = props;
   const intl = useIntl();
   const navigate = useNavigate();
   const { styles } = useStyles();
@@ -333,6 +336,7 @@ const ModelItem: React.FC<{
       >
         <ModelItemContent>
           <div className={hasExtra ? 'content has-extra' : 'content'}>
+            <ModelMetricsStrip metrics={metrics} />
             <div className="footer">
               <div className="extra-info">
                 {model.categories?.length > 0 &&

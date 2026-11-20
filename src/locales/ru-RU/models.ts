@@ -340,6 +340,20 @@ export default {
   'models.accessSettings.public.tips':
     'При публичном доступе любой пользователь может получить доступ к модели без аутентификации, что может привести к риску утечки данных.',
   'models.table.button.deploy': 'Развернуть сейчас',
+  'models.card.metrics.running': 'Активные запросы',
+
+  'models.card.metrics.waiting': 'Запросы в очереди',
+
+  'models.card.metrics.runningAndWaiting': 'Активные / в очереди',
+
+  'models.card.metrics.tokensPerSecond':
+    'Промпт / генерация, токенов в секунду',
+
+  'models.card.metrics.kvCacheUsage': 'Использование KV-кэша (худший инстанс)',
+
+  'models.card.metrics.prefixCacheHit': 'Точность префиксного кэша',
+
+  'models.card.metrics.ttft': 'Среднее время до первого токена',
   'models.form.backendVersion.holder': 'Введите или выберите версию',
   'models.form.gpusperreplica': 'GPU на реплику',
   'models.form.gpusAllocationType': 'Тип распределения GPU',

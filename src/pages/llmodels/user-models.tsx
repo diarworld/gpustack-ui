@@ -24,6 +24,7 @@ import {
   MyModelsStatusValueMap
 } from './config';
 import useFormInitialValues from './hooks/use-form-initial-values';
+import useMyModelsMetrics from './hooks/use-my-models-metrics';
 import useNoResourceResult from './hooks/use-no-resource-result';
 import useViewApIInfo from './hooks/use-view-api-info';
 // Keep filter and model-card status dots consistent through the shared map.
@@ -123,7 +124,13 @@ const UserModels: React.FC = () => {
   };
 
   const renderCard = (data: any) => {
-    return <ModelItem model={data} onClick={openViewAPIInfo} />;
+    return (
+      <ModelItem
+        model={data}
+        metrics={metricsById[data.id]}
+        onClick={openViewAPIInfo}
+      />
+    );
   };
 
   const loadMore = useMemoizedFn((nextPage: number) => {
@@ -166,6 +173,10 @@ const UserModels: React.FC = () => {
     });
     return result;
   }, [dataSource.dataList]);
+
+  // Live utilization for the cards, one batch request per tick. The hook
+  // polls nothing unless monitoring is configured.
+  const metricsById = useMyModelsMetrics(dataList);
 
   const handleRefresh = () => {
     fetchData({

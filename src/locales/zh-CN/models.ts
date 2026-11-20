@@ -316,6 +316,19 @@ export default {
   'models.accessSettings.public.tips':
     '公开后，任何人无需认证即可访问，可能存在数据泄露风险。',
   'models.table.button.deploy': '立即部署',
+  'models.card.metrics.running': '运行中请求',
+
+  'models.card.metrics.waiting': '排队请求',
+
+  'models.card.metrics.runningAndWaiting': '运行中 / 排队请求',
+
+  'models.card.metrics.tokensPerSecond': '提示 / 生成 tokens/s',
+
+  'models.card.metrics.kvCacheUsage': 'KV 缓存使用率（最高实例）',
+
+  'models.card.metrics.prefixCacheHit': '前缀缓存命中率',
+
+  'models.card.metrics.ttft': '首 token 平均时延',
   'models.form.backendVersion.holder': '输入或选择一个版本',
   'models.form.gpusperreplica': '每副本 GPU 数量',
   'models.form.gpusAllocationType': 'GPU 分配方式',

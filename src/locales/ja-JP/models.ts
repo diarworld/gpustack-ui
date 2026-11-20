@@ -337,6 +337,19 @@ export default {
   'models.accessSettings.public.tips':
     '公開に設定すると、誰でも認証なしでこのモデルにアクセスできるため、データが漏えいするおそれがあります。',
   'models.table.button.deploy': '今すぐデプロイ',
+  'models.card.metrics.running': '実行中リクエスト',
+
+  'models.card.metrics.waiting': '待機中リクエスト',
+
+  'models.card.metrics.runningAndWaiting': '実行中 / 待機中リクエスト',
+
+  'models.card.metrics.tokensPerSecond': 'プロンプト / 生成トークン毎秒',
+
+  'models.card.metrics.kvCacheUsage': 'KVキャッシュ使用率（最大インスタンス）',
+
+  'models.card.metrics.prefixCacheHit': 'プレフィックスキャッシュ命中率',
+
+  'models.card.metrics.ttft': '最初のトークンまでの平均時間',
   'models.form.backendVersion.holder': 'バージョンを入力または選択してください',
   'models.form.gpusperreplica': 'レプリカあたりの GPU 数',
   'models.form.gpusAllocationType': 'GPU 割り当て方式',
