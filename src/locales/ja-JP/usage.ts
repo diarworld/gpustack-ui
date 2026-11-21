@@ -157,7 +157,7 @@ export default {
   // --- Limits tab: free-window badge ---
   'usage.rateLimits.freeActive': 'フリータイム',
   'usage.rateLimits.freeActiveHint':
-    'デプロイのフリーウィンドウが有効です：すべてのリクエストが許可され、リミットカウンターは凍結されます（使用統計は記録され続けます）。',
+    'デプロイのフリーウィンドウが有効です：すべてのリクエストが許可され、リミットカウンターは凍結され、上限は ∞ と表示されます（使用統計は記録され続けます）。',
 
   // --- Limits tab: deployment defaults (admin) ---
   'usage.deploymentDefaults.title': 'デプロイのデフォルト',

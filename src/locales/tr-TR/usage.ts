@@ -158,7 +158,7 @@ export default {
   // --- Limits tab: free-window badge ---
   'usage.rateLimits.freeActive': 'Serbest saatler',
   'usage.rateLimits.freeActiveHint':
-    'Dağıtımın serbest penceresi etkin: tüm istekler kabul edilir ve limit sayaçları donar (kullanım istatistikleri toplanmaya devam eder).',
+    'Dağıtımın serbest penceresi etkin: tüm istekler kabul edilir, limit sayaçları donar ve sınırlar ∞ olarak gösterilir (kullanım istatistikleri toplanmaya devam eder).',
 
   // --- Limits tab: deployment defaults (admin) ---
   'usage.deploymentDefaults.title': 'Dağıtım varsayılanları',

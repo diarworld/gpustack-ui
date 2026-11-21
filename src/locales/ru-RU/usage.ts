@@ -163,7 +163,7 @@ export default {
   // --- Limits tab: free-window badge ---
   'usage.rateLimits.freeActive': 'Свободное время',
   'usage.rateLimits.freeActiveHint':
-    'Действует свободное окно деплоя: все запросы пропускаются, счётчики лимитов заморожены (статистика использования продолжается).',
+    'Действует свободное окно деплоя: все запросы пропускаются, счётчики лимитов заморожены, лимиты показаны как ∞ (статистика использования продолжается).',
 
   // --- Limits tab: deployment defaults (admin) ---
   'usage.deploymentDefaults.title': 'Дефолтные лимиты деплоя',

@@ -19,7 +19,8 @@
  * While the deployment's free-window schedule covers the moment of the
  * read, the gateway is admitting everything and the counters are frozen —
  * a "Free hours" badge says so, so a stuck-looking number is not mistaken
- * for a broken fetch.
+ * for a broken fetch. The suspended caps read as "/ ∞" with green bars:
+ * the numbers are informational until the window closes.
  */
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { CardWrapper } from '@gpustack/core-ui';
@@ -85,16 +86,21 @@ const num = (n: number, locale: string): string =>
   }).format(Math.round(n * 100) / 100);
 
 // Progress-bar props shared by every used/limit display on the card: the
-// percent clamps to [0, 100] and the bar turns red at the limit. `used`
-// unknown (local mode / Redis error) yields percent 0 — callers render no
-// bar at all in that case.
-const usageProgressProps = (w: RateLimitWindowUsage) => ({
+// percent clamps to [0, 100] and the bar turns red at the limit. During the
+// free window the cap is suspended, so the bar keeps the real limit only for
+// its width and paints green — the readout is informational there, not a
+// warning. `used` unknown (local mode / Redis error) yields percent 0 —
+// callers render no bar at all in that case.
+const usageProgressProps = (w: RateLimitWindowUsage, freeActive: boolean) => ({
   percent:
     w.used == null || w.limit <= 0
       ? 0
       : Math.min(100, (w.used / w.limit) * 100),
-  status:
-    w.used != null && w.used >= w.limit ? ('exception' as const) : undefined
+  status: freeActive
+    ? ('success' as const)
+    : w.used != null && w.used >= w.limit
+      ? ('exception' as const)
+      : undefined
 });
 
 // The user-level cards, in display order: the rate caps (requests and tokens
@@ -149,9 +155,10 @@ const UserCard: React.FC<{
   title: string;
   hint: string;
   rateWindow: RateLimitWindowUsage;
+  freeActive: boolean;
   resetStatus?: RateLimitResetStatus;
   onReset?: () => void;
-}> = ({ title, hint, rateWindow, resetStatus, onReset }) => {
+}> = ({ title, hint, rateWindow, freeActive, resetStatus, onReset }) => {
   const intl = useIntl();
   const t = (id: string) => intl.formatMessage({ id });
   const { used, limit, reset_seconds } = rateWindow;
@@ -214,14 +221,14 @@ const UserCard: React.FC<{
           className="text-secondary"
           style={{ fontSize: 13, fontWeight: 400 }}
         >
-          / {num(limit, intl.locale)}
+          / {freeActive ? '∞' : num(limit, intl.locale)}
         </span>
       </span>
       {used != null && (
         <Progress
           size="small"
           showInfo={false}
-          {...usageProgressProps(rateWindow)}
+          {...usageProgressProps(rateWindow, freeActive)}
         />
       )}
       {reset_seconds != null && (
@@ -245,7 +252,8 @@ const UserCard: React.FC<{
 // (local mode, Redis error) renders as a dash.
 const ModelConcurrencyTable: React.FC<{
   rows: ModelConcurrencyUsage[];
-}> = ({ rows }) => {
+  freeActive: boolean;
+}> = ({ rows, freeActive }) => {
   const intl = useIntl();
   const t = (id: string) => intl.formatMessage({ id });
 
@@ -261,6 +269,20 @@ const ModelConcurrencyTable: React.FC<{
       render: (_, record) => {
         const { running, limit } = record;
         if (running == null) return <span className="text-secondary">—</span>;
+        // During the free window no slot is taken and the cap is suspended:
+        // the bar keeps the real limit for its width but reads "/ ∞" in
+        // green, like the tiles above.
+        if (freeActive) {
+          return (
+            <Progress
+              size="small"
+              percent={limit > 0 ? Math.min(100, (running / limit) * 100) : 0}
+              status="success"
+              showInfo
+              format={() => `${running} / ∞`}
+            />
+          );
+        }
         // An explicit 0 cap means the model is unlimited for this account:
         // no bar, just the count.
         if (!limit) return running;
@@ -373,6 +395,7 @@ const RateLimitsCard: React.FC<{
     } => card.window != null
   );
   const hasModels = (data.user.model_concurrency ?? []).length > 0;
+  const freeActive = data.free?.active === true;
 
   return (
     <CardWrapper style={{ paddingBlock: 16 }}>
@@ -445,6 +468,7 @@ const RateLimitsCard: React.FC<{
                     title={title}
                     hint={hint}
                     rateWindow={window}
+                    freeActive={freeActive}
                     resetStatus={resetStatus}
                     onReset={
                       resetKind != null
@@ -471,7 +495,10 @@ const RateLimitsCard: React.FC<{
                   </span>
                 </Tooltip>
               </Flex>
-              <ModelConcurrencyTable rows={data.user.model_concurrency ?? []} />
+              <ModelConcurrencyTable
+                rows={data.user.model_concurrency ?? []}
+                freeActive={freeActive}
+              />
             </>
           )}
         </>
