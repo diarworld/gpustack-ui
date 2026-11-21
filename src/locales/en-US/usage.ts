@@ -162,7 +162,7 @@ export default {
   // --- Limits tab: free-window badge ---
   'usage.rateLimits.freeActive': 'Free hours',
   'usage.rateLimits.freeActiveHint':
-    "The deployment's free-window schedule is active: every request is admitted and the limit counters are frozen; caps read as ∞ (usage statistics keep being collected).",
+    "The deployment's free-window schedule is active: every request is admitted and the limit counters are frozen (usage statistics keep being collected).",
 
   // --- Limits tab: deployment defaults (admin) ---
   'usage.deploymentDefaults.title': 'Deployment defaults',

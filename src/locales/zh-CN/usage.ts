@@ -156,7 +156,7 @@ export default {
   // --- Limits tab: free-window badge ---
   'usage.rateLimits.freeActive': '免费时段',
   'usage.rateLimits.freeActiveHint':
-    '部署的自由时段生效中：所有请求都会放行，限额计数器已冻结，上限显示为 ∞（使用统计仍会继续收集）。',
+    '部署的自由时段生效中：所有请求都会放行，限额计数器已冻结（使用统计仍会继续收集）。',
 
   // --- Limits tab: deployment defaults (admin) ---
   'usage.deploymentDefaults.title': '部署默认限额',
