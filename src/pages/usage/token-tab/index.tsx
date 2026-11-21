@@ -6,7 +6,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import DailyUsage from '../components/daily-usage';
 import ExportData from '../components/export-data';
 import FilterBar from '../components/filter-bar';
-import RateLimitsCard from '../components/rate-limits-card';
 import useExportTable from '../hooks/use-export-table';
 import { useUsageFilters } from '../hooks/use-usage-filters';
 import useQueryUsageMetaData from '../services/use-query-meta-data';
@@ -30,7 +29,6 @@ const TokenTab: React.FC = () => {
   const [openExportModal, setOpenExportModal] = useState(false);
   const [breakdownRefreshKey, setBreakdownRefreshKey] = useState(0);
   const [breakdownPageResetKey, setBreakdownPageResetKey] = useState(0);
-  const [rateLimitsRefreshKey, setRateLimitsRefreshKey] = useState(0);
 
   const summaryColumns = [
     {
@@ -136,20 +134,6 @@ const TokenTab: React.FC = () => {
     [commonFilters.end_date, commonFilters.start_date]
   );
 
-  // The rate-limits section follows the filter's user selection: with
-  // exactly one user picked (admins, who can see other users' data) it pins
-  // that user on the endpoint; any other state shows the caller's own
-  // picture. The live entity id lives in identity.current, not the
-  // historical value snapshot.
-  const rateLimitsUserId = useMemo(() => {
-    if (!access.canSeeOrgAdmin) return undefined;
-    if (filterBar.selectedUsers?.length !== 1) return undefined;
-    const option = metaData?.users?.find(
-      (item) => item.value === filterBar.selectedUsers[0]
-    );
-    return option?.identity?.current?.user_id ?? undefined;
-  }, [access.canSeeOrgAdmin, filterBar.selectedUsers, metaData?.users]);
-
   const handlePickerChange = (picker: DateType) => {
     setChartFilters((prev) => ({
       ...prev,
@@ -164,7 +148,6 @@ const TokenTab: React.FC = () => {
   const handleSearch = () => {
     filterBar.handleSearch();
     setBreakdownRefreshKey((prev) => prev + 1);
-    setRateLimitsRefreshKey((prev) => prev + 1);
   };
 
   const handleBreakdownPageReset = () => {
@@ -215,14 +198,8 @@ const TokenTab: React.FC = () => {
         }
         onExportChart={handleExportChart}
       />
-      {/* Quotas and limits first: user-level day/week/month cards and the
-          per-key table, before the token chart below. */}
-      <div style={{ marginBottom: 24 }}>
-        <RateLimitsCard
-          userId={rateLimitsUserId}
-          refreshKey={rateLimitsRefreshKey}
-        />
-      </div>
+      {/* The per-user limits card now lives on the dedicated Limits tab;
+          this tab keeps the time-ranged token picture only. */}
       <div
         style={{
           marginBlock: 24

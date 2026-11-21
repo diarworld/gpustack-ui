@@ -23,6 +23,7 @@ export default {
   'usage.filter.granularity.month': 'Месяц',
   'usage.tabs.summary': 'Обзор',
   'usage.tabs.tokens': 'Token',
+  'usage.tabs.limits': 'Лимиты',
   'usage.tabs.gpuInstances': 'GPU-инстансы',
   'usage.tabs.storage': 'Хранилище',
   'usage.tabs.resourceEvents': 'События ресурсов',
@@ -158,6 +159,41 @@ export default {
   'usage.rateLimits.duration.seconds':
     '{count, plural, one {# секунда} few {# секунды} many {# секунд} other {# секунды}}',
   'usage.rateLimits.noLimits': 'Лимиты не настроены.',
+
+  // --- Limits tab: free-window badge ---
+  'usage.rateLimits.freeActive': 'Свободное время',
+  'usage.rateLimits.freeActiveHint':
+    'Действует свободное окно деплоя: все запросы пропускаются, счётчики лимитов заморожены (статистика использования продолжается).',
+
+  // --- Limits tab: deployment defaults (admin) ---
+  'usage.deploymentDefaults.title': 'Дефолтные лимиты деплоя',
+  'usage.deploymentDefaults.hint':
+    'Дефолты для всех пользователей без собственной настройки. Изменения доезжают до шлюза на следующем проходе реконсилера (до минуты), без рестарта.',
+  'usage.deploymentDefaults.rpm': 'Дефолтный RPM',
+  'usage.deploymentDefaults.tpm': 'Дефолтный TPM',
+  'usage.deploymentDefaults.monthly': 'Месячный бюджет токенов',
+  'usage.deploymentDefaults.concurrency': 'Одновременные запросы на модель',
+  'usage.deploymentDefaults.rpmHint':
+    'Запросов в минуту для пользователей без собственной настройки. Пусто = наследовать значение из конфиг-файла сервера.',
+  'usage.deploymentDefaults.tpmHint':
+    'Токенов в минуту для пользователей без собственной настройки. Пусто = наследовать значение из конфиг-файла сервера.',
+  'usage.deploymentDefaults.monthlyHint':
+    'Месячный бюджет токенов для пользователей без собственной настройки. Пусто = дефолта нет (молча ограничивать каждый аккаунт бюджетом по умолчанию опасно).',
+  'usage.deploymentDefaults.concurrencyHint':
+    'Одновременных запросов на модель для пользователей без собственной настройки; 0 отключает лимит. Пусто = наследовать значение из конфиг-файла сервера.',
+  'usage.deploymentDefaults.inheritPlaceholder': 'Наследуется',
+  'usage.deploymentDefaults.inheritHint':
+    'Пустое поле = наследовать значение из конфиг-файла сервера. Для одновременных запросов 0 = «без лимита».',
+  'usage.deploymentDefaults.free': 'Свободное окно',
+  'usage.deploymentDefaults.freeStart': 'Начало (ваше местное время)',
+  'usage.deploymentDefaults.freeEnd': 'Конец (ваше местное время)',
+  'usage.deploymentDefaults.freeDays': 'Полностью свободные дни',
+  'usage.deploymentDefaults.freeDaysPlaceholder':
+    'Нет — действует только ежедневное окно',
+  'usage.deploymentDefaults.browserZoneHint':
+    'Время показывается и выбирается в зоне вашего браузера, хранится в UTC. Дни следуют UTC; окно может переходить через полночь. Внутри окна все запросы пропускаются, счётчики лимитов замирают — статистика использования продолжается.',
+  'usage.deploymentDefaults.save': 'Сохранить',
+  'usage.deploymentDefaults.saved': 'Дефолтные лимиты деплоя сохранены',
 
   // --- GPU Instances / Storage filters ---
   'usage.filter.instance': 'Фильтр по инстансу',

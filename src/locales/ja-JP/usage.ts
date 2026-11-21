@@ -23,6 +23,7 @@ export default {
   'usage.filter.granularity.month': '月',
   'usage.tabs.summary': '概要',
   'usage.tabs.tokens': 'Token',
+  'usage.tabs.limits': '制限',
   'usage.tabs.gpuInstances': 'GPU インスタンス',
   'usage.tabs.storage': 'ストレージ',
   'usage.tabs.resourceEvents': 'リソースイベント',
@@ -152,6 +153,41 @@ export default {
   'usage.rateLimits.duration.minutes': '{count, plural, other {#分}}',
   'usage.rateLimits.duration.seconds': '{count, plural, other {#秒}}',
   'usage.rateLimits.noLimits': 'レート制限は設定されていません。',
+
+  // --- Limits tab: free-window badge ---
+  'usage.rateLimits.freeActive': 'フリータイム',
+  'usage.rateLimits.freeActiveHint':
+    'デプロイのフリーウィンドウが有効です：すべてのリクエストが許可され、リミットカウンターは凍結されます（使用統計は記録され続けます）。',
+
+  // --- Limits tab: deployment defaults (admin) ---
+  'usage.deploymentDefaults.title': 'デプロイのデフォルト',
+  'usage.deploymentDefaults.hint':
+    '個別設定のない全ユーザーに適用されるデフォルトです。変更は次のリコンサイル処理（最大1分）でゲートウェイに反映され、再起動は不要です。',
+  'usage.deploymentDefaults.rpm': 'デフォルトRPM',
+  'usage.deploymentDefaults.tpm': 'デフォルトTPM',
+  'usage.deploymentDefaults.monthly': '月間トークン予算',
+  'usage.deploymentDefaults.concurrency': 'モデルごとの同時実行',
+  'usage.deploymentDefaults.rpmHint':
+    '個別設定のないユーザーに許可される1分あたりのリクエスト数。空欄＝サーバー設定ファイルの値を継承。',
+  'usage.deploymentDefaults.tpmHint':
+    '個別設定のないユーザーの1分あたりトークン数。空欄＝サーバー設定ファイルの値を継承。',
+  'usage.deploymentDefaults.monthlyHint':
+    '個別設定のないユーザーの月間トークン予算。空欄＝デプロイ既定なし（全アカウントを黙って制限することはない）。',
+  'usage.deploymentDefaults.concurrencyHint':
+    '個別設定のないユーザーのモデルごとの同時実行数。0で上限なし。空欄＝サーバー設定ファイルの値を継承。',
+  'usage.deploymentDefaults.inheritPlaceholder': '継承',
+  'usage.deploymentDefaults.inheritHint':
+    '空欄＝サーバー設定ファイルの値を継承。同時実行は0で「上限なし」。',
+  'usage.deploymentDefaults.free': 'フリーウィンドウ',
+  'usage.deploymentDefaults.freeStart': '開始（ローカル時刻）',
+  'usage.deploymentDefaults.freeEnd': '終了（ローカル時刻）',
+  'usage.deploymentDefaults.freeDays': '終日フリーの曜日',
+  'usage.deploymentDefaults.freeDaysPlaceholder':
+    'なし — 毎日のウィンドウのみ適用',
+  'usage.deploymentDefaults.browserZoneHint':
+    '時刻はブラウザのタイムゾーンで表示・入力され、UTCで保存されます。曜日はUTC基準。ウィンドウは深夜0時をまたげます。ウィンドウ中はすべてのリクエストが許可され、リミットカウンターは凍結されます（使用統計は記録され続けます）。',
+  'usage.deploymentDefaults.save': '保存',
+  'usage.deploymentDefaults.saved': 'デプロイのデフォルトを保存しました',
 
   // --- GPU Instances / Storage filters ---
   'usage.filter.instance': 'インスタンスで絞り込み',

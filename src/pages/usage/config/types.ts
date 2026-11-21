@@ -269,7 +269,34 @@ export interface RateLimitsResponse {
   mode: 'redis' | 'local' | 'disabled';
   generated_at: string;
   usage_error?: string | null;
+  // The deployment's free-window schedule with `active` answering whether
+  // the moment of the read sits inside it (counters frozen while active).
+  free?: FreeWindowUsage | null;
   user: UserRateLimits;
+}
+
+// The deployment-wide free-window schedule: whole free days plus a daily
+// window (which may wrap past midnight) in UTC wall-clock. During it the
+// gateway suspends every check and the limit counters freeze — usage
+// statistics keep flowing.
+export interface FreeWindowUsage {
+  enabled: boolean;
+  active?: boolean;
+  start: string;
+  end: string;
+  days: string[];
+}
+
+// The editable deployment defaults (GET/PUT /rate-limit-settings, admin
+// only). A null limit inherits the value from the server's config file;
+// the free schedule is the same one the gateway publishes to its plugin.
+export interface RateLimitSettings {
+  default_rpm?: number | null;
+  default_tpm?: number | null;
+  default_monthly_tokens?: number | null;
+  // 0 = the in-flight cap is off.
+  default_concurrency?: number | null;
+  free: FreeWindowUsage;
 }
 
 // Structured payload on an over-limit / unsupported-format error, carried in

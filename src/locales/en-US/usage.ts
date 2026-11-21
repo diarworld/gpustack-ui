@@ -23,6 +23,7 @@ export default {
   'usage.filter.granularity.month': 'Month',
   'usage.tabs.summary': 'Summary',
   'usage.tabs.tokens': 'Tokens',
+  'usage.tabs.limits': 'Limits',
   'usage.tabs.gpuInstances': 'GPU Instances',
   'usage.tabs.storage': 'Storage',
   'usage.tabs.resourceEvents': 'Resource Events',
@@ -157,6 +158,41 @@ export default {
   'usage.rateLimits.duration.seconds':
     '{count, plural, one {# sec} other {# secs}}',
   'usage.rateLimits.noLimits': 'No rate limits configured.',
+
+  // --- Limits tab: free-window badge ---
+  'usage.rateLimits.freeActive': 'Free hours',
+  'usage.rateLimits.freeActiveHint':
+    "The deployment's free-window schedule is active: every request is admitted and the limit counters are frozen (usage statistics keep being collected).",
+
+  // --- Limits tab: deployment defaults (admin) ---
+  'usage.deploymentDefaults.title': 'Deployment defaults',
+  'usage.deploymentDefaults.hint':
+    'Defaults applied to every user without their own setting. Changes land on the gateway at the next reconcile pass (up to a minute), no restart needed.',
+  'usage.deploymentDefaults.rpm': 'Default RPM',
+  'usage.deploymentDefaults.tpm': 'Default TPM',
+  'usage.deploymentDefaults.monthly': 'Monthly token budget',
+  'usage.deploymentDefaults.concurrency': 'Concurrency per model',
+  'usage.deploymentDefaults.rpmHint':
+    'Requests per minute allowed for users without their own setting. Empty = inherit the value from the server config file.',
+  'usage.deploymentDefaults.tpmHint':
+    'Tokens per minute for users without their own setting. Empty = inherit the value from the server config file.',
+  'usage.deploymentDefaults.monthlyHint':
+    'Monthly token budget for users without their own setting. Empty = no deployment default (a default budget silently capping every account is not implied).',
+  'usage.deploymentDefaults.concurrencyHint':
+    'In-flight requests per model for users without their own setting; 0 turns the cap off. Empty = inherit the value from the server config file.',
+  'usage.deploymentDefaults.inheritPlaceholder': 'Inherited',
+  'usage.deploymentDefaults.inheritHint':
+    'Empty field = inherit the value from the server config file. Concurrency accepts 0 as "no cap".',
+  'usage.deploymentDefaults.free': 'Free window',
+  'usage.deploymentDefaults.freeStart': 'Start (your local time)',
+  'usage.deploymentDefaults.freeEnd': 'End (your local time)',
+  'usage.deploymentDefaults.freeDays': 'Whole free days',
+  'usage.deploymentDefaults.freeDaysPlaceholder':
+    'None — only the daily window applies',
+  'usage.deploymentDefaults.browserZoneHint':
+    "Times are shown and picked in your browser's timezone and stored in UTC. Days follow UTC; the window may span midnight. During the window every request is admitted and the limit counters freeze — usage statistics keep being collected.",
+  'usage.deploymentDefaults.save': 'Save',
+  'usage.deploymentDefaults.saved': 'Deployment defaults saved',
 
   // --- GPU Instances / Storage filters ---
   'usage.filter.instance': 'Filter by instance',

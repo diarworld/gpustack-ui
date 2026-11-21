@@ -3,6 +3,7 @@ import {
   BreakdownItem,
   FilterOptionType,
   RateLimitResetStatus,
+  RateLimitSettings,
   RateLimitsResponse,
   UsageBreakdownResponse,
   UsageExportEstimate,
@@ -17,6 +18,7 @@ export const USAGE_BREAKDOWN_EXPORT_ESTIMATE =
   '/usage/breakdown/export/estimate';
 export const USAGE_RATE_LIMITS = '/usage/rate-limits';
 export const USAGE_RATE_LIMITS_RESET = '/usage/rate-limits/reset';
+export const RATE_LIMIT_SETTINGS = '/rate-limit-settings';
 
 export const MODEL_ROUTE_TARGETS = '/model-route-targets';
 
@@ -60,6 +62,29 @@ export async function resetRateLimit(
 ): Promise<RateLimitResetStatus> {
   return request<RateLimitResetStatus>(USAGE_RATE_LIMITS_RESET, {
     method: 'POST',
+    data,
+    cancelToken: options?.token
+  });
+}
+
+// The editable deployment defaults (admin only; the endpoint 403s for
+// everyone else). The row is what the gateway's reconciler publishes, so a
+// PUT lands on the CR at the next reconcile pass without a restart.
+export async function queryRateLimitSettings(
+  options?: any
+): Promise<RateLimitSettings> {
+  return request<RateLimitSettings>(RATE_LIMIT_SETTINGS, {
+    method: 'GET',
+    cancelToken: options?.token
+  });
+}
+
+export async function updateRateLimitSettings(
+  data: RateLimitSettings,
+  options?: any
+): Promise<RateLimitSettings> {
+  return request<RateLimitSettings>(RATE_LIMIT_SETTINGS, {
+    method: 'PUT',
     data,
     cancelToken: options?.token
   });

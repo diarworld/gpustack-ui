@@ -23,6 +23,7 @@ export default {
   'usage.filter.granularity.month': 'Ay',
   'usage.tabs.summary': 'Özet',
   'usage.tabs.tokens': 'Token',
+  'usage.tabs.limits': 'Limitler',
   'usage.tabs.gpuInstances': 'GPU Örnekleri',
   'usage.tabs.storage': 'Depolama',
   'usage.tabs.resourceEvents': 'Kaynak Olayları',
@@ -153,6 +154,41 @@ export default {
   'usage.rateLimits.duration.minutes': '{count, plural, other {# dakika}}',
   'usage.rateLimits.duration.seconds': '{count, plural, other {# saniye}}',
   'usage.rateLimits.noLimits': 'Hız sınırı yapılandırılmamış.',
+
+  // --- Limits tab: free-window badge ---
+  'usage.rateLimits.freeActive': 'Serbest saatler',
+  'usage.rateLimits.freeActiveHint':
+    'Dağıtımın serbest penceresi etkin: tüm istekler kabul edilir ve limit sayaçları donar (kullanım istatistikleri toplanmaya devam eder).',
+
+  // --- Limits tab: deployment defaults (admin) ---
+  'usage.deploymentDefaults.title': 'Dağıtım varsayılanları',
+  'usage.deploymentDefaults.hint':
+    'Kendi ayarı olmayan tüm kullanıcılara uygulanan varsayılanlar. Değişiklikler bir sonraki uzlaştırma turunda (en fazla bir dakika) ağ geçidine ulaşır, yeniden başlatma gerekmez.',
+  'usage.deploymentDefaults.rpm': 'Varsayılan RPM',
+  'usage.deploymentDefaults.tpm': 'Varsayılan TPM',
+  'usage.deploymentDefaults.monthly': 'Aylık token bütçesi',
+  'usage.deploymentDefaults.concurrency': 'Model başına eşzamanlılık',
+  'usage.deploymentDefaults.rpmHint':
+    'Kendi ayarı olmayan kullanıcılar için dakikada izin verilen istek sayısı. Boş = sunucu yapılandırma dosyasındaki değer devralınır.',
+  'usage.deploymentDefaults.tpmHint':
+    'Kendi ayarı olmayan kullanıcılar için dakikada token sayısı. Boş = sunucu yapılandırma dosyasındaki değer devralınır.',
+  'usage.deploymentDefaults.monthlyHint':
+    'Kendi ayarı olmayan kullanıcılar için aylık token bütçesi. Boş = dağıtım varsayılanı yok (her hesap sessizce sınırlandırılmaz).',
+  'usage.deploymentDefaults.concurrencyHint':
+    'Kendi ayarı olmayan kullanıcılar için model başına aynı anda yürüyen istek sayısı; 0 sınırı kapatır. Boş = sunucu yapılandırma dosyasındaki değer devralınır.',
+  'usage.deploymentDefaults.inheritPlaceholder': 'Devralınır',
+  'usage.deploymentDefaults.inheritHint':
+    'Boş alan = sunucu yapılandırma dosyasındaki değer devralınır. Eşzamanlılık için 0 = "sınır yok".',
+  'usage.deploymentDefaults.free': 'Serbest pencere',
+  'usage.deploymentDefaults.freeStart': 'Başlangıç (yerel saat)',
+  'usage.deploymentDefaults.freeEnd': 'Bitiş (yerel saat)',
+  'usage.deploymentDefaults.freeDays': 'Tamamen serbest günler',
+  'usage.deploymentDefaults.freeDaysPlaceholder':
+    'Yok — yalnızca günlük pencere uygulanır',
+  'usage.deploymentDefaults.browserZoneHint':
+    "Saatler tarayıcınızın saat diliminde gösterilir ve girilir, UTC olarak saklanır. Günler UTC'ye göredir; pencere gece yarısını aşabilir. Pencere sırasında tüm istekler kabul edilir ve limit sayaçları donar — kullanım istatistikleri toplanmaya devam eder.",
+  'usage.deploymentDefaults.save': 'Kaydet',
+  'usage.deploymentDefaults.saved': 'Dağıtım varsayılanları kaydedildi',
 
   // --- GPU Instances / Storage filters ---
   'usage.filter.instance': 'Örneğe göre filtrele',

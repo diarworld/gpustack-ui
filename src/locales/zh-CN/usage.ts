@@ -23,6 +23,7 @@ export default {
   'usage.filter.granularity.month': '按月',
   'usage.tabs.summary': '总览',
   'usage.tabs.tokens': 'Token',
+  'usage.tabs.limits': '限制',
   'usage.tabs.gpuInstances': 'GPU 实例',
   'usage.tabs.storage': '存储',
   'usage.tabs.resourceEvents': '资源事件',
@@ -151,6 +152,40 @@ export default {
   'usage.rateLimits.duration.minutes': '{count, plural, other {# 分钟}}',
   'usage.rateLimits.duration.seconds': '{count, plural, other {# 秒}}',
   'usage.rateLimits.noLimits': '未配置速率限制。',
+
+  // --- Limits tab: free-window badge ---
+  'usage.rateLimits.freeActive': '免费时段',
+  'usage.rateLimits.freeActiveHint':
+    '部署的自由时段生效中：所有请求都会放行，限额计数器已冻结（使用统计仍会继续收集）。',
+
+  // --- Limits tab: deployment defaults (admin) ---
+  'usage.deploymentDefaults.title': '部署默认限额',
+  'usage.deploymentDefaults.hint':
+    '适用于所有未单独设置的用户的默认值。更改将在下一次调和（最多一分钟）时应用到网关，无需重启。',
+  'usage.deploymentDefaults.rpm': '默认 RPM',
+  'usage.deploymentDefaults.tpm': '默认 TPM',
+  'usage.deploymentDefaults.monthly': '每月 token 预算',
+  'usage.deploymentDefaults.concurrency': '每模型并发',
+  'usage.deploymentDefaults.rpmHint':
+    '未单独设置的用户每分钟允许的请求数。留空 = 继承服务器配置文件的值。',
+  'usage.deploymentDefaults.tpmHint':
+    '未单独设置的用户每分钟的 token 数。留空 = 继承服务器配置文件的值。',
+  'usage.deploymentDefaults.monthlyHint':
+    '未单独设置的用户每月的 token 预算。留空 = 无部署默认值（不会默默给所有账户设预算上限）。',
+  'usage.deploymentDefaults.concurrencyHint':
+    '未单独设置的用户每模型的在途请求数；0 表示不限制。留空 = 继承服务器配置文件的值。',
+  'usage.deploymentDefaults.inheritPlaceholder': '继承',
+  'usage.deploymentDefaults.inheritHint':
+    '留空 = 继承服务器配置文件的值。并发填 0 表示"不限制"。',
+  'usage.deploymentDefaults.free': '免费时段',
+  'usage.deploymentDefaults.freeStart': '开始（本地时间）',
+  'usage.deploymentDefaults.freeEnd': '结束（本地时间）',
+  'usage.deploymentDefaults.freeDays': '整天免费的日子',
+  'usage.deploymentDefaults.freeDaysPlaceholder': '无 — 仅应用每日窗口',
+  'usage.deploymentDefaults.browserZoneHint':
+    '时间按浏览器本地时区显示和输入，以 UTC 存储。星期按 UTC 计；窗口可跨午夜。窗口期间所有请求都会放行，限额计数器冻结 — 使用统计仍会继续收集。',
+  'usage.deploymentDefaults.save': '保存',
+  'usage.deploymentDefaults.saved': '部署默认限额已保存',
 
   // --- GPU Instances / Storage filters ---
   'usage.filter.instance': '按实例查询',

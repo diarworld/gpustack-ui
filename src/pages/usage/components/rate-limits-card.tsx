@@ -1,5 +1,5 @@
 /**
- * Rate Limits section of the Usage page.
+ * Rate Limits section, hosted on the Usage page's "Limits" tab.
  *
  * Fed by GET /usage/rate-limits, which reports the target user's limits and
  * their live usage. Self-scoped by default; an admin's single-user filter
@@ -15,6 +15,11 @@
  *   'local'    — limits without counters (no shared Redis), plus an info note;
  *   'redis'    — limits plus live usage; a `usage_error` blanks the counters
  *                again and surfaces a warning instead.
+ *
+ * While the deployment's free-window schedule covers the moment of the
+ * read, the gateway is admitting everything and the counters are frozen —
+ * a "Free hours" badge says so, so a stuck-looking number is not mistaken
+ * for a broken fetch.
  */
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { CardWrapper } from '@gpustack/core-ui';
@@ -26,6 +31,7 @@ import {
   Progress,
   Spin,
   Table,
+  Tag,
   Tooltip,
   message
 } from 'antd';
@@ -397,6 +403,13 @@ const RateLimitsCard: React.FC<{
             {t('usage.rateLimits.title')}
           </span>
         </span>
+        {data.free?.active && (
+          <Tooltip title={t('usage.rateLimits.freeActiveHint')}>
+            <Tag color="green" style={{ marginInlineEnd: 0 }}>
+              {t('usage.rateLimits.freeActive')}
+            </Tag>
+          </Tooltip>
+        )}
       </div>
 
       {data.mode === 'local' && (
