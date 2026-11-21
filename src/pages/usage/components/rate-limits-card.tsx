@@ -8,16 +8,14 @@
  *
  * Layout mirrors the Token tab: user-level cards (RPM / TPM rate caps and
  * the weekly / monthly token budgets) on top, a per-model concurrency table
- * below. The server's `mode` drives the display:
+ * below. Every number is the target user's own: the gateway keys the
+ * counters on the user, so ``running`` is their in-flight requests, not the
+ * engine's global count. The server's `mode` drives the display:
  *   'disabled' — render nothing at all (feature off server-side);
  *   'local'    — limits without counters (no shared Redis), plus an info note;
  *   'redis'    — limits plus live usage; a `usage_error` blanks the counters
  *                again and surfaces a warning instead.
  */
-import { queryMyModels } from '@/pages/llmodels/apis';
-import useMyModelsMetrics, {
-  MyModelMetrics
-} from '@/pages/llmodels/hooks/use-my-models-metrics';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { CardWrapper } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
@@ -232,86 +230,52 @@ const UserCard: React.FC<{
   );
 };
 
-// The per-model concurrency table. Rows are the caller's reachable models
-// (my-models); running / waiting come from the shared 15s metrics poll and
-// are engine-level counts for the whole model, while the limit is the
-// account's per-model override or the deployment default — a personal cap.
-// A row whose running count sits at its limit is where the user's 429
-// concurrent-request rejections come from, so that count lights up red.
-// Missing numbers (monitoring off, no series yet, metrics failure) render
-// as dashes rather than zeros.
+// The per-model concurrency table. Rows arrive from the rate-limits
+// endpoint already itemized over the user's ready models, busiest first:
+// ``running`` is the user's own in-flight count from the gateway's
+// per-user counter, ``limit`` their per-model override or the deployment
+// default. A count at the limit is where the user's 429 concurrent-request
+// rejections come from, so the bar lights up red there. A missing count
+// (local mode, Redis error) renders as a dash.
 const ModelConcurrencyTable: React.FC<{
-  models: { id: number; name: string }[];
-  metricsById: Record<number, MyModelMetrics>;
-  overrides: ModelConcurrencyUsage[];
-  concurrencyDefault?: number | null;
-  loading: boolean;
-}> = ({ models, metricsById, overrides, concurrencyDefault, loading }) => {
+  rows: ModelConcurrencyUsage[];
+}> = ({ rows }) => {
   const intl = useIntl();
   const t = (id: string) => intl.formatMessage({ id });
-  const overrideByName = new Map(overrides.map((o) => [o.model, o]));
-  // The effective cap for one row: the named override wins over the
-  // deployment default; 0 or absent means no cap (dash).
-  const effectiveLimit = (record: { id: number; name: string }) => {
-    const override = overrideByName.get(record.name);
-    const limit = override ? override.limit : concurrencyDefault;
-    return limit != null && limit > 0 ? limit : null;
-  };
 
-  const columns: ColumnsType<{ id: number; name: string }> = [
+  const columns: ColumnsType<ModelConcurrencyUsage> = [
     {
       title: t('usage.rateLimits.concurrency.model'),
-      dataIndex: 'name',
+      dataIndex: 'model',
       ellipsis: true
     },
     {
       title: t('usage.rateLimits.concurrency.running'),
-      width: 110,
-      render: (_: unknown, record) => {
-        const running = metricsById[record.id]?.requests_running;
-        const limit = effectiveLimit(record);
-        const saturated = running != null && limit != null && running >= limit;
+      width: 190,
+      render: (_, record) => {
+        const { running, limit } = record;
+        if (running == null) return <span className="text-secondary">—</span>;
+        // An explicit 0 cap means the model is unlimited for this account:
+        // no bar, just the count.
+        if (!limit) return running;
         return (
-          <span
-            style={saturated ? { color: 'var(--ant-color-error)' } : undefined}
-          >
-            {running == null ? '—' : running}
-          </span>
-        );
-      }
-    },
-    {
-      title: t('usage.rateLimits.concurrency.waiting'),
-      width: 110,
-      render: (_: unknown, record) => {
-        const waiting = metricsById[record.id]?.requests_waiting;
-        return waiting == null ? (
-          <span className="text-secondary">—</span>
-        ) : (
-          waiting
-        );
-      }
-    },
-    {
-      title: t('usage.rateLimits.concurrency.limit'),
-      width: 90,
-      render: (_: unknown, record) => {
-        const limit = effectiveLimit(record);
-        return limit == null ? (
-          <span className="text-secondary">—</span>
-        ) : (
-          limit
+          <Progress
+            size="small"
+            percent={Math.min(100, (running / limit) * 100)}
+            status={running >= limit ? ('exception' as const) : undefined}
+            showInfo
+            format={() => `${running} / ${limit}`}
+          />
         );
       }
     }
   ];
 
   return (
-    <Table<{ id: number; name: string }>
-      rowKey="id"
+    <Table<ModelConcurrencyUsage>
+      rowKey="model"
       columns={columns}
-      dataSource={models}
-      loading={loading}
+      dataSource={rows}
       pagination={false}
       scroll={{ x: 'max-content' }}
     />
@@ -330,11 +294,6 @@ const RateLimitsCard: React.FC<{
   // flight — the dialog's OK button shows the spinner and stays disabled.
   const [resetKind, setResetKind] = useState<'weekly' | 'monthly' | null>(null);
   const [resetLoading, setResetLoading] = useState(false);
-  // The caller's reachable models back the concurrency table; the shared
-  // hook polls their running / waiting counts on its own 15s cadence.
-  const [models, setModels] = useState<{ id: number; name: string }[]>([]);
-  const [modelsLoading, setModelsLoading] = useState(false);
-  const metricsById = useMyModelsMetrics(models);
 
   // Refetch on a filter change (userId pins the target user — undefined =
   // the caller) and on the toolbar's refresh bump. fetchData's identity
@@ -342,30 +301,6 @@ const RateLimitsCard: React.FC<{
   useEffect(() => {
     fetchData();
   }, [userId, refreshKey]);
-
-  // Model list: page -1 = everything the caller can reach. Models change
-  // rarely and the card renders them read-only, so one fetch per target
-  // (no refresh-key wiring) is enough.
-  useEffect(() => {
-    let cancelled = false;
-    setModelsLoading(true);
-    queryMyModels({ page: -1 })
-      .then((res) => {
-        if (!cancelled) {
-          setModels((res.items ?? []).map(({ id, name }) => ({ id, name })));
-        }
-      })
-      .catch(() => {
-        // No models row without a list; the cards above still render.
-        if (!cancelled) setModels([]);
-      })
-      .finally(() => {
-        if (!cancelled) setModelsLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [userId]);
 
   const submitReset = async (description: string) => {
     if (!resetKind) return;
@@ -392,8 +327,8 @@ const RateLimitsCard: React.FC<{
   // read succeeded — the window's own `used` absence encodes exactly that
   // (the backend omits it in local mode and on usage errors), so every card
   // keys off `used != null` rather than a separate mode check. The
-  // concurrency table's numbers come from the metrics poll instead and
-  // degrade to dashes on their own.
+  // concurrency table's counts ride the same payload and degrade to dashes
+  // on their own.
 
   // Unknown mode = the first fetch has not answered yet: hold the section's
   // place so the page does not jump when it fills in. 'disabled' then
@@ -431,7 +366,7 @@ const RateLimitsCard: React.FC<{
       resetKind: 'weekly' | 'monthly' | undefined;
     } => card.window != null
   );
-  const hasModels = models.length > 0;
+  const hasModels = (data.user.model_concurrency ?? []).length > 0;
 
   return (
     <CardWrapper style={{ paddingBlock: 16 }}>
@@ -523,13 +458,7 @@ const RateLimitsCard: React.FC<{
                   </span>
                 </Tooltip>
               </Flex>
-              <ModelConcurrencyTable
-                models={models}
-                metricsById={metricsById}
-                overrides={data.user.model_concurrency ?? []}
-                concurrencyDefault={data.user.concurrency_default}
-                loading={modelsLoading}
-              />
+              <ModelConcurrencyTable rows={data.user.model_concurrency ?? []} />
             </>
           )}
         </>

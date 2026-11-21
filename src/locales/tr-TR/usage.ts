@@ -139,8 +139,6 @@ export default {
     'İsteklerinizin her modelde aynı anda çalışabileceği sayı. Sınır, hesabınızın model bazlı geçersiz kırması veya dağıtım varsayılanıdır; limite dayanan çalışma sayısı, "Too many concurrent requests" reddedilmelerinin kaynağıdır. Yöneticiler bu sınıra tabi değildir.',
   'usage.rateLimits.concurrency.model': 'Model',
   'usage.rateLimits.concurrency.running': 'Çalışıyor',
-  'usage.rateLimits.concurrency.waiting': 'Bekliyor',
-  'usage.rateLimits.concurrency.limit': 'Sınır',
   'usage.rateLimits.resetButton': 'Sıfırla',
   'usage.rateLimits.resetConfirmTitle': 'Emin misiniz?',
   'usage.rateLimits.resetQuotaLeft':

@@ -139,8 +139,6 @@ export default {
     '你的请求可以在每个模型上同时运行的数量。上限是账户的模型级覆盖值或部署默认值；运行数顶到上限的行正是「Too many concurrent requests」拒绝的来源。管理员不受此限制。',
   'usage.rateLimits.concurrency.model': '模型',
   'usage.rateLimits.concurrency.running': '运行中',
-  'usage.rateLimits.concurrency.waiting': '排队中',
-  'usage.rateLimits.concurrency.limit': '上限',
   'usage.rateLimits.resetButton': '重置',
   'usage.rateLimits.resetConfirmTitle': '确定吗？',
   'usage.rateLimits.resetQuotaLeft':

@@ -139,8 +139,6 @@ export default {
     'How many of your requests may run against each model at the same time. The limit is your account\'s per-model override, or the deployment default; a running count at the limit is where "Too many concurrent requests" rejections come from. Administrators are exempt.',
   'usage.rateLimits.concurrency.model': 'Model',
   'usage.rateLimits.concurrency.running': 'Running',
-  'usage.rateLimits.concurrency.waiting': 'Waiting',
-  'usage.rateLimits.concurrency.limit': 'Limit',
   'usage.rateLimits.resetButton': 'Reset',
   'usage.rateLimits.resetConfirmTitle': 'Are you sure?',
   'usage.rateLimits.resetQuotaLeft':

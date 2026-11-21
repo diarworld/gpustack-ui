@@ -140,8 +140,6 @@ export default {
     'Сколько ваших запросов может одновременно выполняться на каждой модели. Лимит — администраторское переопределение для модели или дефолт деплоя; счётчик «выполняется», упёршийся в лимит, — источник отклонений «Too many concurrent requests». На администраторов лимит не действует.',
   'usage.rateLimits.concurrency.model': 'Модель',
   'usage.rateLimits.concurrency.running': 'Выполняется',
-  'usage.rateLimits.concurrency.waiting': 'В очереди',
-  'usage.rateLimits.concurrency.limit': 'Лимит',
   'usage.rateLimits.resetButton': 'Сбросить',
   'usage.rateLimits.resetConfirmTitle': 'Вы уверены?',
   'usage.rateLimits.resetQuotaLeft':

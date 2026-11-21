@@ -139,8 +139,6 @@ export default {
     '各モデルに対して同時に実行できるリクエスト数。上限はアカウントのモデル別上書き値、またはデプロイのデフォルトです。実行数が上限に達した行は「Too many concurrent requests」拒否の発生源です。管理者にはこの制限は適用されません。',
   'usage.rateLimits.concurrency.model': 'モデル',
   'usage.rateLimits.concurrency.running': '実行中',
-  'usage.rateLimits.concurrency.waiting': '待機中',
-  'usage.rateLimits.concurrency.limit': '上限',
   'usage.rateLimits.resetButton': 'リセット',
   'usage.rateLimits.resetConfirmTitle': 'よろしいですか？',
   'usage.rateLimits.resetQuotaLeft':
