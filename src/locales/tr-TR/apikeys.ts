@@ -25,11 +25,5 @@ export default {
   'apikeys.type.auto': 'Otomatik oluşturulan',
   'apikeys.type.custom': 'Özel',
   'apikeys.button.ipConfig': 'IP Erişim Denetimi',
-  'quotaLimits.button.title': 'Kota Sınırı',
-  'apikeys.form.rpm': 'Dakikadaki istek sayısı (RPM)',
-  'apikeys.form.tpm': 'Dakikadaki token sayısı (TPM)',
-  'apikeys.form.dailyTokens': 'Günlük token bütçesi',
-  'apikeys.form.rateLimits.default': 'Dağıtım varsayılanı',
-  'apikeys.form.rateLimits.hint':
-  'Dağıtım genelindeki varsayılanı uygulamak için boş bırakın.',
+  'quotaLimits.button.title': 'Kota Sınırı'
 };

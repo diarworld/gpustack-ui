@@ -123,21 +123,25 @@ export default {
 
   // --- Summary tab: rate limits ---
   'usage.rateLimits.title': 'Лимиты',
-  'usage.rateLimits.userBudgets': 'Персональные бюджеты токенов',
-  'usage.rateLimits.key': 'Ключ',
   'usage.rateLimits.resetsIn': 'Сброс через {time}',
   'usage.rateLimits.usageUnavailable':
     'Текущее потребление недоступно: rate limiting работает без общего Redis.',
   'usage.rateLimits.usageError': 'Текущее потребление временно недоступно.',
   'usage.rateLimits.rpm': 'RPM',
   'usage.rateLimits.tpm': 'TPM',
-  'usage.rateLimits.daily': 'День',
   'usage.rateLimits.weekly': 'Неделя',
   'usage.rateLimits.monthly': 'Месяц',
   'usage.rateLimits.rpmHint': 'Лимит запросов в минуту',
   'usage.rateLimits.tpmHint': 'Лимит токенов в минуту',
   'usage.rateLimits.weeklyHint': 'Недельный лимит токенов',
   'usage.rateLimits.monthlyHint': 'Месячный лимит токенов',
+  'usage.rateLimits.concurrency.title': 'Одновременные запросы по моделям',
+  'usage.rateLimits.concurrency.hint':
+    'Сколько ваших запросов может одновременно выполняться на каждой модели. Лимит — администраторское переопределение для модели или дефолт деплоя; счётчик «выполняется», упёршийся в лимит, — источник отклонений «Too many concurrent requests». На администраторов лимит не действует.',
+  'usage.rateLimits.concurrency.model': 'Модель',
+  'usage.rateLimits.concurrency.running': 'Выполняется',
+  'usage.rateLimits.concurrency.waiting': 'В очереди',
+  'usage.rateLimits.concurrency.limit': 'Лимит',
   'usage.rateLimits.resetButton': 'Сбросить',
   'usage.rateLimits.resetConfirmTitle': 'Вы уверены?',
   'usage.rateLimits.resetQuotaLeft':

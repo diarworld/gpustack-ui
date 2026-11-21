@@ -236,24 +236,31 @@ export interface UserRateLimits {
   tpm_limit?: number | null;
   weekly_limit?: number | null;
   monthly_limit?: number | null;
+  // The deployment-wide in-flight cap per model (``default_concurrency``);
+  // ``null`` = the cap is off. Models named in ``model_concurrency_limits``
+  // carry their own override instead.
+  concurrency_default?: number | null;
   // The user limit combo verbatim: per-minute caps and the monthly quota
   // inherited the deployment defaults where unset, the weekly budget is
   // setting-only. Every window counts all the user's keys together.
   windows: RateLimitWindowUsage[];
+  // Per-model in-flight caps (``model_concurrency_limits``); empty for
+  // admins (exempt) and users without overrides.
+  model_concurrency?: ModelConcurrencyUsage[];
   // Reset-button state per long token window kind ('weekly' / 'monthly'),
   // only present when the server reads live counters from Redis.
   resets?: Record<string, RateLimitResetStatus>;
 }
 
-export interface ApiKeyRateLimits {
-  id: number;
-  name: string;
-  // The key's own daily budget; absent = it inherits the deployment default.
-  daily_token_limit?: number | null;
-  // Which published combinations govern this key: the user's shared combo
-  // plus the key's own day quota, or the shared combo alone.
-  source: 'user+key' | 'user';
-  windows: RateLimitWindowUsage[];
+// One per-model in-flight cap. Only models the account names explicitly
+// are itemized; every other model inherits ``concurrency_default``.
+// ``running`` is the live slot count, absent when it cannot be read
+// (local mode, Redis unavailable).
+export interface ModelConcurrencyUsage {
+  model: string;
+  // 0 = explicit unlimited for this model.
+  limit: number;
+  running?: number | null;
 }
 
 export interface RateLimitsResponse {
@@ -263,7 +270,6 @@ export interface RateLimitsResponse {
   generated_at: string;
   usage_error?: string | null;
   user: UserRateLimits;
-  api_keys: ApiKeyRateLimits[];
 }
 
 // Structured payload on an over-limit / unsupported-format error, carried in

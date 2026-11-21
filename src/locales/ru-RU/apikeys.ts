@@ -25,11 +25,5 @@ export default {
   'apikeys.type.auto': 'Создан автоматически',
   'apikeys.type.custom': 'Пользовательский',
   'apikeys.button.ipConfig': 'Управление доступом по IP',
-  'quotaLimits.button.title': 'Ограничение квоты',
-  'apikeys.form.rpm': 'Запросов в минуту (RPM)',
-  'apikeys.form.tpm': 'Токенов в минуту (TPM)',
-  'apikeys.form.dailyTokens': 'Дневной бюджет токенов',
-  'apikeys.form.rateLimits.default': 'По умолчанию',
-  'apikeys.form.rateLimits.hint':
-  'Оставьте пустым, чтобы применить значение по умолчанию для развёртывания.',
+  'quotaLimits.button.title': 'Ограничение квоты'
 };

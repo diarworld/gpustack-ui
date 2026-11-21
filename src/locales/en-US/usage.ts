@@ -122,21 +122,25 @@ export default {
 
   // --- Summary tab: rate limits ---
   'usage.rateLimits.title': 'Rate Limits',
-  'usage.rateLimits.userBudgets': 'Personal token budgets',
-  'usage.rateLimits.key': 'Key',
   'usage.rateLimits.resetsIn': 'Resets in {time}',
   'usage.rateLimits.usageUnavailable':
     'Live usage is unavailable: rate limiting is running without a shared Redis.',
   'usage.rateLimits.usageError': 'Live usage is temporarily unavailable.',
   'usage.rateLimits.rpm': 'RPM',
   'usage.rateLimits.tpm': 'TPM',
-  'usage.rateLimits.daily': 'Day',
   'usage.rateLimits.weekly': 'Week',
   'usage.rateLimits.monthly': 'Month',
   'usage.rateLimits.rpmHint': 'Requests per minute limit',
   'usage.rateLimits.tpmHint': 'Tokens per minute limit',
   'usage.rateLimits.weeklyHint': 'Weekly token limit',
   'usage.rateLimits.monthlyHint': 'Monthly token limit',
+  'usage.rateLimits.concurrency.title': 'Concurrency by model',
+  'usage.rateLimits.concurrency.hint':
+    'How many of your requests may run against each model at the same time. The limit is your account\'s per-model override, or the deployment default; a running count at the limit is where "Too many concurrent requests" rejections come from. Administrators are exempt.',
+  'usage.rateLimits.concurrency.model': 'Model',
+  'usage.rateLimits.concurrency.running': 'Running',
+  'usage.rateLimits.concurrency.waiting': 'Waiting',
+  'usage.rateLimits.concurrency.limit': 'Limit',
   'usage.rateLimits.resetButton': 'Reset',
   'usage.rateLimits.resetConfirmTitle': 'Are you sure?',
   'usage.rateLimits.resetQuotaLeft':

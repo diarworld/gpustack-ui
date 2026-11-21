@@ -25,11 +25,5 @@ export default {
   'apikeys.type.auto': 'Auto-generated',
   'apikeys.type.custom': 'Custom',
   'apikeys.button.ipConfig': 'IP Access Control',
-  'quotaLimits.button.title': 'Quota Limit',
-  'apikeys.form.rpm': 'Requests per minute (RPM)',
-  'apikeys.form.tpm': 'Tokens per minute (TPM)',
-  'apikeys.form.dailyTokens': 'Daily token budget',
-  'apikeys.form.rateLimits.default': 'Deployment default',
-  'apikeys.form.rateLimits.hint':
-  'Leave empty to apply the deployment-wide default.',
+  'quotaLimits.button.title': 'Quota Limit'
 };

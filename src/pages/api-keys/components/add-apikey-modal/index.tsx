@@ -198,8 +198,7 @@ const AddModal: React.FC<AddModalProps> = ({
         scope: normalizedScope,
         allowed_type: normalizedAllowedModelNames.length ? 'custom' : 'all',
         expires_in: parseExpireValue(currentData as ListItem),
-        allowed_model_names: normalizedAllowedModelNames,
-        daily_token_limit: currentData.daily_token_limit ?? undefined
+        allowed_model_names: normalizedAllowedModelNames
       });
     }
 

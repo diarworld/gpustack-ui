@@ -122,21 +122,25 @@ export default {
 
   // --- Summary tab: rate limits ---
   'usage.rateLimits.title': 'レート制限',
-  'usage.rateLimits.userBudgets': '個人のトークン予算',
-  'usage.rateLimits.key': 'キー',
   'usage.rateLimits.resetsIn': '{time}後にリセット',
   'usage.rateLimits.usageUnavailable':
     'リアルタイムの使用量は表示できません: レート制限が共有 Redis なしで動作しています。',
   'usage.rateLimits.usageError': 'リアルタイムの使用量は現在利用できません。',
   'usage.rateLimits.rpm': 'RPM',
   'usage.rateLimits.tpm': 'TPM',
-  'usage.rateLimits.daily': '日',
   'usage.rateLimits.weekly': '週',
   'usage.rateLimits.monthly': '月',
   'usage.rateLimits.rpmHint': '1分あたりのリクエスト数上限',
   'usage.rateLimits.tpmHint': '1分あたりのトークン数上限',
   'usage.rateLimits.weeklyHint': '週間トークン上限',
   'usage.rateLimits.monthlyHint': '月間トークン上限',
+  'usage.rateLimits.concurrency.title': 'モデル別の同時実行',
+  'usage.rateLimits.concurrency.hint':
+    '各モデルに対して同時に実行できるリクエスト数。上限はアカウントのモデル別上書き値、またはデプロイのデフォルトです。実行数が上限に達した行は「Too many concurrent requests」拒否の発生源です。管理者にはこの制限は適用されません。',
+  'usage.rateLimits.concurrency.model': 'モデル',
+  'usage.rateLimits.concurrency.running': '実行中',
+  'usage.rateLimits.concurrency.waiting': '待機中',
+  'usage.rateLimits.concurrency.limit': '上限',
   'usage.rateLimits.resetButton': 'リセット',
   'usage.rateLimits.resetConfirmTitle': 'よろしいですか？',
   'usage.rateLimits.resetQuotaLeft':

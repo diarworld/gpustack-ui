@@ -122,21 +122,25 @@ export default {
 
   // --- Summary tab: rate limits ---
   'usage.rateLimits.title': 'Hız Sınırları',
-  'usage.rateLimits.userBudgets': 'Kişisel token bütçeleri',
-  'usage.rateLimits.key': 'Anahtar',
   'usage.rateLimits.resetsIn': '{time} içinde sıfırlanır',
   'usage.rateLimits.usageUnavailable':
     'Anlık kullanım kullanılamıyor: hız sınırlama paylaşımlı bir Redis olmadan çalışıyor.',
   'usage.rateLimits.usageError': 'Anlık kullanım geçici olarak kullanılamıyor.',
   'usage.rateLimits.rpm': 'RPM',
   'usage.rateLimits.tpm': 'TPM',
-  'usage.rateLimits.daily': 'Gün',
   'usage.rateLimits.weekly': 'Hafta',
   'usage.rateLimits.monthly': 'Ay',
   'usage.rateLimits.rpmHint': 'Dakika başına istek sınırı',
   'usage.rateLimits.tpmHint': 'Dakika başına token sınırı',
   'usage.rateLimits.weeklyHint': 'Haftalık token sınırı',
   'usage.rateLimits.monthlyHint': 'Aylık token sınırı',
+  'usage.rateLimits.concurrency.title': 'Modellere göre eşzamanlılık',
+  'usage.rateLimits.concurrency.hint':
+    'İsteklerinizin her modelde aynı anda çalışabileceği sayı. Sınır, hesabınızın model bazlı geçersiz kırması veya dağıtım varsayılanıdır; limite dayanan çalışma sayısı, "Too many concurrent requests" reddedilmelerinin kaynağıdır. Yöneticiler bu sınıra tabi değildir.',
+  'usage.rateLimits.concurrency.model': 'Model',
+  'usage.rateLimits.concurrency.running': 'Çalışıyor',
+  'usage.rateLimits.concurrency.waiting': 'Bekliyor',
+  'usage.rateLimits.concurrency.limit': 'Sınır',
   'usage.rateLimits.resetButton': 'Sıfırla',
   'usage.rateLimits.resetConfirmTitle': 'Emin misiniz?',
   'usage.rateLimits.resetQuotaLeft':

@@ -122,21 +122,25 @@ export default {
 
   // --- Summary tab: rate limits ---
   'usage.rateLimits.title': '速率限制',
-  'usage.rateLimits.userBudgets': '个人 Token 预算',
-  'usage.rateLimits.key': '密钥',
   'usage.rateLimits.resetsIn': '{time}后重置',
   'usage.rateLimits.usageUnavailable':
     '实时用量不可用：速率限制未使用共享 Redis 运行。',
   'usage.rateLimits.usageError': '实时用量暂时不可用。',
   'usage.rateLimits.rpm': 'RPM',
   'usage.rateLimits.tpm': 'TPM',
-  'usage.rateLimits.daily': '日',
   'usage.rateLimits.weekly': '周',
   'usage.rateLimits.monthly': '月',
   'usage.rateLimits.rpmHint': '每分钟请求数限制',
   'usage.rateLimits.tpmHint': '每分钟 Token 数限制',
   'usage.rateLimits.weeklyHint': '每周 Token 限制',
   'usage.rateLimits.monthlyHint': '每月 Token 限制',
+  'usage.rateLimits.concurrency.title': '各模型并发',
+  'usage.rateLimits.concurrency.hint':
+    '你的请求可以在每个模型上同时运行的数量。上限是账户的模型级覆盖值或部署默认值；运行数顶到上限的行正是「Too many concurrent requests」拒绝的来源。管理员不受此限制。',
+  'usage.rateLimits.concurrency.model': '模型',
+  'usage.rateLimits.concurrency.running': '运行中',
+  'usage.rateLimits.concurrency.waiting': '排队中',
+  'usage.rateLimits.concurrency.limit': '上限',
   'usage.rateLimits.resetButton': '重置',
   'usage.rateLimits.resetConfirmTitle': '确定吗？',
   'usage.rateLimits.resetQuotaLeft':
