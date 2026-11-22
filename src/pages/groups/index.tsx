@@ -30,7 +30,11 @@ const Groups: React.FC = () => {
     key: PaginationKey.Groups,
     fetchAPI: queryGroupsList,
     deleteAPI: deleteGroup,
-    contentForDelete: 'groups.table.group'
+    contentForDelete: 'groups.table.group',
+    // Biggest groups first — matches the members column's
+    // defaultSortOrder; the backend derives the count, so this is the
+    // server-side half of the same default.
+    defaultQueryParams: { sort_by: '-member_count' }
   });
 
   const intl = useIntl();

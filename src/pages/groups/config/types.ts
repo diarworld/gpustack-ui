@@ -9,6 +9,9 @@ export interface ListItem extends FormData {
   // Human-readable label carried from the IdP (title, department name).
   // Admin-created groups have none and render `name` instead.
   display_name?: string | null;
+  // Derived type token: profession | department | business-unit |
+  // local | idp. Rendered through the groups.type.* i18n keys.
+  group_type?: string;
   member_count: number;
   source: string;
   created_at: string;
@@ -27,4 +30,9 @@ export interface MembershipItem {
   // name / display_name through the same fields.
   username?: string | null;
   full_name?: string | null;
+  // Only for `group` rows: the subgroup's derived type and its
+  // transitive unique-user count, so the Subgroups tab renders both
+  // without extra requests.
+  group_type?: string | null;
+  group_member_count?: number | null;
 }

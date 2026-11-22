@@ -183,6 +183,29 @@ const MembersDrawer: React.FC<MembersDrawerProps> = ({
           );
         }
       },
+      ...(kind === 'group'
+        ? [
+            {
+              title: intl.formatMessage({ id: 'groups.table.type' }),
+              dataIndex: 'group_type',
+              key: 'group_type',
+              width: 150,
+              ellipsis: true,
+              render: (text: string) => (
+                <AutoTooltip ghost>
+                  {intl.formatMessage({ id: `groups.type.${text || 'idp'}` })}
+                </AutoTooltip>
+              )
+            },
+            {
+              title: intl.formatMessage({ id: 'groups.table.members' }),
+              dataIndex: 'group_member_count',
+              key: 'group_member_count',
+              width: 110,
+              render: (text: number) => text ?? 0
+            }
+          ]
+        : []),
       {
         title: intl.formatMessage({ id: 'common.table.createTime' }),
         dataIndex: 'created_at',

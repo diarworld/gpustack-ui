@@ -1,10 +1,5 @@
 import { tableSorter } from '@/config/settings';
-import {
-  AutoTooltip,
-  DropdownButtons,
-  IconFont,
-  icons
-} from '@gpustack/core-ui';
+import { AutoTooltip, DropdownButtons, icons } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import { ColumnsType } from 'antd/lib/table';
@@ -60,45 +55,43 @@ const useGroupsColumns = ({
           const label = record.display_name || record.name;
           return (
             <AutoTooltip ghost style={{ maxWidth: 400 }} title={record.name}>
-              <span className="text-primary">
-                {record.source !== 'Local' && (
-                  <IconFont
-                    type="icon-org-outlined"
-                    className="size-16 m-r-5"
-                  />
-                )}
-                {label}
-              </span>
+              <span className="text-primary">{label}</span>
             </AutoTooltip>
           );
         }
+      },
+      {
+        title: intl.formatMessage({ id: 'groups.table.type' }),
+        dataIndex: 'group_type',
+        key: 'group_type',
+        width: 150,
+        ellipsis: {
+          showTitle: false
+        },
+        render: (text: string) => (
+          <AutoTooltip ghost minWidth={20}>
+            {intl.formatMessage({
+              id: `groups.type.${text || 'idp'}`
+            })}
+          </AutoTooltip>
+        )
       },
       {
         title: intl.formatMessage({ id: 'groups.table.members' }),
         dataIndex: 'member_count',
         key: 'member_count',
         width: 110,
+        sorter: tableSorter(2),
+        // The list loads pre-sorted by the server (biggest groups
+        // first); this only puts the arrow in the matching state.
+        defaultSortOrder: 'descend',
         render: (text: number) => text ?? 0
-      },
-      {
-        title: intl.formatMessage({ id: 'users.form.source' }),
-        dataIndex: 'source',
-        key: 'source',
-        sorter: tableSorter(3),
-        ellipsis: {
-          showTitle: false
-        },
-        render: (text: string) => (
-          <AutoTooltip ghost minWidth={20}>
-            {text}
-          </AutoTooltip>
-        )
       },
       {
         title: intl.formatMessage({ id: 'common.table.createTime' }),
         dataIndex: 'created_at',
         key: 'created_at',
-        sorter: tableSorter(5),
+        sorter: tableSorter(3),
         ellipsis: {
           showTitle: false
         },
