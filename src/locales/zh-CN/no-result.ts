@@ -74,5 +74,8 @@ export default {
   'noresult.gpuservice.sshkey.nofound': '未找到匹配的 SSH 公钥',
   'noresult.kvCache.title': '暂无缓存服务',
   'noresult.kvCache.subTitle': '创建缓存服务，让多个模型实例复用 KV 缓存。',
-  'noresult.kvCache.nofound': '未找到匹配的缓存服务'
+  'noresult.kvCache.nofound': '未找到匹配的缓存服务',
+  'noresult.groups.title': '暂无用户组',
+  'noresult.groups.subTitle': '尚未创建任何用户组。',
+  'noresult.groups.nofound': '未找到匹配的用户组'
 };

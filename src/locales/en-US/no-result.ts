@@ -83,5 +83,8 @@ export default {
   'noresult.kvCache.title': 'No cache services yet',
   'noresult.kvCache.subTitle':
     'Create a cache service to reuse KV cache across model instances.',
-  'noresult.kvCache.nofound': 'No matching cache services found.'
+  'noresult.kvCache.nofound': 'No matching cache services found.',
+  'noresult.groups.title': 'No Groups',
+  'noresult.groups.subTitle': 'No groups have been created yet.',
+  'noresult.groups.nofound': 'No matching groups found.'
 };

@@ -85,5 +85,8 @@ export default {
   'noresult.kvCache.title': 'Пока нет сервисов кеширования',
   'noresult.kvCache.subTitle':
     'Создайте сервис кеширования для повторного использования KV-кеша между экземплярами моделей.',
-  'noresult.kvCache.nofound': 'Подходящие сервисы кеширования не найдены.'
+  'noresult.kvCache.nofound': 'Подходящие сервисы кеширования не найдены.',
+  'noresult.groups.title': 'Нет групп',
+  'noresult.groups.subTitle': 'Группы ещё не созданы.',
+  'noresult.groups.nofound': 'Подходящие группы не найдены.'
 };

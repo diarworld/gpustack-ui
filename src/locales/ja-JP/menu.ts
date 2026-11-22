@@ -39,6 +39,7 @@ export default {
   'menu.accessControl': 'アクセス制御',
   'menu.accessControl.apikeys': 'API キー',
   'menu.accessControl.users': 'ユーザー',
+  'menu.accessControl.groups': 'グループ',
   'menu.accessControl.organizations': '組織',
   'menu.resources.clusters': 'クラスター',
   'menu.resources.credentials': 'クラウド認証情報',

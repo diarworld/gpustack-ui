@@ -391,6 +391,9 @@ const baseRoutes = [
         // enterprise multi-tenancy module. The page itself just renders
         // an upsell notice — the real CRUD UI lives in the enterprise
         // plugin and shadows this route via `routes.extensions.ts`.
+        // Kept out of the menu now that Groups covers the everyday
+        // access-control workflow; the route itself stays reachable.
+        hideInMenu: true,
         access: 'canSeeAdmin',
         component: './organizations'
       },
@@ -403,6 +406,16 @@ const baseRoutes = [
         defaultIcon: 'icon-users',
         access: 'canSeeAdmin',
         component: './users'
+      },
+      {
+        name: 'groups',
+        path: '/access-control/groups',
+        key: 'groups',
+        icon: 'icon-org-outlined',
+        selectedIcon: 'icon-org-filled',
+        defaultIcon: 'icon-org-outlined',
+        access: 'canSeeAdmin',
+        component: './groups'
       },
       {
         name: 'apikeys',

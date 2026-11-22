@@ -81,7 +81,10 @@ export default {
   'noresult.kvCache.title': 'Henüz önbellek hizmeti yok',
   'noresult.kvCache.subTitle':
     'KV önbelleğini hızlandırmak için yönetilen bir önbellek hizmeti oluşturun veya harici bir tane kaydedin.',
-  'noresult.kvCache.nofound': 'Eşleşen önbellek hizmeti bulunamadı.'
+  'noresult.kvCache.nofound': 'Eşleşen önbellek hizmeti bulunamadı.',
+  'noresult.groups.title': 'Grup Yok',
+  'noresult.groups.subTitle': 'Henüz grup oluşturulmadı.',
+  'noresult.groups.nofound': 'Eşleşen grup bulunamadı.'
 };
 
 // ========== To-Do: Translate Keys (Remove After Translation) ==========

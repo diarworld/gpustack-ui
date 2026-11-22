@@ -38,6 +38,7 @@ export default {
   'menu.accessControl': 'Управление доступом',
   'menu.accessControl.apikeys': 'API-ключи',
   'menu.accessControl.users': 'Пользователи',
+  'menu.accessControl.groups': 'Группы',
   'menu.accessControl.organizations': 'Организации',
   'menu.resources.clusters': 'Кластеры',
   'menu.resources.credentials': 'Учётные данные',

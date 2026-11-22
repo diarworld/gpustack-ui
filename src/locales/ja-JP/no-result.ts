@@ -91,5 +91,8 @@ export default {
   'noresult.kvCache.subTitle':
     'キャッシュサービスを作成すると、モデルインスタンス間で KV キャッシュを再利用できます。',
   'noresult.kvCache.nofound':
-    '条件に一致するキャッシュサービスが見つかりません。'
+    '条件に一致するキャッシュサービスが見つかりません。',
+  'noresult.groups.title': 'グループがまだありません',
+  'noresult.groups.subTitle': 'グループはまだ作成されていません。',
+  'noresult.groups.nofound': '一致するグループが見つかりません。'
 };
