@@ -122,12 +122,13 @@ const GroupMembershipPicker: React.FC<{
   options: GroupOptionItem[];
   label?: React.ReactNode;
   extra?: React.ReactNode;
-  placeholder?: string;
   syncedHint?: string;
-}> = ({ value, onChange, options, label, extra, placeholder, syncedHint }) => {
+}> = ({ value, onChange, options, label, extra, syncedHint }) => {
   const intl = useIntl();
   // The form carries the flat Local-group id set; the Cascader's tree
-  // value is one single-level path per selection.
+  // value is one single-level path per selection. No placeholder: the
+  // in-field label already centers in the empty state, and antd's own
+  // placeholder would draw right under it.
   const paths = (value ?? []).map((id) => [id]);
   return (
     <Cascader
@@ -139,7 +140,6 @@ const GroupMembershipPicker: React.FC<{
       value={paths as (string | number)[][]}
       label={label}
       extra={extra}
-      placeholder={placeholder}
       optionNode={({ data }: { data: any }) => (
         <span className="flex-center gap-4">
           <AutoTooltip ghost>{data.label}</AutoTooltip>
@@ -469,9 +469,6 @@ const AddModal: React.FC<AddModalProps> = ({
             <GroupMembershipPicker
               label={intl.formatMessage({ id: 'users.form.groups' })}
               extra={intl.formatMessage({ id: 'users.form.groups.hint' })}
-              placeholder={intl.formatMessage({
-                id: 'users.form.groups.placeholder'
-              })}
               syncedHint={intl.formatMessage({
                 id: 'groups.syncedFromIdpHint'
               })}

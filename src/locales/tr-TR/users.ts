@@ -13,7 +13,6 @@ export default {
     'Bu kullanıcı hesabını etkinleştir veya devre dışı bırak',
   'users.form.fullname': 'Tam Ad',
   'users.form.groups': 'Gruplar',
-  'users.form.groups.placeholder': 'Grup seçin',
   'users.form.groups.hint':
     'Yalnızca elle oluşturulan yerel gruplar. KeyCloak\u2019ten senkronize edilen gruplar KeyCloak üzerinden yönetilir.',
   'users.form.source': 'Kaynak',

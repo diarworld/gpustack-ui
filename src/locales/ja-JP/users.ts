@@ -13,7 +13,6 @@ export default {
     'このユーザーアカウントを有効または無効にする',
   'users.form.fullname': 'フルネーム',
   'users.form.groups': 'グループ',
-  'users.form.groups.placeholder': 'グループを選択',
   'users.form.groups.hint':
     '手動で作成したローカルグループのみです。KeyCloakから同期されるグループはKeyCloakで管理します。',
   'users.form.source': 'ソース',
