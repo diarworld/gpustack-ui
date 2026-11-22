@@ -12,6 +12,7 @@ export default {
   'groups.type.profession': 'Profession',
   'groups.type.department': 'Department',
   'groups.type.business-unit': 'Business Unit',
+  'groups.type.unknown': 'Unknown',
   'groups.type.local': 'Local',
   'groups.type.idp': 'IdP',
   'groups.action.members': 'Manage Members',

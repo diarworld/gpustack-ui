@@ -12,6 +12,7 @@ export default {
   'groups.type.profession': '職種',
   'groups.type.department': '部門',
   'groups.type.business-unit': 'ビジネスユニット',
+  'groups.type.unknown': '不明',
   'groups.type.local': 'ローカル',
   'groups.type.idp': 'IdP',
   'groups.action.members': 'メンバーを管理',

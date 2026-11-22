@@ -12,6 +12,7 @@ export default {
   'groups.type.profession': 'Профессия',
   'groups.type.department': 'Отдел',
   'groups.type.business-unit': 'Бизнес Юнит',
+  'groups.type.unknown': 'Неизвестные',
   'groups.type.local': 'Локальная',
   'groups.type.idp': 'IdP',
   'groups.action.members': 'Управлять участниками',

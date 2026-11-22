@@ -12,6 +12,7 @@ export default {
   'groups.type.profession': 'Meslek',
   'groups.type.department': 'Departman',
   'groups.type.business-unit': 'İş Birimi',
+  'groups.type.unknown': 'Bilinmeyen',
   'groups.type.local': 'Yerel',
   'groups.type.idp': 'IdP',
   'groups.action.members': 'Üyeleri Yönet',

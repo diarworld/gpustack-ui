@@ -12,6 +12,7 @@ export default {
   'groups.type.profession': '职位',
   'groups.type.department': '部门',
   'groups.type.business-unit': '业务单元',
+  'groups.type.unknown': '未知',
   'groups.type.local': '本地',
   'groups.type.idp': 'IdP',
   'groups.action.members': '管理成员',
