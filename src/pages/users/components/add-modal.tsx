@@ -5,18 +5,19 @@ import { queryGroupsList } from '@/pages/groups/apis';
 import { ListItem as GroupListItem } from '@/pages/groups/config/types';
 import { useQueryModelList } from '@/pages/llmodels/services/use-query-model-list';
 import {
+  AutoTooltip,
+  Cascader,
   Input as CInput,
   FormDrawer,
   IconFont,
   InputNumber,
-  MultipleSelect,
   Select as SealSelect,
   Switch as SealSwitch,
   useSubmitLock
 } from '@gpustack/core-ui';
 import { useIntl, useModel } from '@umijs/max';
 import { Form, Select, Table } from 'antd';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { queryUserGroups } from '../apis';
 import {
   AuthSourceOptions,
@@ -101,6 +102,67 @@ const ModelConcurrencyInput: React.FC<{
   );
 };
 
+type GroupOptionItem = {
+  label: string;
+  value: number;
+  // IdP-synced rows: shown greyed with their type tag, never
+  // selectable — the sync owns them.
+  disabled?: boolean;
+  typeLabel?: string;
+};
+
+// The user-edit membership picker, styled after the /usage/overview
+// api-key filter: a dropdown panel listing groups with checkboxes —
+// checked for the user's current Local memberships. IdP-synced groups
+// ride the same list as disabled rows so the admin sees the whole
+// picture without being offered an edit the sync would refuse.
+const GroupMembershipPicker: React.FC<{
+  value?: number[];
+  onChange?: (ids: number[]) => void;
+  options: GroupOptionItem[];
+  label?: React.ReactNode;
+  extra?: React.ReactNode;
+  placeholder?: string;
+  syncedHint?: string;
+}> = ({ value, onChange, options, label, extra, placeholder, syncedHint }) => {
+  const intl = useIntl();
+  // The form carries the flat Local-group id set; the Cascader's tree
+  // value is one single-level path per selection.
+  const paths = (value ?? []).map((id) => [id]);
+  return (
+    <Cascader
+      multiple
+      allowClear
+      showCheckedStrategy="SHOW_CHILD"
+      maxTagCount="responsive"
+      options={options}
+      value={paths as (string | number)[][]}
+      label={label}
+      extra={extra}
+      placeholder={placeholder}
+      optionNode={({ data }: { data: any }) => (
+        <span className="flex-center gap-4">
+          <AutoTooltip ghost>{data.label}</AutoTooltip>
+          {data.disabled && (
+            <AutoTooltip ghost title={syncedHint}>
+              <span className="text-tertiary" style={{ fontSize: 12 }}>
+                [{data.typeLabel}]
+              </span>
+            </AutoTooltip>
+          )}
+        </span>
+      )}
+      onChange={(vals) => {
+        const ids = ((vals ?? []) as (string | number)[][])
+          .map((p) => Number(Array.isArray(p) ? p[p.length - 1] : p))
+          .filter((id) => options.some((o) => o.value === id && !o.disabled));
+        onChange?.(ids);
+      }}
+      getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
+    />
+  );
+};
+
 const AddModal: React.FC<AddModalProps> = ({
   title,
   action,
@@ -118,9 +180,9 @@ const AddModal: React.FC<AddModalProps> = ({
     loading: modelLoading,
     fetchData: fetchModelList
   } = useQueryModelList();
-  // Candidate set for the groups picker: admin-curated (Local) groups
-  // only — IdP-synced memberships are managed in KeyCloak, so they are
-  // neither offered here nor reported by /users/{id}/groups.
+  // Editable candidate set for the groups picker: admin-curated
+  // (Local) groups only. The user's IdP-synced memberships join the
+  // same list as read-only rows (see syncedGroups below).
   const { dataList: localGroupList, fetchData: fetchLocalGroups } =
     useQueryDataList<GroupListItem>({
       key: 'userGroupsPicker',
@@ -128,18 +190,39 @@ const AddModal: React.FC<AddModalProps> = ({
       getLabel: (item) => item.display_name || item.name,
       getValue: (item) => item.id
     });
-  const groupOptions = useMemo(
-    () =>
-      localGroupList
-        .filter(
-          (item) => item.source === 'Local' && !item.name?.startsWith('system/')
-        )
-        .map((item) => ({
-          label: item.display_name || item.name,
-          value: item.id
-        })),
-    [localGroupList]
-  );
+  // IdP-synced groups the user belongs to — rendered, never editable.
+  const [syncedGroups, setSyncedGroups] = useState<
+    Array<{
+      id: number;
+      name: string;
+      display_name?: string | null;
+      group_type?: string;
+    }>
+  >([]);
+  const groupOptions = useMemo<GroupOptionItem[]>(() => {
+    const localItems: GroupOptionItem[] = localGroupList
+      .filter(
+        (item) => item.source === 'Local' && !item.name?.startsWith('system/')
+      )
+      .map((item) => ({
+        label: item.display_name || item.name,
+        value: item.id
+      }));
+    const syncedItems: GroupOptionItem[] = syncedGroups.map((item) => ({
+      label: item.display_name || item.name,
+      value: item.id,
+      disabled: true,
+      typeLabel: item.group_type
+        ? intl.formatMessage({ id: `groups.type.${item.group_type}` })
+        : undefined
+    }));
+    const seen = new Set(localItems.map((o) => o.value));
+    return _.orderBy(
+      [...localItems, ...syncedItems.filter((o) => !seen.has(o.value))],
+      [(o) => String(o.label ?? '').toLowerCase()],
+      ['asc']
+    );
+  }, [localGroupList, syncedGroups, intl]);
   const selectedSource = Form.useWatch('source', form) ?? AuthSources.LOCAL;
   // The reconciler drops the concurrency block for admins (they are
   // exempt), so the per-model table is hidden for the admin role —
@@ -221,16 +304,21 @@ const AddModal: React.FC<AddModalProps> = ({
       if (action === PageAction.EDIT && data?.id) {
         // The picker is the full desired set: seed it with the user's
         // current Local groups (omitted keys would otherwise wipe
-        // memberships on save).
+        // memberships on save). IdP-synced rows feed the read-only
+        // section instead.
         queryUserGroups(data.id)
-          .then((groups) =>
+          .then((groups) => {
+            const rows = groups || [];
             form.setFieldValue(
               'group_ids',
-              (groups || []).map((g) => g.id)
-            )
-          )
+              rows.filter((g) => g.group_type === 'local').map((g) => g.id)
+            );
+            setSyncedGroups(rows.filter((g) => g.group_type !== 'local'));
+          })
           .catch(() => {});
       }
+    } else {
+      setSyncedGroups([]);
     }
   }, [open]);
 
@@ -377,24 +465,17 @@ const AddModal: React.FC<AddModalProps> = ({
         )}
 
         {action === PageAction.EDIT && (
-          <Form.Item<FormData>
-            name="group_ids"
-            rules={[{ required: false }]}
-            extra={intl.formatMessage({ id: 'users.form.groups.hint' })}
-          >
-            <MultipleSelect
-              allowClear
-              showSearch
-              optionFilterProp="label"
-              maxTagCount="responsive"
+          <Form.Item<FormData> name="group_ids" rules={[{ required: false }]}>
+            <GroupMembershipPicker
               label={intl.formatMessage({ id: 'users.form.groups' })}
+              extra={intl.formatMessage({ id: 'users.form.groups.hint' })}
               placeholder={intl.formatMessage({
                 id: 'users.form.groups.placeholder'
               })}
-              options={groupOptions}
-              notFoundContent={intl.formatMessage({
-                id: 'common.search.nodata'
+              syncedHint={intl.formatMessage({
+                id: 'groups.syncedFromIdpHint'
               })}
+              options={groupOptions}
             />
           </Form.Item>
         )}

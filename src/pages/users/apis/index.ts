@@ -52,11 +52,16 @@ export async function updateUserStatus(params: {
   });
 }
 
-// Admin-curated (source=Local) groups the user belongs to — the set
-// the edit modal manages. IdP-synced memberships are not included.
+// All groups the user belongs to, any source: the picker renders
+// Local rows as editable checkboxes and IdP-synced ones read-only.
 export async function queryUserGroups(id: number) {
   return request<
-    Array<{ id: number; name: string; display_name?: string | null }>
+    Array<{
+      id: number;
+      name: string;
+      display_name?: string | null;
+      group_type?: string;
+    }>
   >(`${USERS_API}/${id}/groups`, { method: 'GET' });
 }
 
