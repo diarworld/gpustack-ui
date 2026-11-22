@@ -24,4 +24,10 @@ export interface ListItem extends FormData {
   avatar_url: string;
   created_at: string;
   updated_at: string;
+  // Labels from the user's attribute-derived groups (raw title /
+  // department / store value), server-resolved; null when the user
+  // holds no group of that kind.
+  profession?: string | null;
+  department?: string | null;
+  business_unit?: string | null;
 }

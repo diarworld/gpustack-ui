@@ -9,6 +9,7 @@ export default {
   'groups.table.members': 'Members',
   'groups.table.group': 'groups',
   'groups.table.type': 'Group Type',
+  'groups.filter.type': 'Filter by group type',
   'groups.type.profession': 'Profession',
   'groups.type.department': 'Department',
   'groups.type.business-unit': 'Business Unit',

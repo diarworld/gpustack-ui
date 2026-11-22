@@ -9,6 +9,7 @@ export default {
   'groups.table.members': 'Üyeler',
   'groups.table.group': 'grup',
   'groups.table.type': 'Grup Türü',
+  'groups.filter.type': 'Grup türüne göre filtrele',
   'groups.type.profession': 'Meslek',
   'groups.type.department': 'Departman',
   'groups.type.business-unit': 'İş Birimi',

@@ -12,7 +12,6 @@ import {
 import { useIntl, useModel } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import { ColumnsType } from 'antd/lib/table';
-import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { ListItem } from '../config/types';
 
@@ -183,6 +182,47 @@ const useUsersColumns = ({
           </AutoTooltip>
         )
       },
+      // What the IdP says about the person, from their
+      // attribute-derived groups (server-resolved; '-' when absent).
+      {
+        title: intl.formatMessage({ id: 'groups.type.business-unit' }),
+        dataIndex: 'business_unit',
+        key: 'business_unit',
+        ellipsis: {
+          showTitle: false
+        },
+        render: (text?: string | null) => (
+          <AutoTooltip ghost minWidth={20}>
+            {text || '-'}
+          </AutoTooltip>
+        )
+      },
+      {
+        title: intl.formatMessage({ id: 'groups.type.department' }),
+        dataIndex: 'department',
+        key: 'department',
+        ellipsis: {
+          showTitle: false
+        },
+        render: (text?: string | null) => (
+          <AutoTooltip ghost minWidth={20}>
+            {text || '-'}
+          </AutoTooltip>
+        )
+      },
+      {
+        title: intl.formatMessage({ id: 'groups.type.profession' }),
+        dataIndex: 'profession',
+        key: 'profession',
+        ellipsis: {
+          showTitle: false
+        },
+        render: (text?: string | null) => (
+          <AutoTooltip ghost minWidth={20}>
+            {text || '-'}
+          </AutoTooltip>
+        )
+      },
       {
         title: intl.formatMessage({ id: 'users.form.source' }),
         dataIndex: 'source',
@@ -229,20 +269,6 @@ const useUsersColumns = ({
             />
           );
         }
-      },
-      {
-        title: intl.formatMessage({ id: 'common.table.createTime' }),
-        dataIndex: 'created_at',
-        key: 'created_at',
-        sorter: tableSorter(5),
-        ellipsis: {
-          showTitle: false
-        },
-        render: (text: number) => (
-          <AutoTooltip ghost>
-            {dayjs(text).format('YYYY-MM-DD HH:mm:ss')}
-          </AutoTooltip>
-        )
       },
       {
         title: intl.formatMessage({ id: 'common.table.operation' }),

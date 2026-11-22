@@ -35,4 +35,9 @@ export interface MembershipItem {
   // without extra requests.
   group_type?: string | null;
   group_member_count?: number | null;
+  // Only for `user` rows: labels from the user's attribute-derived
+  // groups (raw title / department / store value), server-resolved.
+  profession?: string | null;
+  department?: string | null;
+  business_unit?: string | null;
 }

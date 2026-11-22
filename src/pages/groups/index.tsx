@@ -2,11 +2,18 @@ import { PageAction } from '@/config';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import type { PageActionType } from '@/config/types';
 import useTableFetch from '@/hooks/use-table-fetch';
-import { DeleteModal, FilterBar, IconFont, NoResult } from '@gpustack/core-ui';
+import { SearchOutlined, SyncOutlined } from '@ant-design/icons';
+import {
+  BaseSelect,
+  DeleteModal,
+  FilterBar,
+  IconFont,
+  NoResult
+} from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { ConfigProvider, message, Table } from 'antd';
+import { Button, ConfigProvider, Input, message, Space, Table } from 'antd';
 import _ from 'lodash';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import PageBox from '../_components/page-box';
 import { createGroup, deleteGroup, queryGroupsList, updateGroup } from './apis';
 import AddModal from './components/add-modal';
@@ -25,6 +32,7 @@ const Groups: React.FC = () => {
     handlePageChange,
     handleTableChange,
     handleSearch,
+    handleQueryChange,
     handleNameChange
   } = useTableFetch<ListItem>({
     key: PaginationKey.Groups,
@@ -101,6 +109,28 @@ const Groups: React.FC = () => {
     }
   };
 
+  // Server-side filter on the derived type token; clearing the select
+  // sends no group_type at all (the empty string is dropped).
+  const typeFilterOptions = useMemo(
+    () =>
+      [
+        'profession',
+        'department',
+        'business-unit',
+        'local',
+        'unknown',
+        'idp'
+      ].map((token) => ({
+        value: token,
+        label: intl.formatMessage({ id: `groups.type.${token}` })
+      })),
+    [intl]
+  );
+
+  const handleTypeChange = (val?: string) => {
+    handleQueryChange({ page: 1, group_type: val || '' });
+  };
+
   const renderEmpty = (type?: string) => {
     if (type !== 'Table') return;
     return (
@@ -131,11 +161,40 @@ const Groups: React.FC = () => {
     <>
       <PageBox>
         <FilterBar
+          left={
+            <Space>
+              <Input
+                prefix={
+                  <SearchOutlined
+                    style={{ color: 'var(--ant-color-text-placeholder)' }}
+                  />
+                }
+                placeholder={intl.formatMessage({ id: 'common.filter.name' })}
+                style={{ width: 300 }}
+                allowClear
+                onChange={handleNameChange}
+              />
+              <BaseSelect
+                allowClear
+                placeholder={intl.formatMessage({ id: 'groups.filter.type' })}
+                style={{ width: 180 }}
+                options={typeFilterOptions}
+                value={queryParams.group_type || undefined}
+                onChange={handleTypeChange}
+              />
+              <Button
+                type="text"
+                style={{ color: 'var(--ant-color-text-tertiary)' }}
+                onClick={handleSearch}
+                aria-label={intl.formatMessage({ id: 'common.button.refresh' })}
+                title={intl.formatMessage({ id: 'common.button.refresh' })}
+                icon={<SyncOutlined />}
+              />
+            </Space>
+          }
           buttonText={intl.formatMessage({ id: 'groups.button.create' })}
           handleSearch={handleSearch}
           handleClickPrimary={handleAddGroup}
-          handleInputChange={handleNameChange}
-          widths={{ input: 300 }}
         ></FilterBar>
         <ConfigProvider renderEmpty={renderEmpty}>
           <Table

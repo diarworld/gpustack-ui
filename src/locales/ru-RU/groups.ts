@@ -9,6 +9,7 @@ export default {
   'groups.table.members': 'Участники',
   'groups.table.group': 'групп',
   'groups.table.type': 'Тип группы',
+  'groups.filter.type': 'Фильтр по типу группы',
   'groups.type.profession': 'Профессия',
   'groups.type.department': 'Отдел',
   'groups.type.business-unit': 'Бизнес Юнит',

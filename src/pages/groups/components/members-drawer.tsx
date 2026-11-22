@@ -5,7 +5,6 @@ import { AutoTooltip, GSDrawer, IconFont } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { Button, Popconfirm, Select, Table, Tabs } from 'antd';
-import dayjs from 'dayjs';
 import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -205,15 +204,37 @@ const MembersDrawer: React.FC<MembersDrawerProps> = ({
               render: (text: number) => text ?? 0
             }
           ]
-        : []),
-      {
-        title: intl.formatMessage({ id: 'common.table.createTime' }),
-        dataIndex: 'created_at',
-        key: 'created_at',
-        width: 190,
-        render: (text: string) =>
-          text ? dayjs(text).format('YYYY-MM-DD HH:mm:ss') : '-'
-      },
+        : [
+            // User rows: what the IdP says about the person, from
+            // their attribute-derived groups (server-resolved).
+            {
+              title: intl.formatMessage({ id: 'groups.type.business-unit' }),
+              dataIndex: 'business_unit',
+              key: 'business_unit',
+              ellipsis: true,
+              render: (text?: string | null) => (
+                <AutoTooltip ghost>{text || '-'}</AutoTooltip>
+              )
+            },
+            {
+              title: intl.formatMessage({ id: 'groups.type.department' }),
+              dataIndex: 'department',
+              key: 'department',
+              ellipsis: true,
+              render: (text?: string | null) => (
+                <AutoTooltip ghost>{text || '-'}</AutoTooltip>
+              )
+            },
+            {
+              title: intl.formatMessage({ id: 'groups.type.profession' }),
+              dataIndex: 'profession',
+              key: 'profession',
+              ellipsis: true,
+              render: (text?: string | null) => (
+                <AutoTooltip ghost>{text || '-'}</AutoTooltip>
+              )
+            }
+          ]),
       {
         title: intl.formatMessage({ id: 'common.table.operation' }),
         key: 'operation',

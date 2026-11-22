@@ -3,7 +3,6 @@ import { AutoTooltip, DropdownButtons, icons } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import { ColumnsType } from 'antd/lib/table';
-import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { ListItem } from '../config/types';
 
@@ -81,25 +80,11 @@ const useGroupsColumns = ({
         dataIndex: 'member_count',
         key: 'member_count',
         width: 110,
-        sorter: tableSorter(2),
+        sorter: tableSorter(3),
         // The list loads pre-sorted by the server (biggest groups
         // first); this only puts the arrow in the matching state.
         defaultSortOrder: 'descend',
         render: (text: number) => text ?? 0
-      },
-      {
-        title: intl.formatMessage({ id: 'common.table.createTime' }),
-        dataIndex: 'created_at',
-        key: 'created_at',
-        sorter: tableSorter(3),
-        ellipsis: {
-          showTitle: false
-        },
-        render: (text: number) => (
-          <AutoTooltip ghost>
-            {dayjs(text).format('YYYY-MM-DD HH:mm:ss')}
-          </AutoTooltip>
-        )
       },
       {
         title: intl.formatMessage({ id: 'common.table.operation' }),
