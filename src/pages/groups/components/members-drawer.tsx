@@ -341,7 +341,11 @@ const MembersDrawer: React.FC<MembersDrawerProps> = ({
       closeIcon={true}
       keyboard={false}
       styles={{
-        wrapper: { width: 720 }
+        wrapper: { width: 720 },
+        // GSDrawer zeroes the inline padding by default (its footer
+        // buttons need the full bleed); the member management content
+        // is a form surface, so it restores the standard inset.
+        body: { paddingInline: 24 }
       }}
       footer={false}
     >
