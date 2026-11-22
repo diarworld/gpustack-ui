@@ -4,7 +4,7 @@ import { formatUserOption } from '@/pages/users/utils/format-user-option';
 import { AutoTooltip, GSDrawer, IconFont } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
-import { Button, Popconfirm, Select, Table, Tabs } from 'antd';
+import { Button, Popconfirm, Select, Table, Tabs, Tooltip } from 'antd';
 import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -31,6 +31,12 @@ const MembersDrawer: React.FC<MembersDrawerProps> = ({
   onChanged
 }) => {
   const intl = useIntl();
+
+  // Only admin-created (source=Local) groups are editable here:
+  // attribute-derived and claim-synced groups are KeyCloak's authority,
+  // so the drawer renders them read-only with a hint on the add button.
+  const isManageable = group?.source === 'Local';
+  const syncedHint = intl.formatMessage({ id: 'groups.syncedFromIdpHint' });
 
   const [members, setMembers] = useState<MembershipItem[]>([]);
   const [userIds, setUserIds] = useState<number[]>([]);
@@ -131,6 +137,10 @@ const MembersDrawer: React.FC<MembersDrawerProps> = ({
           (item) =>
             item.id !== group?.id &&
             !memberGroupIds.has(item.id) &&
+            // Subgroups are a Local-group feature: an IdP-synced
+            // subgroup would drag its whole membership in while no
+            // admin surface could ever remove or re-derive it.
+            item.source === 'Local' &&
             // Reserved system groups are membership-implicit — the
             // server refuses to nest them, so they never appear.
             !item.name?.startsWith('system/')
@@ -252,49 +262,67 @@ const MembersDrawer: React.FC<MembersDrawerProps> = ({
         )
       }
     ];
+    const visibleColumns = isManageable
+      ? columns
+      : // Read-only: no per-row actions for IdP-synced groups.
+        columns.filter((c) => c.key !== 'operation');
     return (
       <>
-        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-          <Select
-            style={{ flex: 1 }}
-            mode="multiple"
-            allowClear
-            showSearch
-            optionFilterProp="label"
-            maxTagCount="responsive"
-            placeholder={intl.formatMessage({
-              id:
-                kind === 'user'
-                  ? 'groups.members.addUsersPlaceholder'
-                  : 'groups.members.addSubgroupsPlaceholder'
-            })}
-            value={kind === 'user' ? userIds : groupIds}
-            onChange={(val) =>
-              kind === 'user' ? setUserIds(val || []) : setGroupIds(val || [])
-            }
-            options={_.orderBy(
-              kind === 'user' ? userOptions : groupOptions,
-              [(o: { label?: string }) => String(o.label ?? '').toLowerCase()],
-              ['asc']
-            )}
-            notFoundContent={intl.formatMessage({
-              id: 'common.search.nodata'
-            })}
-          ></Select>
-          <Button
-            type="primary"
-            loading={adding}
-            disabled={
-              kind === 'user' ? userIds.length === 0 : groupIds.length === 0
-            }
-            onClick={() => addMembers(kind)}
-          >
-            {intl.formatMessage({ id: 'groups.members.add' })}
-          </Button>
-        </div>
+        {isManageable ? (
+          <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+            <Select
+              style={{ flex: 1 }}
+              mode="multiple"
+              allowClear
+              showSearch
+              optionFilterProp="label"
+              maxTagCount="responsive"
+              placeholder={intl.formatMessage({
+                id:
+                  kind === 'user'
+                    ? 'groups.members.addUsersPlaceholder'
+                    : 'groups.members.addSubgroupsPlaceholder'
+              })}
+              value={kind === 'user' ? userIds : groupIds}
+              onChange={(val) =>
+                kind === 'user' ? setUserIds(val || []) : setGroupIds(val || [])
+              }
+              options={_.orderBy(
+                kind === 'user' ? userOptions : groupOptions,
+                [
+                  (o: { label?: string }) => String(o.label ?? '').toLowerCase()
+                ],
+                ['asc']
+              )}
+              notFoundContent={intl.formatMessage({
+                id: 'common.search.nodata'
+              })}
+            ></Select>
+            <Button
+              type="primary"
+              loading={adding}
+              disabled={
+                kind === 'user' ? userIds.length === 0 : groupIds.length === 0
+              }
+              onClick={() => addMembers(kind)}
+            >
+              {intl.formatMessage({ id: 'groups.members.add' })}
+            </Button>
+          </div>
+        ) : (
+          <div style={{ marginBottom: 12 }}>
+            <Tooltip title={syncedHint}>
+              <span style={{ display: 'inline-block' }}>
+                <Button disabled>
+                  {intl.formatMessage({ id: 'groups.members.add' })}
+                </Button>
+              </span>
+            </Tooltip>
+          </div>
+        )}
         <Table
           size="small"
-          columns={columns}
+          columns={visibleColumns}
           dataSource={rows}
           rowKey="member_principal_id"
           loading={membersLoading}

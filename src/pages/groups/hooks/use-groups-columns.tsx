@@ -11,7 +11,7 @@ interface ColumnsHookProps {
   sortOrder: string[];
 }
 
-const actionList: Global.ActionItem[] = [
+const actionList: Global.ActionItem<ListItem>[] = [
   {
     label: 'groups.action.members',
     key: 'members',
@@ -38,6 +38,22 @@ const useGroupsColumns = ({
 
   const onSelectAction = useMemoizedFn((val: string, record: ListItem) => {
     handleSelect(val, record);
+  });
+
+  const setActions = useMemoizedFn((record: ListItem) => {
+    // Attribute/claim-synced groups are the IdP's authority: the row
+    // (name, type, members) changes only in KeyCloak, so edit/delete
+    // are disabled with a hint instead of inviting edits the sync
+    // would revert. Viewing members stays open for every group.
+    if (record.source === 'Local') {
+      return actionList;
+    }
+    const hint = intl.formatMessage({ id: 'groups.syncedFromIdpHint' });
+    return actionList.map((action) =>
+      action.key === 'edit' || action.key === 'delete'
+        ? { ...action, disabled: true, title: hint }
+        : action
+    );
   });
 
   return useMemo(() => {
@@ -79,7 +95,9 @@ const useGroupsColumns = ({
         title: intl.formatMessage({ id: 'groups.table.members' }),
         dataIndex: 'member_count',
         key: 'member_count',
-        width: 110,
+        // Wide enough for the header plus its sort arrows — below
+        // ~130px antd truncates the title to "Участни…".
+        width: 130,
         sorter: tableSorter(3),
         // The list loads pre-sorted by the server (biggest groups
         // first); this only puts the arrow in the matching state.
@@ -93,13 +111,13 @@ const useGroupsColumns = ({
         span: 2,
         render: (text, record) => (
           <DropdownButtons
-            items={actionList}
+            items={setActions(record)}
             onSelect={(val) => onSelectAction(val, record)}
           />
         )
       }
     ];
-  }, [sortOrder, intl, onSelectAction]);
+  }, [sortOrder, intl, onSelectAction, setActions]);
 };
 
 export default useGroupsColumns;

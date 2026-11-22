@@ -11,6 +11,10 @@ export default {
   'users.form.active': '启用账户',
   'users.form.active.description': '启用或禁用此用户账户',
   'users.form.fullname': '全名',
+  'users.form.groups': '群组',
+  'users.form.groups.placeholder': '选择群组',
+  'users.form.groups.hint':
+    '仅限手动创建的本地群组。从 KeyCloak 同步的群组请在 KeyCloak 中管理。',
   'users.form.source': '来源',
   'users.form.source.local': '本地',
   'users.form.source.tip.switchToLocal':

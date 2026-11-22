@@ -51,3 +51,21 @@ export async function updateUserStatus(params: {
     data: params.data
   });
 }
+
+// Admin-curated (source=Local) groups the user belongs to — the set
+// the edit modal manages. IdP-synced memberships are not included.
+export async function queryUserGroups(id: number) {
+  return request<
+    Array<{ id: number; name: string; display_name?: string | null }>
+  >(`${USERS_API}/${id}/groups`, { method: 'GET' });
+}
+
+// Distinct attribute-derived labels per kind — the option lists for
+// the users-page filters.
+export async function queryUserAttributeValues() {
+  return request<{
+    business_unit: string[];
+    department: string[];
+    profession: string[];
+  }>(`${USERS_API}/attribute-values`, { method: 'GET' });
+}

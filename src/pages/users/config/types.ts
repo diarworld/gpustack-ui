@@ -16,6 +16,9 @@ export interface FormData {
   // Models absent from the map follow the deployment default (1). Entries
   // equal to the default are not stored as overrides.
   model_concurrency_limits?: Record<string, number> | null;
+  // Edit only: the full desired set of admin-curated (Local) groups.
+  // IdP-synced memberships are not addressable from here.
+  group_ids?: number[];
 }
 
 export interface ListItem extends FormData {
@@ -30,4 +33,12 @@ export interface ListItem extends FormData {
   profession?: string | null;
   department?: string | null;
   business_unit?: string | null;
+}
+
+// The edit modal's full desired set of admin-curated (Local) groups;
+// omitted means "leave memberships untouched".
+export interface UserAttributeValues {
+  business_unit: string[];
+  department: string[];
+  profession: string[];
 }

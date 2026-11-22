@@ -10,6 +10,8 @@ export default {
   'groups.table.group': 'groups',
   'groups.table.type': 'Group Type',
   'groups.filter.type': 'Filter by group type',
+  'groups.syncedFromIdpHint':
+    'This group is synced from KeyCloak; its composition can only be changed there',
   'groups.type.profession': 'Profession',
   'groups.type.department': 'Department',
   'groups.type.business-unit': 'Business Unit',

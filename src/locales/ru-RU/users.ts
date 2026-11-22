@@ -12,6 +12,10 @@ export default {
   'users.form.active.description':
     'Включить или отключить эту учетную запись пользователя',
   'users.form.fullname': 'Полное имя',
+  'users.form.groups': 'Группы',
+  'users.form.groups.placeholder': 'Выберите группы',
+  'users.form.groups.hint':
+    'Только локальные группы, созданные вручную. Состав групп, синхронизируемых из KeyCloak, меняется в KeyCloak.',
   'users.form.source': 'Источник',
   'users.form.source.local': 'Локальный',
   'users.form.source.tip.switchToLocal':

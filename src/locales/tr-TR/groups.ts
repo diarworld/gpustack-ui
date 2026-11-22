@@ -10,6 +10,8 @@ export default {
   'groups.table.group': 'grup',
   'groups.table.type': 'Grup Türü',
   'groups.filter.type': 'Grup türüne göre filtrele',
+  'groups.syncedFromIdpHint':
+    'Bu grubun üyeleri KeyCloak\u2019ten senkronize edilir ve yalnızca oradan değiştirilebilir',
   'groups.type.profession': 'Meslek',
   'groups.type.department': 'Departman',
   'groups.type.business-unit': 'İş Birimi',

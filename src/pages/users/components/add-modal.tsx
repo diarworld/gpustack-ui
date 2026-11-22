@@ -1,18 +1,23 @@
 import { PageAction, PasswordReg } from '@/config';
 import { PageActionType } from '@/config/types';
+import { useQueryDataList } from '@/hooks/use-query-data-list';
+import { queryGroupsList } from '@/pages/groups/apis';
+import { ListItem as GroupListItem } from '@/pages/groups/config/types';
 import { useQueryModelList } from '@/pages/llmodels/services/use-query-model-list';
 import {
   Input as CInput,
   FormDrawer,
   IconFont,
   InputNumber,
+  MultipleSelect,
   Select as SealSelect,
   Switch as SealSwitch,
   useSubmitLock
 } from '@gpustack/core-ui';
 import { useIntl, useModel } from '@umijs/max';
 import { Form, Select, Table } from 'antd';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import { queryUserGroups } from '../apis';
 import {
   AuthSourceOptions,
   AuthSources,
@@ -113,6 +118,28 @@ const AddModal: React.FC<AddModalProps> = ({
     loading: modelLoading,
     fetchData: fetchModelList
   } = useQueryModelList();
+  // Candidate set for the groups picker: admin-curated (Local) groups
+  // only — IdP-synced memberships are managed in KeyCloak, so they are
+  // neither offered here nor reported by /users/{id}/groups.
+  const { dataList: localGroupList, fetchData: fetchLocalGroups } =
+    useQueryDataList<GroupListItem>({
+      key: 'userGroupsPicker',
+      fetchList: queryGroupsList,
+      getLabel: (item) => item.display_name || item.name,
+      getValue: (item) => item.id
+    });
+  const groupOptions = useMemo(
+    () =>
+      localGroupList
+        .filter(
+          (item) => item.source === 'Local' && !item.name?.startsWith('system/')
+        )
+        .map((item) => ({
+          label: item.display_name || item.name,
+          value: item.id
+        })),
+    [localGroupList]
+  );
   const selectedSource = Form.useWatch('source', form) ?? AuthSources.LOCAL;
   // The reconciler drops the concurrency block for admins (they are
   // exempt), so the per-model table is hidden for the admin role —
@@ -190,6 +217,20 @@ const AddModal: React.FC<AddModalProps> = ({
     initFormValue();
     if (open) {
       fetchModelList({ page: -1 });
+      fetchLocalGroups({ page: -1, group_type: 'local' });
+      if (action === PageAction.EDIT && data?.id) {
+        // The picker is the full desired set: seed it with the user's
+        // current Local groups (omitted keys would otherwise wipe
+        // memberships on save).
+        queryUserGroups(data.id)
+          .then((groups) =>
+            form.setFieldValue(
+              'group_ids',
+              (groups || []).map((g) => g.id)
+            )
+          )
+          .catch(() => {});
+      }
     }
   }, [open]);
 
@@ -332,6 +373,29 @@ const AddModal: React.FC<AddModalProps> = ({
               required={passwordRequired}
               onPressEnter={handleSubmit}
             ></CInput.Password>
+          </Form.Item>
+        )}
+
+        {action === PageAction.EDIT && (
+          <Form.Item<FormData>
+            name="group_ids"
+            rules={[{ required: false }]}
+            extra={intl.formatMessage({ id: 'users.form.groups.hint' })}
+          >
+            <MultipleSelect
+              allowClear
+              showSearch
+              optionFilterProp="label"
+              maxTagCount="responsive"
+              label={intl.formatMessage({ id: 'users.form.groups' })}
+              placeholder={intl.formatMessage({
+                id: 'users.form.groups.placeholder'
+              })}
+              options={groupOptions}
+              notFoundContent={intl.formatMessage({
+                id: 'common.search.nodata'
+              })}
+            />
           </Form.Item>
         )}
 

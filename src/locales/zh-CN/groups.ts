@@ -10,6 +10,8 @@ export default {
   'groups.table.group': '个用户组',
   'groups.table.type': '用户组类型',
   'groups.filter.type': '按用户组类型筛选',
+  'groups.syncedFromIdpHint':
+    '该群组的成员从 KeyCloak 同步，仅可在 KeyCloak 中变更',
   'groups.type.profession': '职位',
   'groups.type.department': '部门',
   'groups.type.business-unit': '业务单元',

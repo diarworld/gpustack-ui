@@ -10,6 +10,8 @@ export default {
   'groups.table.group': 'グループ',
   'groups.table.type': 'グループタイプ',
   'groups.filter.type': 'グループタイプで絞り込む',
+  'groups.syncedFromIdpHint':
+    'このグループのメンバーはKeyCloakから同期され、KeyCloakでのみ変更できます',
   'groups.type.profession': '職種',
   'groups.type.department': '部門',
   'groups.type.business-unit': 'ビジネスユニット',

@@ -122,7 +122,12 @@ declare namespace Global {
       danger?: boolean;
     };
     visible?: (record: T) => boolean;
-    disabled?: (record: T) => boolean;
+    // DropdownButtons reads this per item as a plain truthy flag
+    // (left button / menu item); pages pre-evaluate it per record.
+    disabled?: boolean | ((record: T) => boolean);
+    // Spread onto the antd MenuItem, which forwards it to the li's
+    // native title tooltip — the hover hint on disabled items.
+    title?: string;
   }
 }
 

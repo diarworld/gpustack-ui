@@ -10,6 +10,8 @@ export default {
   'groups.table.group': 'групп',
   'groups.table.type': 'Тип группы',
   'groups.filter.type': 'Фильтр по типу группы',
+  'groups.syncedFromIdpHint':
+    'Состав этой группы синхронизируется из KeyCloak и меняется только там',
   'groups.type.profession': 'Профессия',
   'groups.type.department': 'Отдел',
   'groups.type.business-unit': 'Бизнес Юнит',

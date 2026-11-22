@@ -11,6 +11,10 @@ export default {
   'users.form.active': 'Active Account',
   'users.form.active.description': 'Enable or disable this user account',
   'users.form.fullname': 'Full Name',
+  'users.form.groups': 'Groups',
+  'users.form.groups.placeholder': 'Select groups',
+  'users.form.groups.hint':
+    'Only manually created Local groups. Groups synced from KeyCloak are managed in KeyCloak.',
   'users.form.source': 'Source',
   'users.form.source.local': 'Local',
   'users.form.source.tip.switchToLocal':

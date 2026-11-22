@@ -3,22 +3,30 @@ import { PageAction } from '@/config';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import type { PageActionType } from '@/config/types';
 import useTableFetch from '@/hooks/use-table-fetch';
-import { DeleteModal, FilterBar, IconFont, NoResult } from '@gpustack/core-ui';
+import { SearchOutlined, SyncOutlined } from '@ant-design/icons';
+import {
+  BaseSelect,
+  DeleteModal,
+  FilterBar,
+  IconFont,
+  NoResult
+} from '@gpustack/core-ui';
 import { useIntl, useModel } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
-import { ConfigProvider, message, Table } from 'antd';
+import { Button, ConfigProvider, Input, message, Space, Table } from 'antd';
 import _ from 'lodash';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import PageBox from '../_components/page-box';
 import {
   createUser,
   deleteUser,
+  queryUserAttributeValues,
   queryUsersList,
   updateUser,
   updateUserStatus
 } from './apis';
 import AddModal from './components/add-modal';
-import { FormData, ListItem } from './config/types';
+import { FormData, ListItem, UserAttributeValues } from './config/types';
 import useUsersColumns from './hooks/use-users-columns';
 
 const Users: React.FC = () => {
@@ -34,6 +42,7 @@ const Users: React.FC = () => {
     handlePageChange,
     handleTableChange,
     handleSearch,
+    handleQueryChange,
     handleNameChange
   } = useTableFetch<ListItem>({
     key: PaginationKey.Users,
@@ -44,6 +53,32 @@ const Users: React.FC = () => {
 
   const { initialState } = useModel('@@initialState') || {};
   const intl = useIntl();
+
+  // Distinct attribute-derived labels per kind, served by
+  // /users/attribute-values; loaded once per mount — the IdP-driven
+  // set changes on login/backfill timescales, not per keystroke.
+  const [attrValues, setAttrValues] = useState<UserAttributeValues>({
+    business_unit: [],
+    department: [],
+    profession: []
+  });
+  useEffect(() => {
+    queryUserAttributeValues()
+      .then(setAttrValues)
+      .catch(() => {});
+  }, []);
+
+  const toLabelOptions = (values: string[]) =>
+    values.map((v) => ({ value: v, label: v }));
+
+  const handleLabelFilter = useMemoizedFn(
+    (param: 'business_unit' | 'department' | 'profession', val?: string) => {
+      // Empty string drops the param entirely (hasQueryValue), so
+      // clearing a select returns to the unfiltered list.
+      handleQueryChange({ page: 1, [param]: val || '' });
+    }
+  );
+
   const [openAddModalStatus, setOpenAddModalStatus] = useState<{
     action: PageActionType;
     open: boolean;
@@ -169,13 +204,64 @@ const Users: React.FC = () => {
     <>
       <PageBox>
         <FilterBar
+          left={
+            <Space>
+              <Input
+                prefix={
+                  <SearchOutlined
+                    style={{ color: 'var(--ant-color-text-placeholder)' }}
+                  />
+                }
+                placeholder={intl.formatMessage({ id: 'common.filter.name' })}
+                style={{ width: 240 }}
+                allowClear
+                onChange={handleNameChange}
+              />
+              <BaseSelect
+                allowClear
+                placeholder={intl.formatMessage({
+                  id: 'groups.type.business-unit'
+                })}
+                style={{ width: 170 }}
+                options={toLabelOptions(attrValues.business_unit)}
+                value={queryParams.business_unit || undefined}
+                onChange={(val) => handleLabelFilter('business_unit', val)}
+              />
+              <BaseSelect
+                allowClear
+                placeholder={intl.formatMessage({
+                  id: 'groups.type.department'
+                })}
+                style={{ width: 150 }}
+                options={toLabelOptions(attrValues.department)}
+                value={queryParams.department || undefined}
+                onChange={(val) => handleLabelFilter('department', val)}
+              />
+              <BaseSelect
+                allowClear
+                placeholder={intl.formatMessage({
+                  id: 'groups.type.profession'
+                })}
+                style={{ width: 150 }}
+                options={toLabelOptions(attrValues.profession)}
+                value={queryParams.profession || undefined}
+                onChange={(val) => handleLabelFilter('profession', val)}
+              />
+              <Button
+                type="text"
+                style={{ color: 'var(--ant-color-text-tertiary)' }}
+                onClick={handleSearch}
+                aria-label={intl.formatMessage({ id: 'common.button.refresh' })}
+                title={intl.formatMessage({ id: 'common.button.refresh' })}
+                icon={<SyncOutlined />}
+              />
+            </Space>
+          }
           buttonText={intl.formatMessage({ id: 'users.button.create' })}
           handleSearch={handleSearch}
           handleDeleteByBatch={handleDeleteBatch}
           handleClickPrimary={handleAddUser}
-          handleInputChange={handleNameChange}
           rowSelection={rowSelection}
-          widths={{ input: 300 }}
         ></FilterBar>
         <ConfigProvider renderEmpty={renderEmpty}>
           <Table
