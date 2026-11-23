@@ -91,8 +91,8 @@ export default function useQueryUsageMetaData() {
     return [...users].sort((a, b) => rank(a) - rank(b));
   };
 
-  const queryMetaData = async () => {
-    const res = await fetchData({});
+  const queryMetaData = async (params?: Record<string, any>) => {
+    const res = await fetchData(params || {});
     const sortedUsers = sortUsers(res?.filters?.users || []);
     const data = {
       users: usageOptions(sortedUsers, 'user').map((item) => ({

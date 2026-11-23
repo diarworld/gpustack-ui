@@ -26,7 +26,10 @@ const LimitsTab: React.FC = () => {
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-    fetchMetaData();
+    // include_all_users: the meta options derive from usage rows, so a
+    // provisioned account that never called would be unpickable — pinning
+    // a user to manage their limits is a directory operation.
+    fetchMetaData({ include_all_users: true });
   }, []);
 
   // Admins only: the endpoint degrades a foreign id to the caller, so
