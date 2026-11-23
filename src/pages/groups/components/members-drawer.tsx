@@ -137,10 +137,6 @@ const MembersDrawer: React.FC<MembersDrawerProps> = ({
           (item) =>
             item.id !== group?.id &&
             !memberGroupIds.has(item.id) &&
-            // Subgroups are a Local-group feature: an IdP-synced
-            // subgroup would drag its whole membership in while no
-            // admin surface could ever remove or re-derive it.
-            item.source === 'Local' &&
             // Reserved system groups are membership-implicit — the
             // server refuses to nest them, so they never appear.
             !item.name?.startsWith('system/')
