@@ -27,6 +27,10 @@ export interface UsageFilterItem {
   };
   label: string;
   deleted: boolean;
+  // Live principal display name — user options only (admin "All" view);
+  // the label stays the snapshotted login, this powers search by the
+  // human-readable name.
+  display_name?: string | null;
 }
 
 export interface TimeSeriesSummary {

@@ -34,10 +34,22 @@ const LimitsTab: React.FC = () => {
   const userOptions = useMemo(() => {
     if (!access.canSeeOrgAdmin) return [];
     return (metaData?.users ?? [])
-      .map((item) => ({
-        value: item.identity?.current?.user_id ?? null,
-        label: item.label
-      }))
+      .map((item) => {
+        // The usage snapshot only knows the login (user_name); the live
+        // display name rides along so the picker matches either. Composed
+        // into the label the way the Users table formats its options —
+        // "Full name [login]" — so a search on either part hits, and a
+        // display name that just repeats the login collapses away.
+        const displayName = item.display_name?.trim();
+        const label =
+          displayName && displayName !== item.label
+            ? `${displayName} [${item.label}]`
+            : item.label;
+        return {
+          value: item.identity?.current?.user_id ?? null,
+          label
+        };
+      })
       .filter(
         (opt): opt is { value: number; label: string } => opt.value != null
       );
