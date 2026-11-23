@@ -1,5 +1,10 @@
 import { request } from '@umijs/max';
-import { FormData, ListItem, MembershipItem } from '../config/types';
+import {
+  FormData,
+  LimitsFormData,
+  ListItem,
+  MembershipItem
+} from '../config/types';
 
 export const GROUPS_API = '/groups';
 
@@ -21,6 +26,15 @@ export async function updateGroup(params: { data: FormData }) {
   return request(`${GROUPS_API}/${params.data.id}`, {
     method: 'PUT',
     data: params.data
+  });
+}
+
+// Quotas are server-owned state, unlike the IdP-owned row fields, so they
+// ride their own endpoint: full-replace, an explicit null clears a limit.
+export async function updateGroupLimits(id: number, data: LimitsFormData) {
+  return request<ListItem>(`${GROUPS_API}/${id}/limits`, {
+    method: 'PUT',
+    data
   });
 }
 

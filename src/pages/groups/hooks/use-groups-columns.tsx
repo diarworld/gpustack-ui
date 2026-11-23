@@ -1,7 +1,9 @@
 import { tableSorter } from '@/config/settings';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import { AutoTooltip, DropdownButtons, icons } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
+import { Tooltip } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { useMemo } from 'react';
 import { ListItem } from '../config/types';
@@ -16,6 +18,11 @@ const actionList: Global.ActionItem<ListItem>[] = [
     label: 'groups.action.members',
     key: 'members',
     icon: icons.ProfileOutlined
+  },
+  {
+    label: 'groups.action.limits',
+    key: 'limits',
+    icon: icons.ThunderboltOutlined
   },
   {
     label: 'common.button.edit',
@@ -104,6 +111,40 @@ const useGroupsColumns = ({
         defaultSortOrder: 'descend',
         render: (text: number) => text ?? 0
       },
+      ...(
+        [
+          ['rpm_limit', 'groups.table.rpm', 'groups.table.rpmHint', 100],
+          ['tpm_limit', 'groups.table.tpm', 'groups.table.tpmHint', 110],
+          [
+            'weekly_token_limit',
+            'groups.table.week',
+            'groups.table.weekHint',
+            110
+          ],
+          [
+            'monthly_token_limit',
+            'groups.table.month',
+            'groups.table.monthHint',
+            110
+          ]
+        ] as const
+      ).map(([dataIndex, titleId, hintId, width]) => ({
+        title: (
+          <span>
+            {intl.formatMessage({ id: titleId })}
+            <Tooltip title={intl.formatMessage({ id: hintId })}>
+              <QuestionCircleOutlined style={{ opacity: 0.6 }} />
+            </Tooltip>
+          </span>
+        ),
+        dataIndex,
+        key: dataIndex,
+        width,
+        sorter: tableSorter(1),
+        // Server-sorted (the sort_by param rides the query); unset
+        // quotas render the dash, matching the form's empty input.
+        render: (text: number | null) => text ?? '—'
+      })),
       {
         title: intl.formatMessage({ id: 'common.table.operation' }),
         key: 'operation',

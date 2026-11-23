@@ -4,6 +4,17 @@ export interface FormData {
   id?: number;
 }
 
+// The group-level gateway quotas, edited from the Manage limits modal and
+// submitted full-replace: every field lands on the row, an explicit null
+// clears a previously set limit.
+export interface LimitsFormData {
+  rpm_limit?: number | null;
+  tpm_limit?: number | null;
+  weekly_token_limit?: number | null;
+  monthly_token_limit?: number | null;
+  model_concurrency_limits?: Record<string, number> | null;
+}
+
 export interface ListItem extends FormData {
   id: number;
   // Human-readable label carried from the IdP (title, department name).
@@ -16,6 +27,13 @@ export interface ListItem extends FormData {
   source: string;
   created_at: string;
   updated_at: string;
+  // Server-resolved quota fields, surfaced in the RPM / TPM / Week /
+  // Month columns and seeded into the limits modal. null = unset (dash).
+  rpm_limit?: number | null;
+  tpm_limit?: number | null;
+  weekly_token_limit?: number | null;
+  monthly_token_limit?: number | null;
+  model_concurrency_limits?: Record<string, number> | null;
 }
 
 export interface MembershipItem {

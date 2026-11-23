@@ -17,6 +17,7 @@ import { useMemo, useState } from 'react';
 import PageBox from '../_components/page-box';
 import { createGroup, deleteGroup, queryGroupsList, updateGroup } from './apis';
 import AddModal from './components/add-modal';
+import LimitsModal from './components/limits-modal';
 import MembersDrawer from './components/members-drawer';
 import { FormData, ListItem } from './config/types';
 import useGroupsColumns from './hooks/use-groups-columns';
@@ -58,6 +59,7 @@ const Groups: React.FC = () => {
     currentData: null
   });
   const [membersGroup, setMembersGroup] = useState<ListItem | null>(null);
+  const [limitsGroup, setLimitsGroup] = useState<ListItem | null>(null);
 
   const handleAddGroup = () => {
     setOpenAddModalStatus({
@@ -106,6 +108,8 @@ const Groups: React.FC = () => {
       handleDelete({ ...row, name: row.display_name || row.name });
     } else if (val === 'members') {
       setMembersGroup(row);
+    } else if (val === 'limits') {
+      setLimitsGroup(row);
     }
   };
 
@@ -235,6 +239,16 @@ const Groups: React.FC = () => {
         onClose={() => setMembersGroup(null)}
         onChanged={fetchData}
       ></MembersDrawer>
+      <LimitsModal
+        title={intl.formatMessage({ id: 'groups.action.limits' })}
+        open={!!limitsGroup}
+        group={limitsGroup}
+        onSaved={() => {
+          setLimitsGroup(null);
+          fetchData();
+        }}
+        onCancel={() => setLimitsGroup(null)}
+      ></LimitsModal>
       <DeleteModal ref={modalRef}></DeleteModal>
     </>
   );

@@ -25,5 +25,27 @@ export default {
   'groups.members.addUsersPlaceholder': '选择要添加的用户',
   'groups.members.addSubgroupsPlaceholder': '选择要添加的子用户组',
   'groups.members.removeConfirm':
-    '确定将该成员移出用户组？嵌套的用户组将随之失去由此授予的访问权限。'
+    '确定将该成员移出用户组？嵌套的用户组将随之失去由此授予的访问权限。',
+  'groups.action.limits': '管理限额',
+  'groups.table.rpm': 'RPM',
+  'groups.table.tpm': 'TPM',
+  'groups.table.week': '周',
+  'groups.table.month': '月',
+  'groups.table.rpmHint':
+    '组成员的每分钟请求数：取其各用户组中的最小值，除非账户自身设置了限额。',
+  'groups.table.tpmHint': '组成员的每分钟令牌数；取其各用户组中的最小值。',
+  'groups.table.weekHint':
+    '组成员的滚动 7 天令牌预算；部署没有为它设置默认值。',
+  'groups.table.monthHint': '组成员的自然月令牌预算。',
+  'groups.limits.rpmHint':
+    '每分钟请求数。对自身未设置显式限额的成员生效；多个用户组都设置时取最小值。',
+  'groups.limits.tpmHint':
+    '每分钟令牌数。对自身未设置显式限额的成员生效；取其各用户组中的最小值。',
+  'groups.limits.weeklyHint':
+    '对自身未设置周预算的成员生效的滚动 7 天令牌预算；取其各用户组中的最小值。',
+  'groups.limits.monthlyHint':
+    '对自身未设置月预算的成员生效的自然月令牌预算；取其各用户组中的最小值。',
+  'groups.limits.concurrencyHint':
+    '组成员的每模型并发上限。成员自己的覆盖值优先；否则取各用户组中最小的非零值；用户组上的 0 表示该组不限制该模型。',
+  'groups.limits.success': '用户组限额已更新'
 };
