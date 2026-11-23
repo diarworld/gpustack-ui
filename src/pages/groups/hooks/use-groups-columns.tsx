@@ -1,4 +1,5 @@
 import { tableSorter } from '@/config/settings';
+import { formatCompactNumber } from '@/utils/format-compact-number';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { AutoTooltip, DropdownButtons, icons } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
@@ -113,22 +114,24 @@ const useGroupsColumns = ({
       },
       ...(
         [
-          ['rpm_limit', 'groups.table.rpm', 'groups.table.rpmHint', 100],
-          ['tpm_limit', 'groups.table.tpm', 'groups.table.tpmHint', 110],
+          ['rpm_limit', 'groups.table.rpm', 'groups.table.rpmHint', 100, false],
+          ['tpm_limit', 'groups.table.tpm', 'groups.table.tpmHint', 110, true],
           [
             'weekly_token_limit',
             'groups.table.week',
             'groups.table.weekHint',
-            110
+            110,
+            true
           ],
           [
             'monthly_token_limit',
             'groups.table.month',
             'groups.table.monthHint',
-            110
+            110,
+            true
           ]
         ] as const
-      ).map(([dataIndex, titleId, hintId, width]) => ({
+      ).map(([dataIndex, titleId, hintId, width, compact]) => ({
         title: (
           <span>
             {intl.formatMessage({ id: titleId })}
@@ -141,9 +144,16 @@ const useGroupsColumns = ({
         key: dataIndex,
         width,
         sorter: tableSorter(1),
-        // Server-sorted (the sort_by param rides the query); unset
-        // quotas render the dash, matching the form's empty input.
-        render: (text: number | null) => text ?? '—'
+        // Server-sorted (the sort_by param rides the query); unset quotas
+        // render the dash, matching the form's empty input. Token counts
+        // are compact in the reader's locale — the same 700,8 тыс. /
+        // 100 млн rendering the Usage overview limit cards use.
+        render: (text: number | null) =>
+          text == null
+            ? '—'
+            : compact
+              ? formatCompactNumber(text, intl.locale)
+              : text
       })),
       {
         title: intl.formatMessage({ id: 'common.table.operation' }),

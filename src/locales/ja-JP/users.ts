@@ -64,6 +64,6 @@ export default {
     'ユーザーのすべてのAPIキーとUIセッションに共通して適用されます。',
   'users.form.modelConcurrency': 'モデルごとの同時リクエスト数',
   'users.form.modelConcurrency.hint':
-    'ユーザーが各モデルに対して同時に実行できるリクエストの上限。0 は無制限、1 はデプロイのデフォルト値です。記載のないモデルにはデフォルト値が適用されます。',
-  'users.form.modelConcurrency.default': 'デフォルト: 1'
+    'ユーザーが各モデルに対して同時に実行できるリクエストの上限。0 は無制限、空欄はデプロイのデフォルト値に従います。記載のないモデルにはデフォルト値が適用されます。',
+  'users.form.defaultPlaceholder': 'デフォルト: {default}'
 };

@@ -1,3 +1,4 @@
+import { quotaPlaceholder } from '@/hooks/use-rate-limit-defaults';
 import { InputNumber } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Table } from 'antd';
@@ -5,18 +6,19 @@ import { Table } from 'antd';
 export type ModelConcurrencyValue = Record<string, number>;
 
 // One row per deployed model: the in-flight cap for that model. The form
-// value is the raw map; entries equal to the deployment default (1) are
-// stripped at submit — 1 is what the deployment enforces anyway, so storing
-// it would freeze an override the operator never meant to set. 0 is stored:
-// it is the explicit "unlimited" escape hatch, distinct from "follow the
-// default". Shared by the user and the group limit editors: the same map
-// lands on the Principal row either way.
+// value is the raw map; an absent key means "follow the deployment
+// default" (the placeholder names it), a typed value is a deliberate pin,
+// and 0 is the explicit "unlimited" escape hatch. Whatever the operator
+// types is stored — stripping values equal to the default would silently
+// drop a tighter cap they meant to set. Shared by the user and the group
+// limit editors: the same map lands on the Principal row either way.
 const ModelConcurrencyInput: React.FC<{
   value?: ModelConcurrencyValue;
   onChange?: (value: ModelConcurrencyValue) => void;
   models: { name: string }[];
   loading?: boolean;
-}> = ({ value, onChange, models, loading }) => {
+  defaultConcurrency?: number | null;
+}> = ({ value, onChange, models, loading, defaultConcurrency }) => {
   const intl = useIntl();
   // The form field is null when the account has no overrides stored (the
   // submit collapses an empty map to null); default-parameter syntax
@@ -37,13 +39,10 @@ const ModelConcurrencyInput: React.FC<{
           min={0}
           precision={0}
           value={limits[record.name]}
-          placeholder={intl.formatMessage({
-            id: 'users.form.modelConcurrency.default'
-          })}
+          placeholder={quotaPlaceholder(intl, defaultConcurrency)}
           onChange={(v) => {
             // Clearing the input returns the model to the deployment
-            // default — an absent key and an explicit 1 mean the same
-            // thing to the gateway, so only real overrides are kept.
+            // default — only a real absence is stored.
             const next = { ...limits };
             if (v === null || v === undefined) {
               delete next[record.name];
@@ -64,7 +63,10 @@ const ModelConcurrencyInput: React.FC<{
       dataSource={models}
       loading={loading}
       pagination={false}
-      scroll={{ y: 240 }}
+      // antd renders a permanent scrollbar track once scroll.y is set;
+      // short lists get the natural height and no scrollbar, long ones
+      // keep the fixed-height body with its scroll.
+      scroll={models.length > 6 ? { y: 240 } : undefined}
     />
   );
 };

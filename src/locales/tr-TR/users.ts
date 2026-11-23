@@ -64,6 +64,6 @@ export default {
     'Kullanıcının tüm API anahtarlarında ve arayüz oturumlarında geçerlidir.',
   'users.form.modelConcurrency': 'Model başına eşzamanlı istek',
   'users.form.modelConcurrency.hint':
-    'Kullanıcının her modelde aynı anda çalıştırabileceği maksimum istek sayısı. 0 = sınırsız; 1 dağıtım varsayılanıdır. Listede olmayan modeller varsayılanı izler.',
-  'users.form.modelConcurrency.default': 'Varsayılan: 1'
+    'Kullanıcının her modelde aynı anda çalıştırabileceği maksimum istek sayısı. 0 = sınırsız; boş bırakılırsa dağıtım varsayılanı izlenir. Listede olmayan modeller varsayılanı izler.',
+  'users.form.defaultPlaceholder': 'Varsayılan: {default}'
 };

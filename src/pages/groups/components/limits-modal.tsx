@@ -1,3 +1,7 @@
+import {
+  quotaPlaceholder,
+  useRateLimitDefaults
+} from '@/hooks/use-rate-limit-defaults';
 import ModelConcurrencyInput from '@/pages/_components/model-concurrency-input';
 import { useQueryModelList } from '@/pages/llmodels/services/use-query-model-list';
 import { FormDrawer, InputNumber, useSubmitLock } from '@gpustack/core-ui';
@@ -28,6 +32,7 @@ const LimitsModal: React.FC<LimitsModalProps> = ({
   const [form] = Form.useForm();
   const intl = useIntl();
   const { loading, guard, run, release } = useSubmitLock();
+  const defaults = useRateLimitDefaults();
   const {
     dataList: modelList,
     loading: modelLoading,
@@ -54,23 +59,18 @@ const LimitsModal: React.FC<LimitsModalProps> = ({
 
   const onFinish = async (values: LimitsFormData) => {
     if (!group) return;
-    // Entries equal to the deployment default are not stored as
-    // overrides — the same strip the user form applies; an empty map
-    // collapses to null so the group carries no block at all.
-    const overrides = Object.fromEntries(
-      Object.entries(values.model_concurrency_limits ?? {}).filter(
-        ([, limit]) => limit !== 1
-      )
-    );
+    // The map is stored verbatim: a typed value is a deliberate pin (1
+    // tighter than the default included), an absent key follows the
+    // deployment default the placeholder names. An empty map collapses to
+    // null so the group carries no block at all.
+    const map = values.model_concurrency_limits;
     await run(async () => {
       await updateGroupLimits(group.id, {
         rpm_limit: values.rpm_limit ?? null,
         tpm_limit: values.tpm_limit ?? null,
         weekly_token_limit: values.weekly_token_limit ?? null,
         monthly_token_limit: values.monthly_token_limit ?? null,
-        model_concurrency_limits: Object.keys(overrides).length
-          ? overrides
-          : null
+        model_concurrency_limits: map && Object.keys(map).length ? map : null
       });
       message.success(intl.formatMessage({ id: 'groups.limits.success' }));
       onSaved();
@@ -109,13 +109,16 @@ const LimitsModal: React.FC<LimitsModalProps> = ({
                 style={{ width: '100%' }}
                 min={1}
                 precision={0}
+                // The in-field label only floats up on focus or value;
+                // a blurred empty field would drop it onto the
+                // placeholder. Float it always so the placeholder —
+                // which quotes the deployment default — stays readable.
+                alwaysFocus
                 label={intl.formatMessage({ id: 'users.form.rpm' })}
                 description={intl.formatMessage({
                   id: 'groups.limits.rpmHint'
                 })}
-                placeholder={intl.formatMessage({
-                  id: 'users.form.tokenBudgets.none'
-                })}
+                placeholder={quotaPlaceholder(intl, defaults?.default_rpm)}
               />
             </Form.Item>
           </div>
@@ -128,13 +131,12 @@ const LimitsModal: React.FC<LimitsModalProps> = ({
                 style={{ width: '100%' }}
                 min={1}
                 precision={0}
+                alwaysFocus
                 label={intl.formatMessage({ id: 'users.form.tpm' })}
                 description={intl.formatMessage({
                   id: 'groups.limits.tpmHint'
                 })}
-                placeholder={intl.formatMessage({
-                  id: 'users.form.tokenBudgets.none'
-                })}
+                placeholder={quotaPlaceholder(intl, defaults?.default_tpm)}
               />
             </Form.Item>
           </div>
@@ -149,6 +151,7 @@ const LimitsModal: React.FC<LimitsModalProps> = ({
                 style={{ width: '100%' }}
                 min={1}
                 precision={0}
+                alwaysFocus
                 label={intl.formatMessage({ id: 'users.form.weeklyTokens' })}
                 description={intl.formatMessage({
                   id: 'groups.limits.weeklyHint'
@@ -168,13 +171,15 @@ const LimitsModal: React.FC<LimitsModalProps> = ({
                 style={{ width: '100%' }}
                 min={1}
                 precision={0}
+                alwaysFocus
                 label={intl.formatMessage({ id: 'users.form.monthlyTokens' })}
                 description={intl.formatMessage({
                   id: 'groups.limits.monthlyHint'
                 })}
-                placeholder={intl.formatMessage({
-                  id: 'users.form.tokenBudgets.none'
-                })}
+                placeholder={quotaPlaceholder(
+                  intl,
+                  defaults?.default_monthly_tokens
+                )}
               />
             </Form.Item>
           </div>
@@ -188,6 +193,7 @@ const LimitsModal: React.FC<LimitsModalProps> = ({
           <ModelConcurrencyInput
             models={modelList ?? []}
             loading={modelLoading}
+            defaultConcurrency={defaults?.default_concurrency}
           />
         </Form.Item>
       </Form>

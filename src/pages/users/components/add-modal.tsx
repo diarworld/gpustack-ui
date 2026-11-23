@@ -1,6 +1,10 @@
 import { PageAction, PasswordReg } from '@/config';
 import { PageActionType } from '@/config/types';
 import { useQueryDataList } from '@/hooks/use-query-data-list';
+import {
+  quotaPlaceholder,
+  useRateLimitDefaults
+} from '@/hooks/use-rate-limit-defaults';
 import ModelConcurrencyInput from '@/pages/_components/model-concurrency-input';
 import { queryGroupsList } from '@/pages/groups/apis';
 import { ListItem as GroupListItem } from '@/pages/groups/config/types';
@@ -110,6 +114,7 @@ const AddModal: React.FC<AddModalProps> = ({
   const [form] = Form.useForm();
   const intl = useIntl();
   const { loading, guard, run, release } = useSubmitLock();
+  const defaults = useRateLimitDefaults();
   const {
     dataList: modelList,
     loading: modelLoading,
@@ -212,21 +217,15 @@ const AddModal: React.FC<AddModalProps> = ({
   };
 
   const onFinish = async (values: FormData) => {
-    // Entries equal to the deployment default are not stored as
-    // overrides — 1 is what the gateway enforces anyway, and keeping
-    // them would freeze a cap the admin never meant to pin. An empty
-    // map collapses to null so the account carries no block at all.
-    const overrides = Object.fromEntries(
-      Object.entries(values.model_concurrency_limits ?? {}).filter(
-        ([, limit]) => limit !== 1
-      )
-    );
+    // The map is stored verbatim: a typed value is a deliberate pin (a 1
+    // tighter than the default included), an absent key follows the
+    // deployment default the placeholder names. An empty map collapses to
+    // null so the account carries no block at all.
+    const map = values.model_concurrency_limits;
     await run(() =>
       onOk({
         ...values,
-        model_concurrency_limits: Object.keys(overrides).length
-          ? overrides
-          : null
+        model_concurrency_limits: map && Object.keys(map).length ? map : null
       })
     );
   };
@@ -419,13 +418,16 @@ const AddModal: React.FC<AddModalProps> = ({
                 style={{ width: '100%' }}
                 min={1}
                 precision={0}
+                // The in-field label only floats up on focus or value; a
+                // blurred empty field would drop it onto the placeholder.
+                // Float it always so the placeholder — which quotes the
+                // deployment default — stays readable.
+                alwaysFocus
                 label={intl.formatMessage({ id: 'users.form.rpm' })}
                 description={intl.formatMessage({
                   id: 'users.form.rateLimits.hint'
                 })}
-                placeholder={intl.formatMessage({
-                  id: 'users.form.tokenBudgets.none'
-                })}
+                placeholder={quotaPlaceholder(intl, defaults?.default_rpm)}
               />
             </Form.Item>
           </div>
@@ -435,13 +437,12 @@ const AddModal: React.FC<AddModalProps> = ({
                 style={{ width: '100%' }}
                 min={1}
                 precision={0}
+                alwaysFocus
                 label={intl.formatMessage({ id: 'users.form.tpm' })}
                 description={intl.formatMessage({
                   id: 'users.form.rateLimits.tpmHint'
                 })}
-                placeholder={intl.formatMessage({
-                  id: 'users.form.tokenBudgets.none'
-                })}
+                placeholder={quotaPlaceholder(intl, defaults?.default_tpm)}
               />
             </Form.Item>
           </div>
@@ -456,6 +457,7 @@ const AddModal: React.FC<AddModalProps> = ({
                 style={{ width: '100%' }}
                 min={1}
                 precision={0}
+                alwaysFocus
                 label={intl.formatMessage({ id: 'users.form.weeklyTokens' })}
                 description={intl.formatMessage({
                   id: 'users.form.tokenBudgets.hint'
@@ -475,10 +477,12 @@ const AddModal: React.FC<AddModalProps> = ({
                 style={{ width: '100%' }}
                 min={1}
                 precision={0}
+                alwaysFocus
                 label={intl.formatMessage({ id: 'users.form.monthlyTokens' })}
-                placeholder={intl.formatMessage({
-                  id: 'users.form.tokenBudgets.none'
-                })}
+                placeholder={quotaPlaceholder(
+                  intl,
+                  defaults?.default_monthly_tokens
+                )}
               />
             </Form.Item>
           </div>
@@ -495,6 +499,7 @@ const AddModal: React.FC<AddModalProps> = ({
             <ModelConcurrencyInput
               models={modelList ?? []}
               loading={modelLoading}
+              defaultConcurrency={defaults?.default_concurrency}
             />
           </Form.Item>
         )}

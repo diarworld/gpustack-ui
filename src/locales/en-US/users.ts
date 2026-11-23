@@ -63,6 +63,6 @@ export default {
     "Shared across the user's API keys and UI sessions.",
   'users.form.modelConcurrency': 'Concurrent requests per model',
   'users.form.modelConcurrency.hint':
-    'Maximum simultaneous requests the user may run against each model. 0 = unlimited; 1 is the deployment default. Models not listed here follow the default.',
-  'users.form.modelConcurrency.default': 'Default: 1'
+    'Maximum simultaneous requests the user may run against each model. 0 = unlimited; leave empty to follow the deployment default. Models not listed here follow the default.',
+  'users.form.defaultPlaceholder': 'Default: {default}'
 };
