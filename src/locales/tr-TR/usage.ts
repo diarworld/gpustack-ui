@@ -26,7 +26,7 @@ export default {
   'usage.tabs.limits': 'Limitler',
   'usage.tabs.gpuInstances': 'GPU Örnekleri',
   'usage.tabs.storage': 'Depolama',
-  'usage.tabs.resourceEvents': 'Kaynak Olayları',
+  'usage.tabs.resourceEvents': 'Olaylar',
   'usage.tabs.models': 'Modeller',
   'usage.tabs.apikeys': 'API Anahtarları',
   'usage.tabs.users': 'Kullanıcı',
@@ -120,6 +120,15 @@ export default {
   'usage.summary.tokensOverTime': 'Zaman içinde Token',
   'usage.summary.usageOverTime': 'Zaman içinde kullanım',
   'usage.summary.gbDaysOverTime': 'Zaman içinde GB-Gün',
+
+  // --- Summary tab: limit-rejection stats ---
+  'usage.summary.limits.total': 'limit aşımı olayı',
+  'usage.summary.limits.rps': 'RPS',
+  'usage.summary.limits.tpm': 'TPM',
+  'usage.summary.limits.concurrency': 'eşzamanlı',
+  'usage.summary.limits.weekly': 'haftalık',
+  'usage.summary.limits.monthly': 'aylık',
+  'usage.summary.limits.overTime': 'Zaman içinde limit aşımı',
 
   // --- Summary tab: rate limits ---
   'usage.rateLimits.title': 'Hız Sınırları',
@@ -215,8 +224,10 @@ export default {
   'usage.events.type.limitRateRequests': 'Çok fazla istek',
   'usage.events.type.limitRateTokens': 'Çok fazla token',
   'usage.events.type.limitConcurrency': 'Çok fazla eşzamanlı istek',
-  'usage.events.type.limitQuotaDaily': 'Günlük token kotası aşıldı',
+  'usage.events.type.limitQuotaWeekly': 'Haftalık token kotası aşıldı',
   'usage.events.type.limitQuotaMonthly': 'Aylık token kotası aşıldı',
-  'usage.events.type.limitQuotaYearly': 'Yıllık token kotası aşıldı',
-  'usage.events.type.limitGeneric': 'Hız sınırı tetiklendi'
+  'usage.events.type.limitGeneric': 'Hız sınırı tetiklendi',
+  'usage.events.tooltip.businessUnit': 'İş Birimi',
+  'usage.events.tooltip.department': 'Departman',
+  'usage.events.tooltip.profession': 'Meslek'
 };

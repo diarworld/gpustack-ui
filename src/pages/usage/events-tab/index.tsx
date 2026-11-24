@@ -12,7 +12,7 @@ import { type StatusType } from '@/config/types';
 import { SimpleSelect, StatusDot } from '@gpustack/core-ui';
 import { useAccess, useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
-import { Input, Select, Table } from 'antd';
+import { Input, Table, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -25,7 +25,7 @@ import useQueryResourceEvents from './services/use-query-resource-events';
 // resource_event_logger): create/delete + the metering-window pair.
 // updated/attached/detached exist as enum values but are intentionally not
 // recorded, so they're not offered as filters. Rate-limit rejections are the
-// other family: six limit axes, all reported as one kind of thing happening
+// other family: the limit axes, all reported as one kind of thing happening
 // (a limit tripping — hence the shared error status).
 const EVENT_STATUS: Record<string, StatusType> = {
   created: 'success',
@@ -35,9 +35,8 @@ const EVENT_STATUS: Record<string, StatusType> = {
   limit_rate_requests: 'error',
   limit_rate_tokens: 'error',
   limit_concurrency: 'error',
-  limit_quota_daily: 'error',
+  limit_quota_weekly: 'error',
   limit_quota_monthly: 'error',
-  limit_quota_yearly: 'error',
   limit_event: 'error'
 };
 
@@ -69,18 +68,6 @@ const ResourceEvents: React.FC = () => {
     [intl]
   );
 
-  const RESOURCE_TYPE_OPTIONS = useMemo(
-    () => [
-      { value: 'gpu_instance', label: RESOURCE_TYPE_LABELS.gpu_instance },
-      {
-        value: 'persistent_volume',
-        label: RESOURCE_TYPE_LABELS.persistent_volume
-      },
-      { value: 'limit', label: RESOURCE_TYPE_LABELS.limit }
-    ],
-    [RESOURCE_TYPE_LABELS]
-  );
-
   const EVENT_TYPE_OPTIONS = useMemo(
     () => [
       {
@@ -101,7 +88,9 @@ const ResourceEvents: React.FC = () => {
       },
       // Rate-limit rejections: the axis that tripped. Every one is the same
       // kind of event (a limit tripping), the enum names the axis; the
-      // concrete window (per minute vs per hour) rides in the message.
+      // concrete window (per minute vs the rolling week) rides in the
+      // message. The quotas mirror what the product actually configures —
+      // the weekly rolling budget and the monthly calendar one.
       {
         value: 'limit_rate_requests',
         label: intl.formatMessage({ id: 'usage.events.type.limitRateRequests' })
@@ -115,16 +104,12 @@ const ResourceEvents: React.FC = () => {
         label: intl.formatMessage({ id: 'usage.events.type.limitConcurrency' })
       },
       {
-        value: 'limit_quota_daily',
-        label: intl.formatMessage({ id: 'usage.events.type.limitQuotaDaily' })
+        value: 'limit_quota_weekly',
+        label: intl.formatMessage({ id: 'usage.events.type.limitQuotaWeekly' })
       },
       {
         value: 'limit_quota_monthly',
         label: intl.formatMessage({ id: 'usage.events.type.limitQuotaMonthly' })
-      },
-      {
-        value: 'limit_quota_yearly',
-        label: intl.formatMessage({ id: 'usage.events.type.limitQuotaYearly' })
       }
     ],
     [intl]
@@ -148,7 +133,6 @@ const ResourceEvents: React.FC = () => {
   // (the backend filters by one) and ``nameQuery`` is the debounced substring.
   type QueryParams = {
     dateRange: [dayjs.Dayjs, dayjs.Dayjs];
-    resourceType?: string;
     eventTypes: string[];
     nameQuery: string;
     page: number;
@@ -156,7 +140,6 @@ const ResourceEvents: React.FC = () => {
   };
   const [queryParams, setQueryParams] = useState<QueryParams>({
     dateRange: [dayjs().subtract(29, 'day'), dayjs()],
-    resourceType: undefined,
     eventTypes: [],
     nameQuery: '',
     perPage: 50,
@@ -178,7 +161,6 @@ const ResourceEvents: React.FC = () => {
       start_date: params.dateRange[0].format('YYYY-MM-DD'),
       end_date: params.dateRange[1].format('YYYY-MM-DD'),
       scope,
-      resource_types: params.resourceType ? [params.resourceType] : undefined,
       resource_name: params.nameQuery || undefined,
       event_types: params.eventTypes,
       page: params.page,
@@ -223,7 +205,42 @@ const ResourceEvents: React.FC = () => {
       {
         title: intl.formatMessage({ id: 'usage.table.name' }),
         dataIndex: 'resource_name',
-        key: 'resource_name'
+        key: 'resource_name',
+        render: (v: string, row?: ResourceEventItem) => {
+          // Hover tooltip with the creator's attribute-derived labels, when
+          // the row carries any — rows attributable to a raw (unresolved)
+          // consumer have none.
+          const attrs: [string, string][] = [];
+          (
+            [
+              ['usage.events.tooltip.businessUnit', row?.creator_business_unit],
+              ['usage.events.tooltip.department', row?.creator_department],
+              ['usage.events.tooltip.profession', row?.creator_profession]
+            ] as [string, string | undefined][]
+          ).forEach(([id, val]) => {
+            if (val) {
+              attrs.push([id, val]);
+            }
+          });
+          if (!v || attrs.length === 0) {
+            return v ?? '-';
+          }
+          return (
+            <Tooltip
+              title={
+                <>
+                  {attrs.map(([id, val]) => (
+                    <div key={id}>
+                      {intl.formatMessage({ id })}: {val}
+                    </div>
+                  ))}
+                </>
+              }
+            >
+              <span style={{ cursor: 'default' }}>{v}</span>
+            </Tooltip>
+          );
+        }
       },
       {
         title: intl.formatMessage({ id: 'usage.events.col.event' }),
@@ -281,16 +298,6 @@ const ResourceEvents: React.FC = () => {
               })}
               onChange={(e) => onNameChange(e.target.value)}
               style={{ width: 200 }}
-            />
-            <Select
-              allowClear
-              placeholder={intl.formatMessage({
-                id: 'usage.events.resourceType'
-              })}
-              value={queryParams.resourceType}
-              onChange={(v) => fetchEvents({ resourceType: v, page: 1 })}
-              options={RESOURCE_TYPE_OPTIONS}
-              style={{ minWidth: 200 }}
             />
             <SimpleSelect
               mode="multiple"

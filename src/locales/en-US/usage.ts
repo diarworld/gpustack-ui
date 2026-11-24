@@ -26,7 +26,7 @@ export default {
   'usage.tabs.limits': 'Limits',
   'usage.tabs.gpuInstances': 'GPU Instances',
   'usage.tabs.storage': 'Storage',
-  'usage.tabs.resourceEvents': 'Resource Events',
+  'usage.tabs.resourceEvents': 'Events',
   'usage.tabs.models': 'Models',
   'usage.tabs.apikeys': 'API Keys',
   'usage.tabs.users': 'User',
@@ -120,6 +120,15 @@ export default {
   'usage.summary.tokensOverTime': 'Tokens over time',
   'usage.summary.usageOverTime': 'Usage over time',
   'usage.summary.gbDaysOverTime': 'GB-Days over time',
+
+  // --- Summary tab: limit-rejection stats ---
+  'usage.summary.limits.total': 'limit-trigger events',
+  'usage.summary.limits.rps': 'RPS',
+  'usage.summary.limits.tpm': 'TPM',
+  'usage.summary.limits.concurrency': 'concurrency',
+  'usage.summary.limits.weekly': 'weekly',
+  'usage.summary.limits.monthly': 'monthly',
+  'usage.summary.limits.overTime': 'Limit triggers over time',
 
   // --- Summary tab: rate limits ---
   'usage.rateLimits.title': 'Rate Limits',
@@ -222,9 +231,12 @@ export default {
   'usage.events.type.limitRateRequests': 'Too many requests',
   'usage.events.type.limitRateTokens': 'Too many tokens',
   'usage.events.type.limitConcurrency': 'Too many concurrent requests',
-  'usage.events.type.limitQuotaDaily': 'Daily token quota exceeded',
+  'usage.events.type.limitQuotaWeekly': 'Weekly token quota exceeded',
   'usage.events.type.limitQuotaMonthly': 'Monthly token quota exceeded',
-  'usage.events.type.limitQuotaYearly': 'Yearly token quota exceeded',
   // Backend fallback for a limit axis this build does not enumerate yet.
-  'usage.events.type.limitGeneric': 'Rate limit tripped'
+  'usage.events.type.limitGeneric': 'Rate limit tripped',
+  // Hover tooltip on the name column: the creator's attribute-derived labels.
+  'usage.events.tooltip.businessUnit': 'Business Unit',
+  'usage.events.tooltip.department': 'Department',
+  'usage.events.tooltip.profession': 'Profession'
 };

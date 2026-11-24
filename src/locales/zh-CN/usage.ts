@@ -26,7 +26,7 @@ export default {
   'usage.tabs.limits': '限制',
   'usage.tabs.gpuInstances': 'GPU 实例',
   'usage.tabs.storage': '存储',
-  'usage.tabs.resourceEvents': '资源事件',
+  'usage.tabs.resourceEvents': '事件',
   'usage.tabs.models': '模型',
   'usage.tabs.apikeys': 'API 密钥',
   'usage.tabs.users': '用户',
@@ -121,6 +121,15 @@ export default {
   'usage.summary.usageOverTime': '用量趋势',
   'usage.summary.gbDaysOverTime': 'GB·天趋势',
 
+  // --- Summary tab: limit-rejection stats ---
+  'usage.summary.limits.total': '限流事件',
+  'usage.summary.limits.rps': 'RPS',
+  'usage.summary.limits.tpm': 'TPM',
+  'usage.summary.limits.concurrency': '并发',
+  'usage.summary.limits.weekly': '每周',
+  'usage.summary.limits.monthly': '每月',
+  'usage.summary.limits.overTime': '限流触发趋势',
+
   // --- Summary tab: rate limits ---
   'usage.rateLimits.title': '速率限制',
   'usage.rateLimits.resetsIn': '{time}后重置',
@@ -212,8 +221,10 @@ export default {
   'usage.events.type.limitRateRequests': '请求过多',
   'usage.events.type.limitRateTokens': '令牌过多',
   'usage.events.type.limitConcurrency': '并发请求过多',
-  'usage.events.type.limitQuotaDaily': '每日令牌配额已用尽',
+  'usage.events.type.limitQuotaWeekly': '每周令牌配额已用尽',
   'usage.events.type.limitQuotaMonthly': '每月令牌配额已用尽',
-  'usage.events.type.limitQuotaYearly': '每年令牌配额已用尽',
-  'usage.events.type.limitGeneric': '触发速率限制'
+  'usage.events.type.limitGeneric': '触发速率限制',
+  'usage.events.tooltip.businessUnit': '业务单元',
+  'usage.events.tooltip.department': '部门',
+  'usage.events.tooltip.profession': '职位'
 };

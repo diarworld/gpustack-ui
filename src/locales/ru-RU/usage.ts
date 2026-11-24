@@ -26,7 +26,7 @@ export default {
   'usage.tabs.limits': 'Лимиты',
   'usage.tabs.gpuInstances': 'GPU-инстансы',
   'usage.tabs.storage': 'Хранилище',
-  'usage.tabs.resourceEvents': 'События ресурсов',
+  'usage.tabs.resourceEvents': 'События',
   'usage.tabs.models': 'Модели',
   'usage.tabs.apikeys': 'API-ключи',
   'usage.tabs.users': 'Пользователь',
@@ -121,6 +121,15 @@ export default {
   'usage.summary.tokensOverTime': 'Token по времени',
   'usage.summary.usageOverTime': 'Потребление во времени',
   'usage.summary.gbDaysOverTime': 'ГБ-дни по времени',
+
+  // --- Summary tab: limit-rejection stats ---
+  'usage.summary.limits.total': 'Событий превышения лимита',
+  'usage.summary.limits.rps': 'RPS',
+  'usage.summary.limits.tpm': 'TPM',
+  'usage.summary.limits.concurrency': 'Конкурентного',
+  'usage.summary.limits.weekly': 'Недельного',
+  'usage.summary.limits.monthly': 'Месячного',
+  'usage.summary.limits.overTime': 'Срабатывания лимитов',
 
   // --- Summary tab: rate limits ---
   'usage.rateLimits.title': 'Лимиты',
@@ -218,14 +227,17 @@ export default {
   'usage.events.type.detached': 'Отключён',
   // Rate-limit rejections (resource type "limit"): every row is the same
   // kind of event — a limit tripping — the axis that tripped is the label.
-  // The concrete window (per minute vs per hour) rides in the message.
+  // The concrete window (per minute vs the rolling week) rides in the message.
   'usage.events.resource.limit': 'Лимит',
   'usage.events.type.limitRateRequests': 'Слишком много запросов',
   'usage.events.type.limitRateTokens': 'Слишком много токенов',
   'usage.events.type.limitConcurrency': 'Слишком много параллельных запросов',
-  'usage.events.type.limitQuotaDaily': 'Дневная квота токенов исчерпана',
+  'usage.events.type.limitQuotaWeekly': 'Недельная квота токенов исчерпана',
   'usage.events.type.limitQuotaMonthly': 'Месячная квота токенов исчерпана',
-  'usage.events.type.limitQuotaYearly': 'Годовая квота токенов исчерпана',
   // Backend fallback for a limit axis this build does not enumerate yet.
-  'usage.events.type.limitGeneric': 'Сработал лимит'
+  'usage.events.type.limitGeneric': 'Сработал лимит',
+  // Hover tooltip on the name column: the creator's attribute-derived labels.
+  'usage.events.tooltip.businessUnit': 'Бизнес Юнит',
+  'usage.events.tooltip.department': 'Отдел',
+  'usage.events.tooltip.profession': 'Профессия'
 };

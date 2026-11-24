@@ -196,6 +196,12 @@ export interface ResourceEventItem {
   occurred_at: string;
   creator_id?: number;
   creator_name?: string;
+  // Attribute-derived display labels for the creator, resolved server-side
+  // in bulk — the hover tooltip on the name column (absent when the user
+  // holds no group of that kind).
+  creator_profession?: string;
+  creator_department?: string;
+  creator_business_unit?: string;
   cluster_id?: number;
   cluster_name?: string;
   resource_type: string;
@@ -252,6 +258,7 @@ const URL = {
   STORAGE_BREAKDOWN_EXPORT: '/usage/storage/breakdown/export',
   STORAGE_BREAKDOWN_EXPORT_ESTIMATE: '/usage/storage/breakdown/export/estimate',
   EVENTS: '/usage/resource-events',
+  EVENTS_STATS: '/usage/resource-events/stats',
   SUMMARY: '/usage/summary',
   RESOURCE_META: '/usage/resource/meta'
 };
@@ -685,6 +692,56 @@ export async function queryResourceEvents(
     },
     method: 'GET',
     skipErrorHandler: options?.skipErrorHandler,
+    cancelToken: options?.token
+  });
+}
+
+export interface ResourceEventStatsResponse {
+  // Total events in range, weighted by the rows' rejection counts (a folded
+  // or buffer-overflow row stands for several rejections).
+  total: number;
+  by_type: {
+    event_type: string;
+    count: number;
+  }[];
+  // One bucket per rollup-tz calendar day (the granularity the overview
+  // trends run at), summed across event types.
+  series: {
+    date: string;
+    count: number;
+  }[];
+}
+
+export async function queryResourceEventsStats(
+  data: {
+    start_date?: string;
+    end_date?: string;
+    scope?: 'self' | 'all';
+    filters?: ResourceUsageFilters;
+    resource_type?: string;
+    granularity?: string;
+  },
+  options?: { token?: any }
+): Promise<ResourceEventStatsResponse> {
+  const creatorIds = data.filters?.creator_ids;
+  const organizationIds = data.filters?.organization_ids;
+  const userGroupIds = data.filters?.user_group_ids;
+  return request<ResourceEventStatsResponse>(URL.EVENTS_STATS, {
+    params: {
+      start_date: data.start_date,
+      end_date: data.end_date,
+      scope: data.scope ?? 'all',
+      ...(data.resource_type ? { resource_type: data.resource_type } : {}),
+      ...(data.granularity ? { granularity: data.granularity } : {}),
+      ...(creatorIds?.length ? { creator_ids: creatorIds.join(',') } : {}),
+      ...(organizationIds?.length
+        ? { organization_ids: organizationIds.join(',') }
+        : {}),
+      ...(userGroupIds?.length
+        ? { user_group_ids: userGroupIds.join(',') }
+        : {})
+    },
+    method: 'GET',
     cancelToken: options?.token
   });
 }

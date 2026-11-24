@@ -4,20 +4,19 @@
  * - Summary: cross-resource overview (KPIs + trend + by-type breakdown + donut)
  * - Tokens: per-request token usage over a time range
  * - Limits: per-user rate limits card + the admin's deployment defaults form
- * - GPU Instances: per-instance compute usage
- * - Storage: PV capacity usage
- * - Resource Events: lifecycle event list (created / metered / deleted / ...)
+ * - Events: lifecycle event list (created / metered / deleted / ...) plus the
+ *   rate-limit rejections
  *
- * Resource Events is kept as a tab (not a separate route) so the page filter
- * set stays consistent across all views.
+ * Events is kept as a tab (not a separate route) so the page filter set stays
+ * consistent across all views. The GPU Instances / Storage tabs are not
+ * mounted in this build — the whole-machine SKU model meters runtime and PV
+ * capacity, which the Summary view already covers.
  */
 import { useAccess, useIntl } from '@umijs/max';
 import { Tabs, TabsProps } from 'antd';
 import React, { useMemo } from 'react';
 import ResourceEvents from './events-tab';
-import GpuInstancesTab from './instances-tab';
 import LimitsTab from './limits-tab';
-import StorageTab from './storage-tab';
 import SummaryTab from './summary-tab';
 import TokenTab from './token-tab';
 
@@ -45,18 +44,6 @@ const Usage: React.FC = () => {
         key: 'limits',
         label: intl.formatMessage({ id: 'usage.tabs.limits' }),
         children: <LimitsTab />
-      },
-      {
-        key: 'gpu-instances',
-        label: intl.formatMessage({ id: 'usage.tabs.gpuInstances' }),
-        access: 'canSeeGpuService',
-        children: <GpuInstancesTab />
-      },
-      {
-        key: 'storage',
-        label: intl.formatMessage({ id: 'usage.tabs.storage' }),
-        access: 'canSeeGpuService',
-        children: <StorageTab />
       },
       {
         key: 'resource-events',

@@ -26,7 +26,7 @@ export default {
   'usage.tabs.limits': '制限',
   'usage.tabs.gpuInstances': 'GPU インスタンス',
   'usage.tabs.storage': 'ストレージ',
-  'usage.tabs.resourceEvents': 'リソースイベント',
+  'usage.tabs.resourceEvents': 'イベント',
   'usage.tabs.models': 'モデル',
   'usage.tabs.apikeys': 'API キー',
   'usage.tabs.users': 'ユーザー',
@@ -121,6 +121,15 @@ export default {
   'usage.summary.usageOverTime': '使用量の推移',
   'usage.summary.gbDaysOverTime': 'GB·日の推移',
 
+  // --- Summary tab: limit-rejection stats ---
+  'usage.summary.limits.total': 'レート制限イベント',
+  'usage.summary.limits.rps': 'RPS',
+  'usage.summary.limits.tpm': 'TPM',
+  'usage.summary.limits.concurrency': '同時実行',
+  'usage.summary.limits.weekly': '週次',
+  'usage.summary.limits.monthly': '月次',
+  'usage.summary.limits.overTime': 'レート制限の発生推移',
+
   // --- Summary tab: rate limits ---
   'usage.rateLimits.title': 'レート制限',
   'usage.rateLimits.resetsIn': '{time}後にリセット',
@@ -214,8 +223,10 @@ export default {
   'usage.events.type.limitRateRequests': 'リクエストが多すぎます',
   'usage.events.type.limitRateTokens': 'トークンが多すぎます',
   'usage.events.type.limitConcurrency': '同時実行リクエストが多すぎます',
-  'usage.events.type.limitQuotaDaily': '日次トークンクォータを使い切りました',
+  'usage.events.type.limitQuotaWeekly': '週次トークンクォータを使い切りました',
   'usage.events.type.limitQuotaMonthly': '月次トークンクォータを使い切りました',
-  'usage.events.type.limitQuotaYearly': '年次トークンクォータを使い切りました',
-  'usage.events.type.limitGeneric': 'レートリミットが発動しました'
+  'usage.events.type.limitGeneric': 'レートリミットが発動しました',
+  'usage.events.tooltip.businessUnit': 'ビジネスユニット',
+  'usage.events.tooltip.department': '部門',
+  'usage.events.tooltip.profession': '職種'
 };

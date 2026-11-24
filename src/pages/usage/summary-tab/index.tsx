@@ -1,30 +1,25 @@
 /**
  * Summary Tab — cross-resource overview, organized by domain.
  *
- * Token and time-based resources carry different detail, so the page is three
+ * Token and time-based resources carry different detail, so the page is
  * symmetric full-width domain sections instead of a flat KPI stack. Each
  * section is identical in shape: a headline stat line, then a breakdown donut
  * (left) and a fixed-metric trend (right). A single granularity control at the
- * top is shared by all three trends.
+ * top is shared by the trends.
  *
- *   ● Tokens   headline · Input/Output donut · Tokens-over-time
- *   ● Compute  headline · instance-type donut · Usage-over-time
- *   ● Storage  headline · storage-type donut · GB-Days-over-time
- *   ● Rate Limits — self-scoped limits + live usage (own fetch, filter-independent)
+ *   ● Tokens  headline · Input/Output donut · Tokens-over-time
+ *   ● Limits  headline (total + per-axis) · per-axis donut · triggers-over-time
  *
  * Data sources (all share date + scope):
- *   - /usage/summary             → token totals (Input/Output) + type donut
- *   - /usage/breakdown (tokens)  → Tokens trend (token series is daily-only)
- *   - /usage/resource/breakdown  → Compute trend + active instances
- *   - /usage/storage/breakdown   → Storage trend, volumes, type donut
- *   - /usage/rate-limits         → moved to the Token tab (see
- *                                  components/rate-limits-card), which every
- *                                  user sees; this tab is GPU-service-gated
+ *   - /usage/summary               → token totals (Input/Output) + type donut
+ *   - /usage/breakdown (tokens)    → Tokens trend (token series is daily-only)
+ *   - /usage/resource-events/stats → limit-rejection counts by axis and day
  *
- * Shows quantity metrics only (no cost). Donuts use each domain's natural unit
- * (tokens / Usage hours / GB-Days); a true cross-resource split needs a common
- * unit. Compute uses Usage rather than GPU-Hours because the latter is 0 on
- * every CPU-only shape, which dropped those slices out of the ring entirely.
+ *   The rate-limits card moved to the Token tab (see
+ *   components/rate-limits-card), which every user sees; this tab is
+ *   GPU-service-gated
+ *
+ * Shows quantity metrics only (no cost).
  */
 import { useCoolAccents } from '@/hooks/use-cool-colors';
 import BarChart from '@/pages/_components/bar-chart';
@@ -45,8 +40,7 @@ import {
   generateBucketRange,
   Granularity
 } from '../utils/time-buckets';
-import useQueryResourceBreakdown from './services/use-query-resource-breakdown';
-import useQueryStorageBreakdown from './services/use-query-storage-breakdown';
+import useQueryResourceEventsStats from './services/use-query-resource-events-stats';
 import useQueryTimeSeriesData from './services/use-query-timeseries-data';
 import useQueryUsageSummary from './services/use-query-usage-summary';
 
@@ -123,8 +117,8 @@ const DomainSection: React.FC<{
   donutData: { name: string; value: number }[];
   donutTotalLabel: string;
   // Unit for the donut centre, when the section's quantity has one. Matches the
-  // headline stat beside it — Compute prints "5.83 h" there, so a bare 5.83 in
-  // the donut reads as a different figure.
+  // headline stat beside it — Tokens prints compact counts there, so a bare
+  // raw number in the donut reads as a different figure.
   donutTotalUnit?: string;
   trendTitle: string;
   trendXAxis: string[];
@@ -228,8 +222,8 @@ const SummaryTab: React.FC = () => {
   const { initialState } = useModel('@@initialState');
   const currentUserId = initialState?.currentUser?.id;
   const t = (id: string) => intl.formatMessage({ id });
-  // One vivid primary per summary card (Tokens / Compute / Storage).
-  const coolColors = useCoolAccents()(3);
+  // One vivid primary per summary card (Tokens / Limits).
+  const coolColors = useCoolAccents()(2);
 
   // No All/My dropdown (matches the Tokens tab): managers see the org-wide
   // view and narrow it with the user filter, others only their own rows.
@@ -330,20 +324,10 @@ const SummaryTab: React.FC = () => {
     fetchData: fetchTokenSeries
   } = useQueryTimeSeriesData();
   const {
-    detailData: computeByDate,
-    loading: computeLoading,
-    fetchData: fetchComputeBreakdown
-  } = useQueryResourceBreakdown();
-  const {
-    detailData: storageByDate,
-    loading: storageByDateLoading,
-    fetchData: fetchStorageByDate
-  } = useQueryStorageBreakdown({ key: 'storageByDate' });
-  const {
-    detailData: storageByType,
-    loading: storageByTypeLoading,
-    fetchData: fetchStorageByType
-  } = useQueryStorageBreakdown({ key: 'storageByType' });
+    detailData: limitStats,
+    loading: limitStatsLoading,
+    fetchData: fetchLimitStats
+  } = useQueryResourceEventsStats();
 
   const fetchAll = async (params?: Partial<QueryParams>) => {
     const currentParams = {
@@ -355,11 +339,6 @@ const SummaryTab: React.FC = () => {
       start_date: currentParams.start,
       end_date: currentParams.end,
       scope
-    };
-    const paginationParams = {
-      ...commonParams,
-      page: 1,
-      perPage: 100
     };
 
     if (params) {
@@ -417,12 +396,6 @@ const SummaryTab: React.FC = () => {
           : undefined
       }),
 
-      fetchStorageByType({
-        ...paginationParams,
-        group_by: ['type'],
-        filters: creatorFilter
-      }),
-
       // Date-bucketed trends: fetch the whole series via the no-pagination
       // sentinel (page: -1). A metric-desc page would drop low-traffic (often
       // most recent) buckets and leave gaps in the chart.
@@ -441,20 +414,12 @@ const SummaryTab: React.FC = () => {
         }
       }),
 
-      fetchComputeBreakdown({
-        ...paginationParams,
-        page: -1,
-        group_by: ['date'],
-        granularity,
-        filters: creatorFilter
-      }),
-
-      fetchStorageByDate({
-        ...paginationParams,
-        page: -1,
-        group_by: ['date'],
-        granularity,
-        filters: creatorFilter
+      // Limit-rejection stats: the same creator / org / group filters the
+      // resource endpoints take.
+      fetchLimitStats({
+        ...commonParams,
+        resource_type: 'limit',
+        ...(creatorFilter ? { filters: creatorFilter } : {})
       })
     ]);
   };
@@ -467,23 +432,29 @@ const SummaryTab: React.FC = () => {
     ],
     [summary]
   );
-  const computeDonut = useMemo(
+
+  // The limit axes, in the short wording the headline line uses — also the
+  // donut slice names. Types this build does not enumerate (the generic
+  // ``limit_event`` fallback) keep their events-tab label.
+  const limitTypeLabel = useMemo(() => {
+    const map: Record<string, string> = {
+      limit_rate_requests: t('usage.summary.limits.rps'),
+      limit_rate_tokens: t('usage.summary.limits.tpm'),
+      limit_concurrency: t('usage.summary.limits.concurrency'),
+      limit_quota_weekly: t('usage.summary.limits.weekly'),
+      limit_quota_monthly: t('usage.summary.limits.monthly'),
+      limit_event: t('usage.events.type.limitGeneric')
+    };
+    return (eventType: string) => map[eventType] ?? eventType;
+  }, [t]);
+
+  const limitsDonut = useMemo(
     () =>
-      (summary?.distribution ?? []).map((d) => ({
-        name: d.label,
-        value: d.value
+      (limitStats?.by_type ?? []).map((d) => ({
+        name: limitTypeLabel(d.event_type),
+        value: d.count
       })),
-    [summary]
-  );
-  const storageDonut = useMemo(
-    () =>
-      (storageByType?.items ?? [])
-        .filter((i) => (i.storage_gb_days || 0) > 0)
-        .map((i) => ({
-          name: i.gpu_type || t('usage.common.unknown'),
-          value: i.storage_gb_days
-        })),
-    [storageByType]
+    [limitStats, limitTypeLabel]
   );
 
   // --- derived: trends ---
@@ -501,38 +472,19 @@ const SummaryTab: React.FC = () => {
     [tokenSeriesData, granularity, start, end]
   );
 
-  const computeTrend = useMemo(
+  const limitsTrend = useMemo(
     () =>
       buildTrend(
-        (computeByDate?.items ?? []).map((it) => ({
-          date: it.date,
-          // Usage, not gpu_hours: the latter is 0 on every CPU-only row, so a
-          // fleet of CPU instances drew a flat zero line.
-          value: Number(it.unit_hours ?? 0)
+        (limitStats?.series ?? []).map((p) => ({
+          date: p.date,
+          value: Number(p.count ?? 0)
         })),
         granularity,
         start,
         end
       ),
-    [computeByDate, granularity, start, end]
+    [limitStats, granularity, start, end]
   );
-
-  const storageTrend = useMemo(
-    () =>
-      buildTrend(
-        (storageByDate?.items ?? []).map((it) => ({
-          date: it.date,
-          value: Number(it.storage_gb_days ?? 0)
-        })),
-        granularity,
-        start,
-        end
-      ),
-    [storageByDate, granularity, start, end]
-  );
-
-  const computeSum = computeByDate?.summary;
-  const storageSum = storageByDate?.summary;
 
   const handleDateRangeChange = (dates: [dayjs.Dayjs, dayjs.Dayjs]) => {
     fetchAll({
@@ -620,68 +572,30 @@ const SummaryTab: React.FC = () => {
 
         <Col span={24}>
           <DomainSection
-            title={t('usage.summary.compute')}
+            title={t('usage.tabs.limits')}
             accent={coolColors[1]}
-            donutData={computeDonut}
-            donutTotalLabel={t('usage.metric.usage')}
-            donutTotalUnit="h"
-            trendTitle={t('usage.summary.usageOverTime')}
-            trendXAxis={computeTrend.xAxis}
-            trendData={computeTrend.data}
+            donutData={limitsDonut}
+            donutTotalLabel={t('usage.summary.limits.total')}
+            trendTitle={t('usage.summary.limits.overTime')}
+            trendXAxis={limitsTrend.xAxis}
+            trendData={limitsTrend.data}
             trendColor={coolColors[1]}
             trendGran={granularity}
-            pieLoading={summaryLoading}
-            barLoading={computeLoading}
-            headline={
-              // No GPU Hours here: it is Usage restricted to GPU rows, and the
-              // donut beside this line already splits Usage by instance type —
-              // the GPU share is on screen, one slice over. The GPU Instances
-              // tab keeps the figure because that screen has no such split.
-              <>
-                <Stat
-                  value={`${fmt(summary?.unit_hours)} h`}
-                  label={t('usage.metric.usage')}
-                />
-                <Stat
-                  value={`${fmt(summary?.instance_hours)} h`}
-                  label={t('usage.metric.runningTime')}
-                />
-                <Stat
-                  value={computeSum?.active_instances ?? 0}
-                  label={t('usage.metric.activeInstances')}
-                />
-              </>
-            }
-          />
-        </Col>
-
-        <Col span={24}>
-          <DomainSection
-            title={t('usage.tabs.storage')}
-            accent={coolColors[2]}
-            donutData={storageDonut}
-            donutTotalLabel={t('usage.metric.gbDays')}
-            trendTitle={t('usage.summary.gbDaysOverTime')}
-            trendXAxis={storageTrend.xAxis}
-            trendData={storageTrend.data}
-            trendColor={coolColors[2]}
-            trendGran={granularity}
-            pieLoading={storageByTypeLoading}
-            barLoading={storageByDateLoading}
+            pieLoading={limitStatsLoading}
+            barLoading={limitStatsLoading}
             headline={
               <>
                 <Stat
-                  value={fmt(summary?.storage_gb_days)}
-                  label={t('usage.metric.gbDays')}
+                  value={fmt(limitStats?.total)}
+                  label={t('usage.summary.limits.total')}
                 />
-                <Stat
-                  value={storageSum?.active_volumes ?? 0}
-                  label={t('usage.metric.activeStorage')}
-                />
-                <Stat
-                  value={storageDonut.length}
-                  label={t('usage.metric.storageTypes')}
-                />
+                {(limitStats?.by_type ?? []).map((d) => (
+                  <Stat
+                    key={d.event_type}
+                    value={fmt(d.count)}
+                    label={limitTypeLabel(d.event_type)}
+                  />
+                ))}
               </>
             }
           />
