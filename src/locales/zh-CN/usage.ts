@@ -207,5 +207,13 @@ export default {
   'usage.events.type.stopped': '已停止',
   'usage.events.type.updated': '已更新',
   'usage.events.type.attached': '已挂载',
-  'usage.events.type.detached': '已卸载'
+  'usage.events.type.detached': '已卸载',
+  'usage.events.resource.limit': '限制',
+  'usage.events.type.limitRateRequests': '请求过多',
+  'usage.events.type.limitRateTokens': '令牌过多',
+  'usage.events.type.limitConcurrency': '并发请求过多',
+  'usage.events.type.limitQuotaDaily': '每日令牌配额已用尽',
+  'usage.events.type.limitQuotaMonthly': '每月令牌配额已用尽',
+  'usage.events.type.limitQuotaYearly': '每年令牌配额已用尽',
+  'usage.events.type.limitGeneric': '触发速率限制'
 };

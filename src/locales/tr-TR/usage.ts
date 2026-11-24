@@ -210,5 +210,13 @@ export default {
   'usage.events.type.stopped': 'Durduruldu',
   'usage.events.type.updated': 'Güncellendi',
   'usage.events.type.attached': 'Eklendi',
-  'usage.events.type.detached': 'Ayrıldı'
+  'usage.events.type.detached': 'Ayrıldı',
+  'usage.events.resource.limit': 'Limit',
+  'usage.events.type.limitRateRequests': 'Çok fazla istek',
+  'usage.events.type.limitRateTokens': 'Çok fazla token',
+  'usage.events.type.limitConcurrency': 'Çok fazla eşzamanlı istek',
+  'usage.events.type.limitQuotaDaily': 'Günlük token kotası aşıldı',
+  'usage.events.type.limitQuotaMonthly': 'Aylık token kotası aşıldı',
+  'usage.events.type.limitQuotaYearly': 'Yıllık token kotası aşıldı',
+  'usage.events.type.limitGeneric': 'Hız sınırı tetiklendi'
 };

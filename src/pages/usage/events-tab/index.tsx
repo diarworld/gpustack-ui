@@ -21,14 +21,24 @@ import ResourceFilterBar from '../components/resource-filter-bar';
 import { parseRollup } from '../utils/time-buckets';
 import useQueryResourceEvents from './services/use-query-resource-events';
 
-// Only these four are ever emitted (see resource_event_logger): create/delete
-// + the metering-window pair. updated/attached/detached exist as enum values
-// but are intentionally not recorded, so they're not offered as filters.
+// Only these four are ever emitted for instance/PV lifecycle rows (see
+// resource_event_logger): create/delete + the metering-window pair.
+// updated/attached/detached exist as enum values but are intentionally not
+// recorded, so they're not offered as filters. Rate-limit rejections are the
+// other family: six limit axes, all reported as one kind of thing happening
+// (a limit tripping — hence the shared error status).
 const EVENT_STATUS: Record<string, StatusType> = {
   created: 'success',
   deleted: 'error',
   phase_to_metered: 'transitioning',
-  phase_left_metered: 'warning'
+  phase_left_metered: 'warning',
+  limit_rate_requests: 'error',
+  limit_rate_tokens: 'error',
+  limit_concurrency: 'error',
+  limit_quota_daily: 'error',
+  limit_quota_monthly: 'error',
+  limit_quota_yearly: 'error',
+  limit_event: 'error'
 };
 
 // Humanize a failure phase enum for display, e.g. "SSHPublicKeyCreateFailed" →
@@ -53,7 +63,8 @@ const ResourceEvents: React.FC = () => {
       cpu_instance: intl.formatMessage({
         id: 'usage.events.resource.cpuInstance'
       }),
-      persistent_volume: intl.formatMessage({ id: 'usage.tabs.storage' })
+      persistent_volume: intl.formatMessage({ id: 'usage.tabs.storage' }),
+      limit: intl.formatMessage({ id: 'usage.events.resource.limit' })
     }),
     [intl]
   );
@@ -64,7 +75,8 @@ const ResourceEvents: React.FC = () => {
       {
         value: 'persistent_volume',
         label: RESOURCE_TYPE_LABELS.persistent_volume
-      }
+      },
+      { value: 'limit', label: RESOURCE_TYPE_LABELS.limit }
     ],
     [RESOURCE_TYPE_LABELS]
   );
@@ -86,6 +98,33 @@ const ResourceEvents: React.FC = () => {
       {
         value: 'phase_left_metered',
         label: intl.formatMessage({ id: 'usage.events.type.stopped' })
+      },
+      // Rate-limit rejections: the axis that tripped. Every one is the same
+      // kind of event (a limit tripping), the enum names the axis; the
+      // concrete window (per minute vs per hour) rides in the message.
+      {
+        value: 'limit_rate_requests',
+        label: intl.formatMessage({ id: 'usage.events.type.limitRateRequests' })
+      },
+      {
+        value: 'limit_rate_tokens',
+        label: intl.formatMessage({ id: 'usage.events.type.limitRateTokens' })
+      },
+      {
+        value: 'limit_concurrency',
+        label: intl.formatMessage({ id: 'usage.events.type.limitConcurrency' })
+      },
+      {
+        value: 'limit_quota_daily',
+        label: intl.formatMessage({ id: 'usage.events.type.limitQuotaDaily' })
+      },
+      {
+        value: 'limit_quota_monthly',
+        label: intl.formatMessage({ id: 'usage.events.type.limitQuotaMonthly' })
+      },
+      {
+        value: 'limit_quota_yearly',
+        label: intl.formatMessage({ id: 'usage.events.type.limitQuotaYearly' })
       }
     ],
     [intl]
@@ -95,10 +134,14 @@ const ResourceEvents: React.FC = () => {
   // ``phase_to_metered`` / ``phase_left_metered`` bracket the metering window —
   // when the resource starts / stops accruing metered uptime (the OSS build
   // only meters, it doesn't charge). Users shouldn't see the internal enum
-  // names.
+  // names. ``limit_event`` is the backend's fallback for a limit axis this
+  // build does not enumerate yet — still a tripped limit, still labelled.
   const EVENT_LABEL: Record<string, string> = useMemo(
-    () => Object.fromEntries(EVENT_TYPE_OPTIONS.map((o) => [o.value, o.label])),
-    [EVENT_TYPE_OPTIONS]
+    () => ({
+      ...Object.fromEntries(EVENT_TYPE_OPTIONS.map((o) => [o.value, o.label])),
+      limit_event: intl.formatMessage({ id: 'usage.events.type.limitGeneric' })
+    }),
+    [EVENT_TYPE_OPTIONS, intl]
   );
 
   // All filters live in one query-params object; ``resourceType`` is single

@@ -209,5 +209,13 @@ export default {
   'usage.events.type.stopped': '停止',
   'usage.events.type.updated': '更新済み',
   'usage.events.type.attached': 'アタッチ済み',
-  'usage.events.type.detached': 'デタッチ済み'
+  'usage.events.type.detached': 'デタッチ済み',
+  'usage.events.resource.limit': 'リミット',
+  'usage.events.type.limitRateRequests': 'リクエストが多すぎます',
+  'usage.events.type.limitRateTokens': 'トークンが多すぎます',
+  'usage.events.type.limitConcurrency': '同時実行リクエストが多すぎます',
+  'usage.events.type.limitQuotaDaily': '日次トークンクォータを使い切りました',
+  'usage.events.type.limitQuotaMonthly': '月次トークンクォータを使い切りました',
+  'usage.events.type.limitQuotaYearly': '年次トークンクォータを使い切りました',
+  'usage.events.type.limitGeneric': 'レートリミットが発動しました'
 };

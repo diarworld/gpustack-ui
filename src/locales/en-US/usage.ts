@@ -214,5 +214,17 @@ export default {
   'usage.events.type.stopped': 'Stopped',
   'usage.events.type.updated': 'Updated',
   'usage.events.type.attached': 'Attached',
-  'usage.events.type.detached': 'Detached'
+  'usage.events.type.detached': 'Detached',
+  // Rate-limit rejections (resource type "limit"): every row is the same
+  // kind of event — a limit tripping — the axis that tripped is the label.
+  // The concrete window (per minute vs per hour) rides in the message.
+  'usage.events.resource.limit': 'Limit',
+  'usage.events.type.limitRateRequests': 'Too many requests',
+  'usage.events.type.limitRateTokens': 'Too many tokens',
+  'usage.events.type.limitConcurrency': 'Too many concurrent requests',
+  'usage.events.type.limitQuotaDaily': 'Daily token quota exceeded',
+  'usage.events.type.limitQuotaMonthly': 'Monthly token quota exceeded',
+  'usage.events.type.limitQuotaYearly': 'Yearly token quota exceeded',
+  // Backend fallback for a limit axis this build does not enumerate yet.
+  'usage.events.type.limitGeneric': 'Rate limit tripped'
 };
