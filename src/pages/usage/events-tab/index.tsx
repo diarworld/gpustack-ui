@@ -68,24 +68,11 @@ const ResourceEvents: React.FC = () => {
     [intl]
   );
 
+  // The filter offers only the limit axes — the event types this page exists
+  // for. Lifecycle rows (created / deleted / the metering-window pair) still
+  // appear in the table, they are just not filterable here.
   const EVENT_TYPE_OPTIONS = useMemo(
     () => [
-      {
-        value: 'created',
-        label: intl.formatMessage({ id: 'usage.events.type.created' })
-      },
-      {
-        value: 'deleted',
-        label: intl.formatMessage({ id: 'usage.events.type.deleted' })
-      },
-      {
-        value: 'phase_to_metered',
-        label: intl.formatMessage({ id: 'usage.events.type.started' })
-      },
-      {
-        value: 'phase_left_metered',
-        label: intl.formatMessage({ id: 'usage.events.type.stopped' })
-      },
       // Rate-limit rejections: the axis that tripped. Every one is the same
       // kind of event (a limit tripping), the enum names the axis; the
       // concrete window (per minute vs the rolling week) rides in the
@@ -115,15 +102,25 @@ const ResourceEvents: React.FC = () => {
     [intl]
   );
 
-  // Raw event_type → human-readable label (the same wording as the filter).
-  // ``phase_to_metered`` / ``phase_left_metered`` bracket the metering window —
-  // when the resource starts / stops accruing metered uptime (the OSS build
-  // only meters, it doesn't charge). Users shouldn't see the internal enum
-  // names. ``limit_event`` is the backend's fallback for a limit axis this
-  // build does not enumerate yet — still a tripped limit, still labelled.
+  // Raw event_type → human-readable label. ``phase_to_metered`` /
+  // ``phase_left_metered`` bracket the metering window — when the resource
+  // starts / stops accruing metered uptime (the OSS build only meters, it
+  // doesn't charge). These lifecycle rows are not filter options anymore,
+  // but they still appear in the table and keep their wording — users
+  // shouldn't see the internal enum names. ``limit_event`` is the backend's
+  // fallback for a limit axis this build does not enumerate yet — still a
+  // tripped limit, still labelled.
   const EVENT_LABEL: Record<string, string> = useMemo(
     () => ({
       ...Object.fromEntries(EVENT_TYPE_OPTIONS.map((o) => [o.value, o.label])),
+      created: intl.formatMessage({ id: 'usage.events.type.created' }),
+      deleted: intl.formatMessage({ id: 'usage.events.type.deleted' }),
+      phase_to_metered: intl.formatMessage({
+        id: 'usage.events.type.started'
+      }),
+      phase_left_metered: intl.formatMessage({
+        id: 'usage.events.type.stopped'
+      }),
       limit_event: intl.formatMessage({ id: 'usage.events.type.limitGeneric' })
     }),
     [EVENT_TYPE_OPTIONS, intl]

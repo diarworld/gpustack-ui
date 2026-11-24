@@ -224,6 +224,10 @@ const baseRoutes = [
     ]
   },
   {
+    // The GPU Service pages stay routable (model pages deep-link into
+    // instance / instance-type views), but this build keeps them out of the
+    // left menu — the Summary / Events usage views are the operator surface.
+    hideInMenu: true,
     name: 'gpuService',
     path: '/gpu-service',
     key: 'gpuService',
