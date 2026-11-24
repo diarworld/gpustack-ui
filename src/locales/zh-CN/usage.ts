@@ -156,6 +156,14 @@ export default {
   'usage.rateLimits.resetReasonPlaceholder': '请描述你正在进行的任务',
   'usage.rateLimits.resetQuotaExhausted': '本周期重置次数已用完，{date} 更新',
   'usage.rateLimits.resetSuccess': '限制已重置',
+  'usage.rateLimits.resetRejected.tooVague':
+    '请求被拒绝：描述过于笼统 — 请写明具体任务和项目',
+  'usage.rateLimits.resetRejected.bypassAttempt':
+    '请求被拒绝：疑似试图绕过检查 — 请描述真实的工作任务',
+  'usage.rateLimits.resetRejected.nonIT': '请求被拒绝：任务不属于 IT 工作范畴',
+  'usage.rateLimits.resetRejected.gibberish':
+    '请求被拒绝：无法识别描述 — 请写明你的工作任务',
+  'usage.rateLimits.resetRejected.generic': '请求被拒绝 — 请描述具体的工作任务',
   'usage.rateLimits.duration.days': '{count, plural, other {# 天}}',
   'usage.rateLimits.duration.hours': '{count, plural, other {# 小时}}',
   'usage.rateLimits.duration.minutes': '{count, plural, other {# 分钟}}',

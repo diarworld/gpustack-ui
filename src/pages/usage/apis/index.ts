@@ -51,7 +51,10 @@ export async function queryRateLimits(
 
 // One press of a reset button: forgives the target user's weekly or
 // monthly token budget and answers with the fresh quota state. The reason
-// note is required server-side. An admin may target another user.
+// note is required server-side; a self-service press is first judged by
+// the decision model, and a rejection answers with status='rejected' and
+// the model's reason — the quota state is then as-it-was. An admin may
+// target another user (the model does not judge those presses).
 export async function resetRateLimit(
   data: {
     kind: 'weekly' | 'monthly';

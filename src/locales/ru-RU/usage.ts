@@ -159,6 +159,19 @@ export default {
   'usage.rateLimits.resetQuotaExhausted':
     'Лимит сбросов исчерпан в этом периоде, обновление {date}',
   'usage.rateLimits.resetSuccess': 'Лимит сброшен',
+  // The decision model's rejection causes, as the dialog phrases them for
+  // the user. The generic wording covers a confident refusal that named no
+  // cause.
+  'usage.rateLimits.resetRejected.tooVague':
+    'Заявка отклонена: описание слишком общее — укажите конкретную задачу и проект',
+  'usage.rateLimits.resetRejected.bypassAttempt':
+    'Заявка отклонена: похоже на попытку обхода проверки — опишите реальную рабочую задачу',
+  'usage.rateLimits.resetRejected.nonIT':
+    'Заявка отклонена: задача не относится к ИТ-работам',
+  'usage.rateLimits.resetRejected.gibberish':
+    'Заявка отклонена: описание не распознано — напишите, какая у вас рабочая задача',
+  'usage.rateLimits.resetRejected.generic':
+    'Заявка отклонена — опишите конкретную рабочую задачу',
   'usage.rateLimits.duration.days':
     '{count, plural, one {# день} few {# дня} many {# дней} other {# дня}}',
   'usage.rateLimits.duration.hours':

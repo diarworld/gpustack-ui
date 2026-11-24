@@ -92,6 +92,17 @@ const usageProgressProps = (w: RateLimitWindowUsage) => ({
 
 // The user-level cards, in display order: the rate caps (requests and tokens
 // per minute, bucketed across all the user's keys) and the token budgets.
+// The decision model's rejection causes, mapped to the locale key of the
+// message the dialog shows. A cause the backend enumerates later (or none
+// at all) falls back to the generic wording — '' is the wildcard key.
+const REJECTION_REASON_IDS: Record<string, string> = {
+  '': 'usage.rateLimits.resetRejected.generic',
+  TooVague: 'usage.rateLimits.resetRejected.tooVague',
+  BypassAttempt: 'usage.rateLimits.resetRejected.bypassAttempt',
+  NonIT: 'usage.rateLimits.resetRejected.nonIT',
+  Gibberish: 'usage.rateLimits.resetRejected.gibberish'
+};
+
 // Each card's ``?`` tooltip explains the axis, mirroring the user form's
 // description tooltips. A window the server did not send (cap unset with no
 // deployment default) simply renders no card. The long token budgets carry
@@ -305,11 +316,24 @@ const RateLimitsCard: React.FC<{
     if (!resetKind) return;
     setResetLoading(true);
     try {
-      await resetRateLimit({
+      const status = await resetRateLimit({
         kind: resetKind,
         description,
         user_id: userId
       });
+      // The decision model judged the description before the counters
+      // cleared. A rejection answers 200 with the model's reason — the
+      // press consumed nothing, so the dialog stays open with the note and
+      // the page needs no refetch.
+      if (status?.status === 'rejected') {
+        message.error(
+          t(
+            REJECTION_REASON_IDS[status.rejection_reason ?? ''] ??
+              REJECTION_REASON_IDS['']
+          )
+        );
+        return;
+      }
       message.success(t('usage.rateLimits.resetSuccess'));
       setResetKind(null);
       // The counters are gone server-side; refetch shows the fresh window.

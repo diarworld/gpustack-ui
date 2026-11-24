@@ -158,6 +158,19 @@ export default {
   'usage.rateLimits.resetQuotaExhausted':
     'Reset quota exhausted for this period, resets {date}',
   'usage.rateLimits.resetSuccess': 'Limit reset',
+  // The decision model's rejection causes, as the dialog phrases them for
+  // the user. The generic wording covers a confident refusal that named no
+  // cause.
+  'usage.rateLimits.resetRejected.tooVague':
+    'Request rejected: the description is too vague — name a concrete task and project',
+  'usage.rateLimits.resetRejected.bypassAttempt':
+    'Request rejected: this looks like an attempt to bypass the check — describe a real work task',
+  'usage.rateLimits.resetRejected.nonIT':
+    'Request rejected: the task is not an IT work task',
+  'usage.rateLimits.resetRejected.gibberish':
+    'Request rejected: the description could not be parsed — describe your work task',
+  'usage.rateLimits.resetRejected.generic':
+    'Request rejected — describe a concrete work task',
   'usage.rateLimits.duration.days':
     '{count, plural, one {# day} other {# days}}',
   'usage.rateLimits.duration.hours':

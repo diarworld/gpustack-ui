@@ -231,6 +231,13 @@ export interface RateLimitResetStatus {
   quota: number;
   available: number;
   next_available_at?: string | null;
+  // The reset endpoint's verdict: 'reset' when the counters were cleared,
+  // 'rejected' when the decision model refused the description. The quota
+  // reads omit the field (they carry no verdict).
+  status?: 'reset' | 'rejected';
+  // Why the press was rejected, when it was (TooVague / BypassAttempt /
+  // NonIT / Gibberish; absent when the model named no cause).
+  rejection_reason?: string | null;
 }
 
 export interface UserRateLimits {

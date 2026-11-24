@@ -157,6 +157,16 @@ export default {
   'usage.rateLimits.resetQuotaExhausted':
     'この期間のリセット回数を使い切りました。{date} に更新されます',
   'usage.rateLimits.resetSuccess': '上限をリセットしました',
+  'usage.rateLimits.resetRejected.tooVague':
+    'リクエストは却下されました：説明が漠然としています — 具体的なタスクとプロジェクトを記載してください',
+  'usage.rateLimits.resetRejected.bypassAttempt':
+    'リクエストは却下されました：チェック回避の試みとみなされました — 実際の業務タスクを記述してください',
+  'usage.rateLimits.resetRejected.nonIT':
+    'リクエストは却下されました：タスクは IT 業務に該当しません',
+  'usage.rateLimits.resetRejected.gibberish':
+    'リクエストは却下されました：説明を認識できません — 担当の業務タスクを記述してください',
+  'usage.rateLimits.resetRejected.generic':
+    'リクエストは却下されました — 具体的な業務タスクを記述してください',
   'usage.rateLimits.duration.days': '{count, plural, other {#日}}',
   'usage.rateLimits.duration.hours': '{count, plural, other {#時間}}',
   'usage.rateLimits.duration.minutes': '{count, plural, other {#分}}',

@@ -158,6 +158,16 @@ export default {
   'usage.rateLimits.resetQuotaExhausted':
     'Bu dönem için sıfırlama limiti tükendi, {date} tarihinde yenilenir',
   'usage.rateLimits.resetSuccess': 'Limit sıfırlandı',
+  'usage.rateLimits.resetRejected.tooVague':
+    'Talep reddedildi: açıklama fazla belirsiz — somut görev ve projeyi belirtin',
+  'usage.rateLimits.resetRejected.bypassAttempt':
+    'Talep reddedildi: kontrolü aşma girişimi gibi görünüyor — gerçek iş görevinizi açıklayın',
+  'usage.rateLimits.resetRejected.nonIT':
+    'Talep reddedildi: görev BT işlerine dâhil değil',
+  'usage.rateLimits.resetRejected.gibberish':
+    'Talep reddedildi: açıklama anlaşılamadı — iş görevinizi yazın',
+  'usage.rateLimits.resetRejected.generic':
+    'Talep reddedildi — somut bir iş görevi açıklayın',
   'usage.rateLimits.duration.days': '{count, plural, other {# gün}}',
   'usage.rateLimits.duration.hours': '{count, plural, other {# saat}}',
   'usage.rateLimits.duration.minutes': '{count, plural, other {# dakika}}',
