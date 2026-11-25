@@ -87,6 +87,10 @@ const UserLimitsModal: React.FC<UserLimitsModalProps> = ({
         intl.formatMessage({ id: 'usage.rateLimits.editLimitsSuccess' })
       );
       onSaved();
+      // A saved editor has nothing left to say: close the drawer (the
+      // card behind it refetches via onSaved). A failed save stays open
+      // — the error toast names the problem, the values survive a retry.
+      onCancel();
     });
   };
 
