@@ -1,5 +1,5 @@
 import { getStorageUserSettings } from '@/atoms/settings';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 const duration = 1;
@@ -30,8 +30,23 @@ const Mask = styled.div<{ $isHiding: boolean }>`
     ease forwards;
 `;
 
+/**
+ * The theme the veil covered last, remembered across mounts. The console
+ * layout remounts wholesale on keep-alive route transitions — the max-tabs
+ * plugin swaps the entire layout between cached divs — and every such
+ * remount replayed the boot veil: in the dark theme each trip into or out
+ * of a keep-alive route (the playground image and speech pages) blinked a
+ * fullscreen gray cover for the length of its fade. A mount that finds the
+ * theme already applied has nothing to hide.
+ */
+let lastVeiledTheme: string | null = null;
+
 const DarkModeMask = () => {
   const { theme: savedTheme } = getStorageUserSettings();
+  // The veil must exist in the initial commit to cover the theme hand-off,
+  // so it arms in state initialization and — when the theme did not change —
+  // is disarmed in a layout effect, which runs before the browser paints the
+  // new tree. A paint effect would let one veiled frame slip through.
   const [visible, setVisible] = useState(savedTheme === 'realDark');
   const [isHiding, setIsHiding] = useState(false);
   const maskRef = useRef<HTMLDivElement>(null);
@@ -46,13 +61,20 @@ const DarkModeMask = () => {
 
   initTheme();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const isThemeChange = lastVeiledTheme !== savedTheme;
+    lastVeiledTheme = savedTheme;
+    if (!isThemeChange) {
+      setVisible(false);
+      return;
+    }
     if (savedTheme === 'realDark') {
       setVisible(true);
       requestAnimationFrame(() => {
         setIsHiding(true);
       });
     } else {
+      setVisible(false);
       setIsHiding(true);
     }
   }, [savedTheme]);
