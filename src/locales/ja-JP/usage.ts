@@ -123,7 +123,7 @@ export default {
 
   // --- Summary tab: limit-rejection stats ---
   'usage.summary.limits.total': 'レート制限イベント',
-  'usage.summary.limits.rps': 'RPS',
+  'usage.summary.limits.rpm': 'RPM',
   'usage.summary.limits.tpm': 'TPM',
   'usage.summary.limits.concurrency': '同時実行',
   'usage.summary.limits.weekly': '週次',

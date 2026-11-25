@@ -124,7 +124,7 @@ export default {
 
   // --- Summary tab: limit-rejection stats ---
   'usage.summary.limits.total': 'Событий превышения лимита',
-  'usage.summary.limits.rps': 'RPS',
+  'usage.summary.limits.rpm': 'RPM',
   'usage.summary.limits.tpm': 'TPM',
   'usage.summary.limits.concurrency': 'Конкурентного',
   'usage.summary.limits.weekly': 'Недельного',

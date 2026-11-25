@@ -438,7 +438,7 @@ const SummaryTab: React.FC = () => {
   // ``limit_event`` fallback) keep their events-tab label.
   const limitTypeLabel = useMemo(() => {
     const map: Record<string, string> = {
-      limit_rate_requests: t('usage.summary.limits.rps'),
+      limit_rate_requests: t('usage.summary.limits.rpm'),
       limit_rate_tokens: t('usage.summary.limits.tpm'),
       limit_concurrency: t('usage.summary.limits.concurrency'),
       limit_quota_weekly: t('usage.summary.limits.weekly'),

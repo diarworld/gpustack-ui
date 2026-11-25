@@ -123,7 +123,7 @@ export default {
 
   // --- Summary tab: limit-rejection stats ---
   'usage.summary.limits.total': '限流事件',
-  'usage.summary.limits.rps': 'RPS',
+  'usage.summary.limits.rpm': 'RPM',
   'usage.summary.limits.tpm': 'TPM',
   'usage.summary.limits.concurrency': '并发',
   'usage.summary.limits.weekly': '每周',

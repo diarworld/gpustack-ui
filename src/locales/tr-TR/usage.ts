@@ -123,7 +123,7 @@ export default {
 
   // --- Summary tab: limit-rejection stats ---
   'usage.summary.limits.total': 'limit aşımı olayı',
-  'usage.summary.limits.rps': 'RPS',
+  'usage.summary.limits.rpm': 'RPM',
   'usage.summary.limits.tpm': 'TPM',
   'usage.summary.limits.concurrency': 'eşzamanlı',
   'usage.summary.limits.weekly': 'haftalık',
