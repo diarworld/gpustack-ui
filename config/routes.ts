@@ -342,6 +342,11 @@ const baseRoutes = [
         name: 'credentials',
         path: '/resources/credentials',
         key: 'credentials',
+        // This deployment has no cloud providers (no DigitalOcean /
+        // SHUIHUA FUTURE accounts to hold credentials for), so the page
+        // would only offer dead ends — off the menu, still reachable
+        // by URL for direct links.
+        hideInMenu: true,
         icon: 'icon-credential-outline',
         selectedIcon: 'icon-credential-filled',
         defaultIcon: 'icon-credential-outline',
