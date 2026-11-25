@@ -43,13 +43,16 @@ export async function getUser(id: number) {
 }
 
 // Partial limits update used by the Usage page's limits editor. The
-// endpoint is exclude_unset-based, so only these fields travel and every
-// other column — credentials, memberships, account attributes — stays as
-// it is. A null clears the override and the axis falls back to the
-// deployment default.
+// endpoint validates the full UserUpdate schema before its
+// exclude_unset write, so the identity field the schema requires —
+// username — travels along unchanged from the row the editor read;
+// everything else the body omits (password, groups, source) is left as
+// it is. A null limit clears the override and the axis falls back to
+// the deployment default.
 export async function updateUserLimits(
   id: number,
   data: {
+    username: string;
     rpm_limit?: number | null;
     tpm_limit?: number | null;
     weekly_token_limit?: number | null;

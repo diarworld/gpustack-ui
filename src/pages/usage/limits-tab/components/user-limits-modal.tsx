@@ -16,6 +16,7 @@ import {
 import ModelConcurrencyInput from '@/pages/_components/model-concurrency-input';
 import { useQueryModelList } from '@/pages/llmodels/services/use-query-model-list';
 import { getUser, updateUserLimits } from '@/pages/users/apis';
+import { ListItem } from '@/pages/users/config/types';
 import { FormDrawer, InputNumber, useSubmitLock } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Form, message } from 'antd';
@@ -58,12 +59,16 @@ const UserLimitsModal: React.FC<UserLimitsModalProps> = ({
   // Admins are exempt from the concurrency cap server-side — the same
   // rule that hides the field on the Users page form.
   const [targetIsAdmin, setTargetIsAdmin] = useState(false);
+  // The row the editor read: the submit needs its username (the update
+  // schema requires it) and its admin flag.
+  const [target, setTarget] = useState<ListItem | null>(null);
 
   const handleSubmit = () => {
     guard(() => form.submit());
   };
 
   const onFinish = async (values: UserLimitsFormData) => {
+    if (!target) return;
     // The map is stored verbatim: a typed value is a deliberate pin (1
     // tighter than the default included), an absent key follows the
     // deployment default the placeholder names. An empty map collapses to
@@ -71,6 +76,7 @@ const UserLimitsModal: React.FC<UserLimitsModalProps> = ({
     const map = values.model_concurrency_limits;
     await run(async () => {
       await updateUserLimits(userId, {
+        username: target.username,
         rpm_limit: values.rpm_limit ?? null,
         tpm_limit: values.tpm_limit ?? null,
         weekly_token_limit: values.weekly_token_limit ?? null,
@@ -88,6 +94,7 @@ const UserLimitsModal: React.FC<UserLimitsModalProps> = ({
     if (!open) return;
     getUser(userId)
       .then((user) => {
+        setTarget(user);
         setTargetIsAdmin(!!user.is_admin);
         form.setFieldsValue({
           // null (no stored value) and undefined mean the same thing to
