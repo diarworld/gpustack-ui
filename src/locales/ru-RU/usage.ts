@@ -172,6 +172,9 @@ export default {
     'Заявка отклонена: описание не распознано — напишите, какая у вас рабочая задача',
   'usage.rateLimits.resetRejected.generic':
     'Заявка отклонена — опишите конкретную рабочую задачу',
+  // The admin's editor for the pinned user's limits, on the same card.
+  'usage.rateLimits.editLimits': 'Изменить лимиты',
+  'usage.rateLimits.editLimitsSuccess': 'Лимиты обновлены',
   'usage.rateLimits.duration.days':
     '{count, plural, one {# день} few {# дня} many {# дней} other {# дня}}',
   'usage.rateLimits.duration.hours':

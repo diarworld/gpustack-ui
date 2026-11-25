@@ -10,20 +10,23 @@
  */
 import { SyncOutlined } from '@ant-design/icons';
 import { CardWrapper } from '@gpustack/core-ui';
-import { useAccess, useIntl } from '@umijs/max';
+import { useAccess, useIntl, useModel } from '@umijs/max';
 import { Button, Flex, Select } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import RateLimitsCard from '../components/rate-limits-card';
 import useQueryUsageMetaData from '../services/use-query-meta-data';
 import DeploymentDefaultsForm from './components/deployment-defaults-form';
+import UserLimitsModal from './components/user-limits-modal';
 
 const LimitsTab: React.FC = () => {
   const intl = useIntl();
   const access = useAccess();
+  const { initialState } = useModel('@@initialState') || {};
   const { detailData: metaData, fetchData: fetchMetaData } =
     useQueryUsageMetaData();
   const [selectedUserId, setSelectedUserId] = useState<number>();
   const [refreshKey, setRefreshKey] = useState(0);
+  const [limitsEditorOpen, setLimitsEditorOpen] = useState(false);
 
   useEffect(() => {
     // include_all_users: the meta options derive from usage rows, so a
@@ -58,6 +61,18 @@ const LimitsTab: React.FC = () => {
       );
   }, [access.canSeeOrgAdmin, metaData?.users]);
 
+  // The editor rides the /users API, which the server gates to platform
+  // admins — so the button keys off canSeeAdmin (the same audience) even
+  // where the picker's canSeeOrgAdmin widens to org owners.
+  const canEditLimits = !!access.canSeeAdmin;
+  const currentUserId = initialState?.currentUser?.id;
+  const editTargetId = selectedUserId ?? currentUserId;
+  const editorTitle = useMemo(() => {
+    const base = intl.formatMessage({ id: 'usage.rateLimits.editLimits' });
+    const label = userOptions.find((opt) => opt.value === editTargetId)?.label;
+    return label ? `${base}: ${label}` : base;
+  }, [intl, userOptions, editTargetId]);
+
   return (
     <div>
       <Flex gap={8} align="center" wrap="wrap">
@@ -84,8 +99,25 @@ const LimitsTab: React.FC = () => {
           it always lacked — the filter row above used to sit flush against
           the card. */}
       <div style={{ marginBlock: 24 }}>
-        <RateLimitsCard userId={selectedUserId} refreshKey={refreshKey} />
+        <RateLimitsCard
+          userId={selectedUserId}
+          refreshKey={refreshKey}
+          onEditLimits={
+            canEditLimits && editTargetId != null
+              ? () => setLimitsEditorOpen(true)
+              : undefined
+          }
+        />
       </div>
+      {canEditLimits && editTargetId != null && (
+        <UserLimitsModal
+          title={editorTitle}
+          open={limitsEditorOpen}
+          userId={editTargetId}
+          onSaved={() => setRefreshKey((prev) => prev + 1)}
+          onCancel={() => setLimitsEditorOpen(false)}
+        />
+      )}
       {access.canSeeAdmin && (
         <CardWrapper style={{ paddingBlock: 16 }}>
           <div

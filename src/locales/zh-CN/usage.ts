@@ -164,6 +164,9 @@ export default {
   'usage.rateLimits.resetRejected.gibberish':
     '请求被拒绝：无法识别描述 — 请写明你的工作任务',
   'usage.rateLimits.resetRejected.generic': '请求被拒绝 — 请描述具体的工作任务',
+  // The admin's editor for the pinned user's limits, on the same card.
+  'usage.rateLimits.editLimits': '编辑限额',
+  'usage.rateLimits.editLimitsSuccess': '限额已更新',
   'usage.rateLimits.duration.days': '{count, plural, other {# 天}}',
   'usage.rateLimits.duration.hours': '{count, plural, other {# 小时}}',
   'usage.rateLimits.duration.minutes': '{count, plural, other {# 分钟}}',

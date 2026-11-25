@@ -171,6 +171,9 @@ export default {
     'Request rejected: the description could not be parsed — describe your work task',
   'usage.rateLimits.resetRejected.generic':
     'Request rejected — describe a concrete work task',
+  // The admin's editor for the pinned user's limits, on the same card.
+  'usage.rateLimits.editLimits': 'Edit limits',
+  'usage.rateLimits.editLimitsSuccess': 'Limits updated',
   'usage.rateLimits.duration.days':
     '{count, plural, one {# day} other {# days}}',
   'usage.rateLimits.duration.hours':

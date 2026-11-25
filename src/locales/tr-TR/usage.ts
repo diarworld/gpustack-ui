@@ -168,6 +168,9 @@ export default {
     'Talep reddedildi: açıklama anlaşılamadı — iş görevinizi yazın',
   'usage.rateLimits.resetRejected.generic':
     'Talep reddedildi — somut bir iş görevi açıklayın',
+  // The admin's editor for the pinned user's limits, on the same card.
+  'usage.rateLimits.editLimits': 'Limitleri düzenle',
+  'usage.rateLimits.editLimitsSuccess': 'Limitler güncellendi',
   'usage.rateLimits.duration.days': '{count, plural, other {# gün}}',
   'usage.rateLimits.duration.hours': '{count, plural, other {# saat}}',
   'usage.rateLimits.duration.minutes': '{count, plural, other {# dakika}}',

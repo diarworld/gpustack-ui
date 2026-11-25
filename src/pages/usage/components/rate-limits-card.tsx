@@ -296,7 +296,10 @@ const RateLimitsCard: React.FC<{
   userId?: number;
   // Bumped by the toolbar refresh to refetch alongside the breakdown.
   refreshKey?: number;
-}> = ({ userId, refreshKey }) => {
+  // Set by the Limits tab for admins only: opens the per-user limits
+  // editor for the pinned user (or the caller when unpinned).
+  onEditLimits?: () => void;
+}> = ({ userId, refreshKey, onEditLimits }) => {
   const intl = useIntl();
   const t = (id: string) => intl.formatMessage({ id });
   const { detailData: data, loading, fetchData } = useQueryRateLimits(userId);
@@ -426,6 +429,15 @@ const RateLimitsCard: React.FC<{
               {t('usage.rateLimits.freeActive')}
             </Tag>
           </Tooltip>
+        )}
+        {onEditLimits && (
+          <Button
+            size="small"
+            style={{ marginInlineStart: 'auto' }}
+            onClick={onEditLimits}
+          >
+            {t('usage.rateLimits.editLimits')}
+          </Button>
         )}
       </div>
 

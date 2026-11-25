@@ -36,6 +36,30 @@ export async function updateUser(params: { data: FormData }) {
   });
 }
 
+// The full user row — the Usage page's limits editor seeds its form from
+// the stored (not effective) values the card cannot show.
+export async function getUser(id: number) {
+  return request<ListItem>(`${USERS_API}/${id}`, { method: 'GET' });
+}
+
+// Partial limits update used by the Usage page's limits editor. The
+// endpoint is exclude_unset-based, so only these fields travel and every
+// other column — credentials, memberships, account attributes — stays as
+// it is. A null clears the override and the axis falls back to the
+// deployment default.
+export async function updateUserLimits(
+  id: number,
+  data: {
+    rpm_limit?: number | null;
+    tpm_limit?: number | null;
+    weekly_token_limit?: number | null;
+    monthly_token_limit?: number | null;
+    model_concurrency_limits?: Record<string, number> | null;
+  }
+) {
+  return request<ListItem>(`${USERS_API}/${id}`, { method: 'PUT', data });
+}
+
 export async function deleteUser(id: number) {
   return request(`${USERS_API}/${id}`, {
     method: 'DELETE'
