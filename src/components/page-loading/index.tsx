@@ -21,12 +21,8 @@ const useStyles = createStyles(({ css }) => ({
 }));
 
 /**
- * Suspense fallback for every lazy route chunk. Umi wraps each route element in
- * `React.Suspense` with the file exported from `src/loading.tsx` as the fallback
- * (`globalLoading` in the generated app data); without that file the fallback is
- * a bare `<div/>`, so the content area stays empty for as long as a page's chunk
- * graph takes to arrive — the heaviest routes (the playground pages carry a
- * dozen shared chunks) blink visibly. It renders in two places: inside the
+ * Suspense fallback for every lazy route chunk — wired in `src/app.tsx` through
+ * `modifyClientRenderOpts`. It renders in two very different places: inside the
  * layout's content area on an in-app navigation, and bare in `#root` on a cold
  * load, where the layout chunk (and so `ConfigProvider`) does not exist yet.
  * That second case is why the indicator carries the brand color literally
