@@ -177,7 +177,9 @@ const UsersLimitsTable: React.FC = () => {
 
   return (
     <div>
-      <Flex gap={8} align="center" wrap="wrap">
+      {/* Breathing room between the filter row and the table (and the
+          degradation alerts that may sit between them). */}
+      <Flex gap={8} align="center" wrap="wrap" style={{ marginBottom: 16 }}>
         {/* The picker doubles as the table's server-side user_id filter. */}
         <Select
           allowClear
