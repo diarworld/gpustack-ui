@@ -204,9 +204,10 @@ const ResourceEvents: React.FC = () => {
         dataIndex: 'resource_name',
         key: 'resource_name',
         render: (v: string, row?: ResourceEventItem) => {
-          // Hover tooltip with the creator's attribute-derived labels, when
-          // the row carries any — rows attributable to a raw (unresolved)
-          // consumer have none.
+          // Hover tooltip on the creator: the full name line first (the
+          // literal English label, not localized — it names the directory
+          // field), then the attribute-derived labels the row carries —
+          // rows attributable to a raw (unresolved) consumer have none.
           const attrs: [string, string][] = [];
           (
             [
@@ -219,13 +220,15 @@ const ResourceEvents: React.FC = () => {
               attrs.push([id, val]);
             }
           });
-          if (!v || attrs.length === 0) {
+          const fullName = row?.creator_full_name;
+          if (!v || (!fullName && attrs.length === 0)) {
             return v ?? '-';
           }
           return (
             <Tooltip
               title={
                 <>
+                  {fullName && <div>Full name: {fullName}</div>}
                   {attrs.map(([id, val]) => (
                     <div key={id}>
                       {intl.formatMessage({ id })}: {val}

@@ -196,6 +196,10 @@ export interface ResourceEventItem {
   occurred_at: string;
   creator_id?: number;
   creator_name?: string;
+  // The name tooltip's first line: the live display name, falling back to
+  // the login-name snapshot; absent when the event has no resolvable
+  // creator (system events, deleted principals without a login).
+  creator_full_name?: string;
   // Attribute-derived display labels for the creator, resolved server-side
   // in bulk — the hover tooltip on the name column (absent when the user
   // holds no group of that kind).
