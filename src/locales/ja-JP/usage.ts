@@ -168,7 +168,6 @@ export default {
     'リクエストは却下されました：説明を認識できません — 担当の業務タスクを記述してください',
   'usage.rateLimits.resetRejected.generic':
     'リクエストは却下されました — 具体的な業務タスクを記述してください',
-  'usage.rateLimits.resets.colDate': '日付',
   'usage.rateLimits.resets.colLimit': 'リミット',
   'usage.rateLimits.resets.colWorkType': '作業種別',
   'usage.rateLimits.resets.colRejectionReason': '却下理由',

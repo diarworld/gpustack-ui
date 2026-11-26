@@ -173,7 +173,6 @@ export default {
     'Заявка отклонена: описание не распознано — напишите, какая у вас рабочая задача',
   'usage.rateLimits.resetRejected.generic':
     'Заявка отклонена — опишите конкретную рабочую задачу',
-  'usage.rateLimits.resets.colDate': 'Дата',
   'usage.rateLimits.resets.colLimit': 'Лимит',
   'usage.rateLimits.resets.colWorkType': 'Тип работы',
   'usage.rateLimits.resets.colRejectionReason': 'Причина отказа',

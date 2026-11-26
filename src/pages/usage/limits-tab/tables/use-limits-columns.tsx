@@ -110,7 +110,7 @@ const useLimitsColumns = ({
 
     return [
       {
-        title: intl.formatMessage({ id: 'common.table.name' }),
+        title: intl.formatMessage({ id: 'usage.table.name' }),
         dataIndex: 'username',
         key: 'username',
         width: 260,

@@ -6,8 +6,9 @@
  * forgiven (or refused), which window, and what the decision model made
  * of the description. The tab mounts behind the canSeeAdmin gate — the
  * backend 403s everyone else — and its filter set mirrors the limits
- * table's shape: the user picker (a server-side user_id filter) and the
- * verdict select, landing on approved.
+ * table's shape: the user picker (a server-side user_id filter), the
+ * work-type select (a server-side work_type filter) and the verdict
+ * select, landing on approved.
  */
 import { PaginationKey } from '@/config/settings';
 import useTableFetch from '@/hooks/use-table-fetch';
@@ -82,6 +83,20 @@ const UsersRateLimitResets: React.FC = () => {
       );
   }, [metaData?.users]);
 
+  const workTypeOptions = useMemo(
+    () => [
+      ...Object.entries(WORK_TYPE_IDS).map(([value, id]) => ({
+        value,
+        label: intl.formatMessage({ id })
+      })),
+      {
+        value: '',
+        label: intl.formatMessage({ id: 'usage.rateLimits.resets.statusAll' })
+      }
+    ],
+    [intl]
+  );
+
   const statusOptions = useMemo(
     () => [
       {
@@ -107,29 +122,57 @@ const UsersRateLimitResets: React.FC = () => {
   const columns = useMemo(
     () => [
       {
-        title: intl.formatMessage({ id: 'usage.rateLimits.resets.colDate' }),
+        title: intl.formatMessage({ id: 'usage.events.col.time' }),
         dataIndex: 'reset_at',
         key: 'reset_at',
-        width: 180,
+        // Wide enough for the formatted instant to stay on one line, the
+        // way the Events tab's time column sits.
+        width: 200,
         render: (v: string) =>
           v ? dayjs(v).format('YYYY-MM-DD HH:mm:ss') : '-'
       },
       {
-        title: intl.formatMessage({ id: 'common.table.name' }),
+        title: intl.formatMessage({ id: 'usage.table.name' }),
         dataIndex: 'username',
         key: 'username',
         width: 220,
         render: (v: string | undefined, record: RateLimitResetUsage) => {
           // A deleted account leaves the row nameless: the id keeps the
-          // audit trail pointing at something.
+          // audit trail pointing at something, with no tooltip (the
+          // directory has nothing left to resolve).
           const label = v || `#${record.user_id}`;
-          if (!record.full_name) return label;
+          const attrs: [string, string][] = [];
+          (
+            [
+              ['usage.events.tooltip.businessUnit', record.business_unit],
+              ['usage.events.tooltip.department', record.department],
+              ['usage.events.tooltip.profession', record.profession]
+            ] as [string, string | undefined][]
+          ).forEach(([id, val]) => {
+            if (val) {
+              attrs.push([id, val]);
+            }
+          });
+          if (!record.full_name && attrs.length === 0) {
+            return label;
+          }
           return (
             <Tooltip
-              title={<div>Full name: {record.full_name}</div>}
+              title={
+                <>
+                  <div>Full name: {record.full_name || record.username}</div>
+                  {attrs.map(([id, val]) => (
+                    <div key={id}>
+                      {intl.formatMessage({ id })}: {val}
+                    </div>
+                  ))}
+                </>
+              }
               placement="topLeft"
             >
-              <span style={{ cursor: 'default' }}>{label}</span>
+              <span className="text-primary" style={{ cursor: 'default' }}>
+                {label}
+              </span>
             </Tooltip>
           );
         }
@@ -197,8 +240,8 @@ const UsersRateLimitResets: React.FC = () => {
 
   return (
     <div>
-      {/* Breathing room between the filter row and the table, the way the
-          limits table sits. */}
+      {/* The filter row owns the spacing to the table (marginBottom: 16,
+          gap: 8) — the same layout the limits table sits in. */}
       <Flex gap={8} align="center" wrap="wrap" style={{ marginBottom: 16 }}>
         {/* The picker doubles as the table's server-side user_id filter. */}
         <Select
@@ -212,6 +255,18 @@ const UsersRateLimitResets: React.FC = () => {
           }
           options={userOptions}
           placeholder={intl.formatMessage({ id: 'usage.filter.user' })}
+        />
+        {/* '' selects every classification; absent from the query. */}
+        <Select
+          style={{ minWidth: 200 }}
+          value={queryParams.work_type || ''}
+          onChange={(value) =>
+            handleQueryChange({ page: 1, work_type: value ?? '' })
+          }
+          options={workTypeOptions}
+          placeholder={intl.formatMessage({
+            id: 'usage.rateLimits.resets.colWorkType'
+          })}
         />
         <Select
           style={{ minWidth: 160 }}

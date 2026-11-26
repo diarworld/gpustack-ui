@@ -165,7 +165,6 @@ export default {
   'usage.rateLimits.resetRejected.gibberish':
     '请求被拒绝：无法识别描述 — 请写明你的工作任务',
   'usage.rateLimits.resetRejected.generic': '请求被拒绝 — 请描述具体的工作任务',
-  'usage.rateLimits.resets.colDate': '日期',
   'usage.rateLimits.resets.colLimit': '额度',
   'usage.rateLimits.resets.colWorkType': '工作类型',
   'usage.rateLimits.resets.colRejectionReason': '拒绝原因',

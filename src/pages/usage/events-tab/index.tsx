@@ -280,6 +280,7 @@ const ResourceEvents: React.FC = () => {
   return (
     <div>
       <ResourceFilterBar
+        style={{ marginBottom: 16 }}
         value={queryParams.dateRange}
         onChange={(dates) => fetchEvents({ dateRange: dates, page: 1 })}
         // No user filter here — the events list has no User column. Scope is
@@ -325,7 +326,6 @@ const ResourceEvents: React.FC = () => {
         rowKey="id"
         dataSource={data?.items ?? []}
         columns={columns as any}
-        style={{ marginTop: 24 }}
         loading={{
           spinning: loading,
           size: 'middle'

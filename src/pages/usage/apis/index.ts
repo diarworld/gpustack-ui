@@ -85,6 +85,7 @@ export async function queryRateLimitResets(
     perPage?: number;
     user_id?: number;
     outcome?: string;
+    work_type?: string;
   },
   options?: any
 ): Promise<RateLimitResetsResponse> {

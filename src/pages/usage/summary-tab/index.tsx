@@ -517,6 +517,7 @@ const SummaryTab: React.FC = () => {
   return (
     <div>
       <ResourceFilterBar
+        style={{ marginBottom: 16 }}
         value={[dayjs(start), dayjs(end)]}
         onChange={handleDateRangeChange}
         canManageUsers={canManageUsers}
@@ -531,8 +532,6 @@ const SummaryTab: React.FC = () => {
         onUserGroupsChange={handleUserGroupsChange}
         onRefresh={onRefresh}
       />
-      <div style={{ height: 24 }} />
-
       <Row gutter={[0, 24]}>
         <Col span={24}>
           <DomainSection

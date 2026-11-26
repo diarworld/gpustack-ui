@@ -66,6 +66,10 @@ interface ResourceFilterBarProps {
   selectedUserGroups?: number[];
   onOrganizationsChange?: (ids: number[]) => void;
   onUserGroupsChange?: (ids: number[]) => void;
+  // The filter row owns the spacing to the content below it —
+  // marginBottom: 16 at every call site — instead of each content block
+  // compensating with its own top margin.
+  style?: React.CSSProperties;
 }
 
 const ResourceFilterBar: React.FC<ResourceFilterBarProps> = (props) => {
@@ -87,7 +91,8 @@ const ResourceFilterBar: React.FC<ResourceFilterBarProps> = (props) => {
     selectedOrganizations,
     selectedUserGroups,
     onOrganizationsChange,
-    onUserGroupsChange
+    onUserGroupsChange,
+    style
   } = props;
   const intl = useIntl();
 
@@ -185,7 +190,7 @@ const ResourceFilterBar: React.FC<ResourceFilterBarProps> = (props) => {
   };
 
   return (
-    <div className={FilterBarCss.wrapper}>
+    <div className={FilterBarCss.wrapper} style={style}>
       <div className={FilterBarCss.filters}>
         <DatePicker.RangePicker
           maxDate={dayjs()}

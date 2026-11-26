@@ -326,6 +326,12 @@ export interface RateLimitResetUsage {
   user_id: number;
   username?: string | null;
   full_name?: string | null;
+  // The name tooltip's org lines, hydrated page-scoped like the user
+  // limits table's; they drop out when the account has since been
+  // deleted — the audit row outlives the user.
+  profession?: string | null;
+  department?: string | null;
+  business_unit?: string | null;
   // The forgiven budget: 'weekly' | 'monthly'.
   kind: string;
   reset_at: string;

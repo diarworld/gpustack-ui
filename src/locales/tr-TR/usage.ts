@@ -169,7 +169,6 @@ export default {
     'Talep reddedildi: açıklama anlaşılamadı — iş görevinizi yazın',
   'usage.rateLimits.resetRejected.generic':
     'Talep reddedildi — somut bir iş görevi açıklayın',
-  'usage.rateLimits.resets.colDate': 'Tarih',
   'usage.rateLimits.resets.colLimit': 'Limit',
   'usage.rateLimits.resets.colWorkType': 'İş türü',
   'usage.rateLimits.resets.colRejectionReason': 'Red gerekçesi',

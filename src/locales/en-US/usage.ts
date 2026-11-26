@@ -172,7 +172,6 @@ export default {
     'Request rejected: the description could not be parsed — describe your work task',
   'usage.rateLimits.resetRejected.generic':
     'Request rejected — describe a concrete work task',
-  'usage.rateLimits.resets.colDate': 'Date',
   'usage.rateLimits.resets.colLimit': 'Limit',
   'usage.rateLimits.resets.colWorkType': 'Work type',
   'usage.rateLimits.resets.colRejectionReason': 'Rejection reason',
