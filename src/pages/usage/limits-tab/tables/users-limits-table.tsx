@@ -54,9 +54,9 @@ const UsersLimitsTable: React.FC = () => {
   } = useTableFetch<UserRateLimitUsage>({
     key: PaginationKey.UserRateLimits,
     fetchAPI,
-    // Busiest monthly budget first — matches the monthly column's
-    // defaultSortOrder; the backend derives the composite usage key, so
-    // this is the server-side half of the same default.
+    // Busiest monthly budget first — the columns' arrows are controlled
+    // from this same param, so the indicator always matches the served
+    // order; the backend derives the composite usage key.
     defaultQueryParams: { sort_by: '-monthly' }
   });
 
@@ -147,7 +147,10 @@ const UsersLimitsTable: React.FC = () => {
 
   const columns = useLimitsColumns({
     handleSelect,
-    handleSaveLimit
+    handleSaveLimit,
+    // The arrows read off the param the table sorts by; an empty value
+    // falls back to the backend's -monthly default (the hook owns that).
+    sortBy: queryParams.sort_by
   });
 
   // The feature is off server-side: render nothing at all, the way the

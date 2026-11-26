@@ -7,14 +7,15 @@
  * names the directory field — then the non-empty attribute lines. The
  * four limit columns share the personal card's window identities
  * (kind + period) and its hint texts, render the inline editor cell,
- * and sort server-side on the live counter falling back to the limit.
+ * and sort server-side on the live counter with the limit as tiebreak.
  */
 import { tableSorter } from '@/config/settings';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { DropdownButtons, icons } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Tooltip } from 'antd';
-import { ColumnsType } from 'antd/lib/table';
+import { ColumnType, ColumnsType } from 'antd/lib/table';
+import { SortOrder } from 'antd/lib/table/interface';
 import { useMemo } from 'react';
 import { UserRateLimitUsage } from '../../config/types';
 import LimitCell from './limit-cell';
@@ -80,15 +81,33 @@ interface ColumnsHookProps {
     field: LimitColumnConfig['field'],
     value: number | null
   ) => Promise<void>;
+  // The sort_by param the table is sorted by; the column arrows are
+  // controlled from it, so the indicator can never disagree with the
+  // order the backend served. An empty value means the backend's
+  // landing default (busiest month first).
+  sortBy?: string;
 }
+
+// Keep in step with the table's defaultQueryParams.
+const DEFAULT_SORT_BY = '-monthly';
 
 const useLimitsColumns = ({
   handleSelect,
-  handleSaveLimit
+  handleSaveLimit,
+  sortBy
 }: ColumnsHookProps): ColumnsType<UserRateLimitUsage> => {
   const intl = useIntl();
 
   return useMemo(() => {
+    const token = sortBy || DEFAULT_SORT_BY;
+    const descending = token.startsWith('-');
+    const field = descending ? token.slice(1) : token;
+    const activeOrder: SortOrder = descending ? 'descend' : 'ascend';
+    // One axis is live at a time; every sortable column reads its
+    // arrow off the same param the request carries.
+    const orderFor = (key: string): SortOrder =>
+      field === key ? activeOrder : null;
+
     return [
       {
         title: intl.formatMessage({ id: 'common.table.name' }),
@@ -96,6 +115,8 @@ const useLimitsColumns = ({
         key: 'username',
         width: 260,
         sorter: tableSorter(1),
+        sortDirections: ['ascend', 'descend'],
+        sortOrder: orderFor('username'),
         render: (text: string, record: UserRateLimitUsage) => {
           // The tooltip mirrors the Events tab's name cell: the full
           // name line first, then only the attributes the user holds.
@@ -132,7 +153,14 @@ const useLimitsColumns = ({
         }
       },
       ...LIMIT_COLUMNS.map(
-        ({ key, kind, period, titleId, hintId, field }: LimitColumnConfig) => ({
+        ({
+          key,
+          kind,
+          period,
+          titleId,
+          hintId,
+          field
+        }: LimitColumnConfig): ColumnType<UserRateLimitUsage> => ({
           title: (
             <span>
               {intl.formatMessage({ id: titleId })}
@@ -145,10 +173,12 @@ const useLimitsColumns = ({
           key,
           width: 150,
           sorter: tableSorter(1),
-          // Server-sorted (the sort_by param rides the query); the table
-          // loads busiest-month first, this only puts the arrow in the
-          // matching state.
-          ...(key === 'monthly' ? { defaultSortOrder: 'descend' } : {}),
+          // Descend on the first click — the admin's question is "who is
+          // burning the budget", ascending is the follow-up. The arrows
+          // are controlled (sortOrder above) so the indicator always
+          // names the column the backend actually sorted by.
+          sortDirections: ['descend', 'ascend'],
+          sortOrder: orderFor(key),
           render: (_: unknown, record: UserRateLimitUsage) => (
             <LimitCell
               window={record.windows.find(
@@ -178,7 +208,7 @@ const useLimitsColumns = ({
         )
       }
     ];
-  }, [intl, handleSelect, handleSaveLimit]);
+  }, [intl, handleSelect, handleSaveLimit, sortBy]);
 };
 
 export default useLimitsColumns;
