@@ -22,6 +22,13 @@ export const USAGE_RATE_LIMITS = '/usage/rate-limits';
 export const USAGE_RATE_LIMITS_RESET = '/usage/rate-limits/reset';
 export const USAGE_RATE_LIMITS_USERS = '/usage/rate-limits/users';
 export const USAGE_RATE_LIMITS_RESETS = '/usage/rate-limits/resets';
+export const USAGE_RATE_LIMITS_USERS_EXPORT = '/usage/rate-limits/users/export';
+export const USAGE_RATE_LIMITS_USERS_EXPORT_ESTIMATE =
+  '/usage/rate-limits/users/export/estimate';
+export const USAGE_RATE_LIMITS_RESETS_EXPORT =
+  '/usage/rate-limits/resets/export';
+export const USAGE_RATE_LIMITS_RESETS_EXPORT_ESTIMATE =
+  '/usage/rate-limits/resets/export/estimate';
 export const RATE_LIMIT_SETTINGS = '/rate-limit-settings';
 
 export const MODEL_ROUTE_TARGETS = '/model-route-targets';

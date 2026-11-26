@@ -32,7 +32,13 @@ import {
 } from 'antd';
 import _ from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
+import {
+  USAGE_RATE_LIMITS_USERS_EXPORT,
+  USAGE_RATE_LIMITS_USERS_EXPORT_ESTIMATE
+} from '../../apis';
+import ExportDropdown from '../../components/export-dropdown';
 import { UserRateLimitUsage } from '../../config/types';
+import useExportUsage from '../../services/use-export-usage';
 import useQueryUsageMetaData from '../../services/use-query-meta-data';
 import useQueryUsersRateLimits from '../services/use-query-users-rate-limits';
 import useLimitsColumns, { LimitColumnConfig } from './use-limits-columns';
@@ -59,6 +65,22 @@ const UsersLimitsTable: React.FC = () => {
     // order; the backend derives the composite usage key.
     defaultQueryParams: { sort_by: '-monthly' }
   });
+
+  // "Export Table Data" streams the table as one file — the same rows in
+  // the served order (the picker's user filter and the column arrows'
+  // sort included), with the tooltip's user fields spelled out as
+  // columns. Direct (no dialog), so the trigger carries the spinner.
+  const { exportWithPreflight, exporting: exportingTable } = useExportUsage({
+    exportUrl: USAGE_RATE_LIMITS_USERS_EXPORT,
+    estimateUrl: USAGE_RATE_LIMITS_USERS_EXPORT_ESTIMATE
+  });
+  const handleExportTable = () => {
+    exportWithPreflight({
+      user_id: queryParams.user_id || undefined,
+      sort_by: queryParams.sort_by,
+      format: 'xlsx'
+    });
+  };
 
   useEffect(() => {
     // include_all_users: the meta options derive from usage rows, so a
@@ -201,6 +223,10 @@ const UsersLimitsTable: React.FC = () => {
           aria-label={intl.formatMessage({ id: 'common.button.refresh' })}
           title={intl.formatMessage({ id: 'common.button.refresh' })}
           icon={<SyncOutlined />}
+        />
+        <ExportDropdown
+          onExportTable={handleExportTable}
+          exporting={exportingTable}
         />
       </Flex>
       {/* Counter degradation mirrors the personal card: local mode keeps

@@ -16,8 +16,12 @@ import { Input, Table, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ResourceEventItem } from '../apis/resource';
+import {
+  RESOURCE_EVENTS_EXPORT_ENDPOINTS,
+  ResourceEventItem
+} from '../apis/resource';
 import ResourceFilterBar from '../components/resource-filter-bar';
+import useExportUsage from '../services/use-export-usage';
 import { parseRollup } from '../utils/time-buckets';
 import useQueryResourceEvents from './services/use-query-resource-events';
 
@@ -147,6 +151,24 @@ const ResourceEvents: React.FC = () => {
   // Latest params, so the stable debounced name handler reads current values.
   const queryRef = useRef(queryParams);
   queryRef.current = queryParams;
+
+  // "Export Table Data" streams the events list as one file — the same
+  // predicate as the query below (dates, scope, name search, event-type
+  // set), with the name column's tooltip fields spelled out as columns.
+  const { exportWithPreflight, exporting: exportingTable } = useExportUsage(
+    RESOURCE_EVENTS_EXPORT_ENDPOINTS
+  );
+  const handleExportTable = () => {
+    const params = queryRef.current;
+    exportWithPreflight({
+      start_date: params.dateRange[0].format('YYYY-MM-DD'),
+      end_date: params.dateRange[1].format('YYYY-MM-DD'),
+      scope,
+      resource_name: params.nameQuery || undefined,
+      event_types: params.eventTypes.length ? params.eventTypes : undefined,
+      format: 'xlsx'
+    });
+  };
 
   // Single fetch entry point: merge the patch into the current params, persist
   // them, then request — triggered from each handler rather than from effect
@@ -290,6 +312,8 @@ const ResourceEvents: React.FC = () => {
         selectedUsers={[]}
         onUsersChange={() => {}}
         onRefresh={() => fetchEvents({})}
+        onExportTable={handleExportTable}
+        exportingTable={exportingTable}
         extra={
           <>
             <Input

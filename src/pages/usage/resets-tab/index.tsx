@@ -18,9 +18,15 @@ import { useIntl } from '@umijs/max';
 import { Button, Flex, Select, Table, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import React, { useEffect, useMemo } from 'react';
-import { queryRateLimitResets } from '../apis';
+import {
+  queryRateLimitResets,
+  USAGE_RATE_LIMITS_RESETS_EXPORT,
+  USAGE_RATE_LIMITS_RESETS_EXPORT_ESTIMATE
+} from '../apis';
+import ExportDropdown from '../components/export-dropdown';
 import { REJECTION_REASON_IDS } from '../components/rate-limits-card';
 import { RateLimitResetUsage } from '../config/types';
+import useExportUsage from '../services/use-export-usage';
 import useQueryUsageMetaData from '../services/use-query-meta-data';
 
 // The decision model's task classifications, mapped to their locale
@@ -62,6 +68,22 @@ const UsersRateLimitResets: React.FC = () => {
     // table must list every account's presses, not just its callers.
     fetchMetaData({ include_all_users: true });
   }, []);
+
+  // "Export Table Data" streams the audit table as one file — the same
+  // rows the list serves (the picker, verdict and work-type filters
+  // included), with the tooltip's user fields spelled out as columns.
+  const { exportWithPreflight, exporting: exportingTable } = useExportUsage({
+    exportUrl: USAGE_RATE_LIMITS_RESETS_EXPORT,
+    estimateUrl: USAGE_RATE_LIMITS_RESETS_EXPORT_ESTIMATE
+  });
+  const handleExportTable = () => {
+    exportWithPreflight({
+      user_id: queryParams.user_id || undefined,
+      outcome: queryParams.outcome || undefined,
+      work_type: queryParams.work_type || undefined,
+      format: 'xlsx'
+    });
+  };
 
   const userOptions = useMemo(() => {
     return (metaData?.users ?? [])
@@ -286,6 +308,10 @@ const UsersRateLimitResets: React.FC = () => {
           aria-label={intl.formatMessage({ id: 'common.button.refresh' })}
           title={intl.formatMessage({ id: 'common.button.refresh' })}
           icon={<SyncOutlined />}
+        />
+        <ExportDropdown
+          onExportTable={handleExportTable}
+          exporting={exportingTable}
         />
       </Flex>
       <Table<RateLimitResetUsage>

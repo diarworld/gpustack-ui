@@ -11,14 +11,15 @@
  */
 import PluginExtraFields from '@/components/plugin-extra-fields';
 import useRangePickerPreset from '@/pages/dashboard/hooks/use-rangepicker-preset';
-import { DownloadOutlined, SyncOutlined } from '@ant-design/icons';
-import { AutoTooltip, IconFont, SimpleSelect } from '@gpustack/core-ui';
+import { SyncOutlined } from '@ant-design/icons';
+import { AutoTooltip, SimpleSelect } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Button, DatePicker, Dropdown, MenuProps } from 'antd';
+import { Button, DatePicker } from 'antd';
 import dayjs from 'dayjs';
 import React from 'react';
 import FilterBarCss from '../styles/filter-bar.less';
 import DeletedTag from './deleted-tag';
+import ExportDropdown from './export-dropdown';
 
 const DefaultDateConfig = {
   maxRange: 90,
@@ -95,29 +96,6 @@ const ResourceFilterBar: React.FC<ResourceFilterBarProps> = (props) => {
     style
   } = props;
   const intl = useIntl();
-
-  const exportMenuItems: MenuProps['items'] = [
-    {
-      key: 'chart',
-      label: (
-        <span className="flex-center gap-8">
-          <IconFont type="icon-chart-01" style={{ fontSize: 14 }} />
-          <span>{intl.formatMessage({ id: 'usage.export.chart' })}</span>
-        </span>
-      ),
-      onClick: onExportChart
-    },
-    {
-      key: 'table',
-      label: (
-        <span className="flex-center gap-8">
-          <IconFont type="icon-table" style={{ fontSize: 14 }} />
-          <span>{intl.formatMessage({ id: 'usage.export.table' })}</span>
-        </span>
-      ),
-      onClick: onExportTable
-    }
-  ];
 
   const { rangePresets, picker, normalizeRangeValue } = useRangePickerPreset({
     range: DefaultDateConfig.maxRange,
@@ -265,11 +243,11 @@ const ResourceFilterBar: React.FC<ResourceFilterBarProps> = (props) => {
           />
         )}
       </div>
-      {(onExportChart || onExportTable) && (
-        <Dropdown menu={{ items: exportMenuItems }}>
-          <Button icon={<DownloadOutlined />} loading={exportingTable} />
-        </Dropdown>
-      )}
+      <ExportDropdown
+        onExportChart={onExportChart}
+        onExportTable={onExportTable}
+        exporting={exportingTable}
+      />
     </div>
   );
 };

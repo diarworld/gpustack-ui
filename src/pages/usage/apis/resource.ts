@@ -263,6 +263,8 @@ const URL = {
   STORAGE_BREAKDOWN_EXPORT_ESTIMATE: '/usage/storage/breakdown/export/estimate',
   EVENTS: '/usage/resource-events',
   EVENTS_STATS: '/usage/resource-events/stats',
+  EVENTS_EXPORT: '/usage/resource-events/export',
+  EVENTS_EXPORT_ESTIMATE: '/usage/resource-events/export/estimate',
   SUMMARY: '/usage/summary',
   RESOURCE_META: '/usage/resource/meta'
 };
@@ -626,6 +628,11 @@ export const GPU_INSTANCES_EXPORT_ENDPOINTS = {
 export const STORAGE_EXPORT_ENDPOINTS = {
   exportUrl: URL.STORAGE_BREAKDOWN_EXPORT,
   estimateUrl: URL.STORAGE_BREAKDOWN_EXPORT_ESTIMATE
+};
+
+export const RESOURCE_EVENTS_EXPORT_ENDPOINTS = {
+  exportUrl: URL.EVENTS_EXPORT,
+  estimateUrl: URL.EVENTS_EXPORT_ESTIMATE
 };
 
 export async function queryResourceBreakdown(
