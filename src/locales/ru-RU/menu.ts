@@ -36,6 +36,7 @@ export default {
   'menu.resources.gpus': 'GPUs',
   'menu.models.modelfiles': 'Файлы моделей',
   'menu.accessControl': 'Управление доступом',
+  'menu.accessControl.limits': 'Лимиты',
   'menu.accessControl.apikeys': 'API-ключи',
   'menu.accessControl.users': 'Пользователи',
   'menu.accessControl.groups': 'Группы',

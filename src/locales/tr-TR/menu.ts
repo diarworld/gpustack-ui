@@ -28,6 +28,7 @@ export default {
   'menu.resources.gpus': "GPU'lar",
   'menu.models.modelfiles': 'Model Dosyaları',
   'menu.accessControl': 'Erişim Kontrolü',
+  'menu.accessControl.limits': 'Limitler',
   'menu.accessControl.apikeys': 'API Anahtarları',
   'menu.accessControl.users': 'Kullanıcılar',
   'menu.accessControl.groups': 'Gruplar',

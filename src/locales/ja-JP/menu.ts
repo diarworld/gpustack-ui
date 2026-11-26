@@ -37,6 +37,7 @@ export default {
   'menu.resources.gpus': 'GPUs',
   'menu.models.modelfiles': 'モデルファイル',
   'menu.accessControl': 'アクセス制御',
+  'menu.accessControl.limits': '上限値',
   'menu.accessControl.apikeys': 'API キー',
   'menu.accessControl.users': 'ユーザー',
   'menu.accessControl.groups': 'グループ',

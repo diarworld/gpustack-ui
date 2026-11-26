@@ -38,6 +38,7 @@ export default {
   'menu.resources.gpus': 'GPU',
   'menu.models.modelfiles': '模型文件',
   'menu.accessControl': '访问控制',
+  'menu.accessControl.limits': '限额',
   'menu.accessControl.apikeys': 'API 密钥',
   'menu.accessControl.users': '用户',
   'menu.accessControl.groups': '用户组',

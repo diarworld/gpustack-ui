@@ -427,6 +427,19 @@ const baseRoutes = [
         component: './groups'
       },
       {
+        // The deployment's default rate limits and the free window — the
+        // form moved off the Usage page's Limits tab, where it sat below
+        // a personal view that had nothing to do with it.
+        name: 'limits',
+        path: '/access-control/limits',
+        key: 'accessControlLimits',
+        icon: 'icon-tune',
+        selectedIcon: 'icon-tune',
+        defaultIcon: 'icon-tune',
+        access: 'canSeeAdmin',
+        component: './limits'
+      },
+      {
         name: 'apikeys',
         path: '/access-control/api-keys',
         key: 'apikeys',
