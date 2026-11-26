@@ -3,6 +3,7 @@ import {
   BreakdownItem,
   FilterOptionType,
   RateLimitResetStatus,
+  RateLimitResetsResponse,
   RateLimitSettings,
   RateLimitsResponse,
   UsageBreakdownResponse,
@@ -20,6 +21,7 @@ export const USAGE_BREAKDOWN_EXPORT_ESTIMATE =
 export const USAGE_RATE_LIMITS = '/usage/rate-limits';
 export const USAGE_RATE_LIMITS_RESET = '/usage/rate-limits/reset';
 export const USAGE_RATE_LIMITS_USERS = '/usage/rate-limits/users';
+export const USAGE_RATE_LIMITS_RESETS = '/usage/rate-limits/resets';
 export const RATE_LIMIT_SETTINGS = '/rate-limit-settings';
 
 export const MODEL_ROUTE_TARGETS = '/model-route-targets';
@@ -66,6 +68,27 @@ export async function queryUsersRateLimits(
   options?: any
 ): Promise<UsersRateLimitsResponse> {
   return request<UsersRateLimitsResponse>(USAGE_RATE_LIMITS_USERS, {
+    method: 'GET',
+    params,
+    cancelToken: options?.token
+  });
+}
+
+// The admin's rate-limit resets table, one row per recorded press —
+// approved and decision-model-rejected alike. Server-side pagination;
+// ``user_id`` narrows the table to one budget owner and ``outcome`` to
+// one verdict (the UI lands on 'approved'). Platform-wide admins only —
+// the backend 403s everyone else.
+export async function queryRateLimitResets(
+  params?: {
+    page?: number;
+    perPage?: number;
+    user_id?: number;
+    outcome?: string;
+  },
+  options?: any
+): Promise<RateLimitResetsResponse> {
+  return request<RateLimitResetsResponse>(USAGE_RATE_LIMITS_RESETS, {
     method: 'GET',
     params,
     cancelToken: options?.token

@@ -317,6 +317,36 @@ export interface UsersRateLimitsResponse {
   usage_error?: string | null;
 }
 
+// One row of the admin's rate-limit resets table: one recorded press
+// (approved, or rejected by the decision model as an audit-only row).
+// The owner's names resolve server-side and drop out when the account
+// has since been deleted — the audit row outlives the user.
+export interface RateLimitResetUsage {
+  id: number;
+  user_id: number;
+  username?: string | null;
+  full_name?: string | null;
+  // The forgiven budget: 'weekly' | 'monthly'.
+  kind: string;
+  reset_at: string;
+  outcome: 'approved' | 'rejected';
+  // The decision model's task classification / refusal code; absent on
+  // presses the gate never judged.
+  work_type?: string | null;
+  rejection_reason?: string | null;
+  description: string;
+}
+
+export interface RateLimitResetsResponse {
+  items: RateLimitResetUsage[];
+  pagination: {
+    page: number;
+    perPage: number;
+    total: number;
+    totalPage: number;
+  };
+}
+
 // The deployment-wide free-window schedule: whole free days plus a daily
 // window (which may wrap past midnight) in UTC wall-clock. During it the
 // gateway suspends every check and the limit counters freeze — usage

@@ -48,5 +48,6 @@ export const PaginationKey = {
   Instances: 'Instances',
   InstanceTypes: 'InstanceTypes',
   CacheServices: 'CacheServices',
-  UserRateLimits: 'UserRateLimits'
+  UserRateLimits: 'UserRateLimits',
+  UserRateLimitResets: 'UserRateLimitResets'
 };

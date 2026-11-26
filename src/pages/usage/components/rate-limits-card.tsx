@@ -95,7 +95,8 @@ const usageProgressProps = (w: RateLimitWindowUsage) => ({
 // The decision model's rejection causes, mapped to the locale key of the
 // message the dialog shows. A cause the backend enumerates later (or none
 // at all) falls back to the generic wording — '' is the wildcard key.
-const REJECTION_REASON_IDS: Record<string, string> = {
+// Exported for the admin's resets table, which renders the same codes.
+export const REJECTION_REASON_IDS: Record<string, string> = {
   '': 'usage.rateLimits.resetRejected.generic',
   TooVague: 'usage.rateLimits.resetRejected.tooVague',
   BypassAttempt: 'usage.rateLimits.resetRejected.bypassAttempt',

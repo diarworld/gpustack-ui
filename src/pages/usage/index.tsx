@@ -4,6 +4,7 @@
  * - Summary: cross-resource overview (KPIs + trend + by-type breakdown + donut)
  * - Tokens: per-request token usage over a time range
  * - Limits: per-user rate limits card + the admin's deployment defaults form
+ * - Resets: the platform admin's audit list of rate-limit reset presses
  * - Events: lifecycle event list (created / metered / deleted / ...) plus the
  *   rate-limit rejections
  *
@@ -17,6 +18,7 @@ import { Tabs, TabsProps } from 'antd';
 import React, { useMemo } from 'react';
 import ResourceEvents from './events-tab';
 import LimitsTab from './limits-tab';
+import ResetsTab from './resets-tab';
 import SummaryTab from './summary-tab';
 import TokenTab from './token-tab';
 
@@ -46,6 +48,14 @@ const Usage: React.FC = () => {
         children: <LimitsTab />
       },
       {
+        key: 'resets',
+        label: intl.formatMessage({ id: 'usage.tabs.resets' }),
+        // Cross-user audit data: the backend 403s non-platform-admins,
+        // so the tab only mounts for them instead of erroring on click.
+        access: 'canSeeAdmin',
+        children: <ResetsTab />
+      },
+      {
         key: 'resource-events',
         label: intl.formatMessage({ id: 'usage.tabs.resourceEvents' }),
         access: 'canSeeGpuService',
@@ -56,7 +66,7 @@ const Usage: React.FC = () => {
       if (!item.access) return true;
       return (access as Record<string, boolean>)[item.access];
     });
-  }, [intl, access.canSeeGpuService]);
+  }, [intl, access.canSeeGpuService, access.canSeeAdmin]);
 
   return (
     <Tabs
