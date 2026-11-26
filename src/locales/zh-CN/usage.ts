@@ -164,14 +164,15 @@ export default {
   'usage.rateLimits.resetRejected.gibberish':
     '请求被拒绝：无法识别描述 — 请写明你的工作任务',
   'usage.rateLimits.resetRejected.generic': '请求被拒绝 — 请描述具体的工作任务',
-  // The admin's editor for the pinned user's limits, on the same card.
-  'usage.rateLimits.editLimits': '编辑限额',
-  'usage.rateLimits.editLimitsSuccess': '限额已更新',
   'usage.rateLimits.duration.days': '{count, plural, other {# 天}}',
   'usage.rateLimits.duration.hours': '{count, plural, other {# 小时}}',
   'usage.rateLimits.duration.minutes': '{count, plural, other {# 分钟}}',
   'usage.rateLimits.duration.seconds': '{count, plural, other {# 秒}}',
   'usage.rateLimits.noLimits': '未配置速率限制。',
+  'usage.rateLimits.table.noUsersFound': '没有符合当前筛选条件的用户',
+  'usage.rateLimits.table.noUsers': '暂无用户',
+  'usage.rateLimits.table.noUsersSubTitle':
+    '表格列出所有活跃用户及其生效的限额。',
 
   // --- Limits tab: free-window badge ---
   'usage.rateLimits.freeActive': '免费时段',

@@ -172,9 +172,6 @@ export default {
     'Заявка отклонена: описание не распознано — напишите, какая у вас рабочая задача',
   'usage.rateLimits.resetRejected.generic':
     'Заявка отклонена — опишите конкретную рабочую задачу',
-  // The admin's editor for the pinned user's limits, on the same card.
-  'usage.rateLimits.editLimits': 'Изменить лимиты',
-  'usage.rateLimits.editLimitsSuccess': 'Лимиты обновлены',
   'usage.rateLimits.duration.days':
     '{count, plural, one {# день} few {# дня} many {# дней} other {# дня}}',
   'usage.rateLimits.duration.hours':
@@ -184,6 +181,11 @@ export default {
   'usage.rateLimits.duration.seconds':
     '{count, plural, one {# секунда} few {# секунды} many {# секунд} other {# секунды}}',
   'usage.rateLimits.noLimits': 'Лимиты не настроены.',
+  'usage.rateLimits.table.noUsersFound':
+    'Нет пользователей, подходящих под фильтры',
+  'usage.rateLimits.table.noUsers': 'Пользователи не найдены',
+  'usage.rateLimits.table.noUsersSubTitle':
+    'В таблице перечислены все активные пользователи с их действующими лимитами.',
 
   // --- Limits tab: free-window badge ---
   'usage.rateLimits.freeActive': 'Свободное время',

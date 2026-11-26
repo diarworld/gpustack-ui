@@ -1,41 +1,64 @@
 /**
  * "Limits" tab of the Usage page.
  *
- * The deployment's rate-limit picture in one place: the per-user limits
- * card (moved here from the Tokens tab, self-scoped unless an admin pins a
- * user) and, for platform admins, the form that edits the deployment-wide
- * defaults and the free-window schedule. The filter set is deliberately
- * minimal — a user picker and refresh — because unlike the Tokens tab
- * nothing here is time-ranged: limits and counters are "now" views.
+ * Forked by admin access, because the two audiences need different
+ * things from the same feature:
+ *  - Platform admins get the cross-user limits table (one row per
+ *    active user, inline limit editing) — the personal cards and the
+ *    per-model concurrency block are not duplicated under it. The
+ *    deployment-defaults form lives on its own page now
+ *    (/access-control/limits), next to the other admin directories.
+ *  - Everyone else keeps the personal card as it was — own limits with
+ *    the live counters and the reset buttons — plus the org owner's
+ *    user picker, which pins the card to any org member.
  */
 import { SyncOutlined } from '@ant-design/icons';
-import { CardWrapper } from '@gpustack/core-ui';
-import { useAccess, useIntl, useModel } from '@umijs/max';
+import { useAccess, useIntl } from '@umijs/max';
 import { Button, Flex, Select } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import RateLimitsCard from '../components/rate-limits-card';
 import useQueryUsageMetaData from '../services/use-query-meta-data';
-import DeploymentDefaultsForm from './components/deployment-defaults-form';
-import UserLimitsModal from './components/user-limits-modal';
+import UsersLimitsTable from './tables/users-limits-table';
 
 const LimitsTab: React.FC = () => {
   const intl = useIntl();
   const access = useAccess();
-  const { initialState } = useModel('@@initialState') || {};
-  const { detailData: metaData, fetchData: fetchMetaData } =
-    useQueryUsageMetaData();
   const [selectedUserId, setSelectedUserId] = useState<number>();
   const [refreshKey, setRefreshKey] = useState(0);
-  const [limitsEditorOpen, setLimitsEditorOpen] = useState(false);
+
+  return access.canSeeAdmin ? (
+    <UsersLimitsTable />
+  ) : (
+    <PersonalLimits
+      selectedUserId={selectedUserId}
+      setSelectedUserId={setSelectedUserId}
+      refreshKey={refreshKey}
+      setRefreshKey={setRefreshKey}
+    />
+  );
+};
+
+// The pre-existing personal view: self-scoped card, org owner's picker.
+// Deliberately unchanged while the admin branch moved on.
+const PersonalLimits: React.FC<{
+  selectedUserId?: number;
+  setSelectedUserId: (value?: number) => void;
+  refreshKey: number;
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
+}> = ({ selectedUserId, setSelectedUserId, refreshKey, setRefreshKey }) => {
+  const intl = useIntl();
+  const access = useAccess();
+  const { detailData: metaData, fetchData: fetchMetaData } =
+    useQueryUsageMetaData();
 
   useEffect(() => {
     // include_all_users: the meta options derive from usage rows, so a
     // provisioned account that never called would be unpickable — pinning
-    // a user to manage their limits is a directory operation.
+    // a user to view their limits is a directory operation.
     fetchMetaData({ include_all_users: true });
   }, []);
 
-  // Admins only: the endpoint degrades a foreign id to the caller, so
+  // Org owners only: the endpoint degrades a foreign id to the caller, so
   // regular users never see the picker at all.
   const userOptions = useMemo(() => {
     if (!access.canSeeOrgAdmin) return [];
@@ -60,18 +83,6 @@ const LimitsTab: React.FC = () => {
         (opt): opt is { value: number; label: string } => opt.value != null
       );
   }, [access.canSeeOrgAdmin, metaData?.users]);
-
-  // The editor rides the /users API, which the server gates to platform
-  // admins — so the button keys off canSeeAdmin (the same audience) even
-  // where the picker's canSeeOrgAdmin widens to org owners.
-  const canEditLimits = !!access.canSeeAdmin;
-  const currentUserId = initialState?.currentUser?.id;
-  const editTargetId = selectedUserId ?? currentUserId;
-  const editorTitle = useMemo(() => {
-    const base = intl.formatMessage({ id: 'usage.rateLimits.editLimits' });
-    const label = userOptions.find((opt) => opt.value === editTargetId)?.label;
-    return label ? `${base}: ${label}` : base;
-  }, [intl, userOptions, editTargetId]);
 
   return (
     <div>
@@ -99,67 +110,8 @@ const LimitsTab: React.FC = () => {
           it always lacked — the filter row above used to sit flush against
           the card. */}
       <div style={{ marginBlock: 24 }}>
-        <RateLimitsCard
-          userId={selectedUserId}
-          refreshKey={refreshKey}
-          onEditLimits={
-            canEditLimits && editTargetId != null
-              ? () => setLimitsEditorOpen(true)
-              : undefined
-          }
-        />
+        <RateLimitsCard userId={selectedUserId} refreshKey={refreshKey} />
       </div>
-      {canEditLimits && editTargetId != null && (
-        <UserLimitsModal
-          title={editorTitle}
-          open={limitsEditorOpen}
-          userId={editTargetId}
-          onSaved={() => setRefreshKey((prev) => prev + 1)}
-          onCancel={() => setLimitsEditorOpen(false)}
-        />
-      )}
-      {access.canSeeAdmin && (
-        <CardWrapper style={{ paddingBlock: 16 }}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 16,
-              rowGap: 4,
-              flexWrap: 'wrap',
-              marginBottom: 16
-            }}
-          >
-            <span
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
-            >
-              <span
-                className="text-secondary"
-                style={{
-                  width: 4,
-                  height: 14,
-                  borderRadius: 2,
-                  background: 'currentColor'
-                }}
-              />
-              <span className="font-600" style={{ fontSize: 15 }}>
-                {intl.formatMessage({
-                  id: 'usage.deploymentDefaults.title'
-                })}
-              </span>
-            </span>
-          </div>
-          <div
-            className="text-secondary"
-            style={{ marginBottom: 16, maxWidth: 720 }}
-          >
-            {intl.formatMessage({ id: 'usage.deploymentDefaults.hint' })}
-          </div>
-          <DeploymentDefaultsForm
-            onSaved={() => setRefreshKey((prev) => prev + 1)}
-          />
-        </CardWrapper>
-      )}
     </div>
   );
 };

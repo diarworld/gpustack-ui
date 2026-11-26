@@ -167,14 +167,16 @@ export default {
     'リクエストは却下されました：説明を認識できません — 担当の業務タスクを記述してください',
   'usage.rateLimits.resetRejected.generic':
     'リクエストは却下されました — 具体的な業務タスクを記述してください',
-  // The admin's editor for the pinned user's limits, on the same card.
-  'usage.rateLimits.editLimits': '上限を編集',
-  'usage.rateLimits.editLimitsSuccess': '上限を更新しました',
   'usage.rateLimits.duration.days': '{count, plural, other {#日}}',
   'usage.rateLimits.duration.hours': '{count, plural, other {#時間}}',
   'usage.rateLimits.duration.minutes': '{count, plural, other {#分}}',
   'usage.rateLimits.duration.seconds': '{count, plural, other {#秒}}',
   'usage.rateLimits.noLimits': 'レート制限は設定されていません。',
+  'usage.rateLimits.table.noUsersFound':
+    '現在のフィルターに一致するユーザーはいません',
+  'usage.rateLimits.table.noUsers': 'ユーザーがいません',
+  'usage.rateLimits.table.noUsersSubTitle':
+    'テーブルには有効な上限値を持つすべてのアクティブなユーザーが表示されます。',
 
   // --- Limits tab: free-window badge ---
   'usage.rateLimits.freeActive': 'フリータイム',

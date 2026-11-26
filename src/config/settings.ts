@@ -47,5 +47,6 @@ export const PaginationKey = {
   Credentials: 'Credentials',
   Instances: 'Instances',
   InstanceTypes: 'InstanceTypes',
-  CacheServices: 'CacheServices'
+  CacheServices: 'CacheServices',
+  UserRateLimits: 'UserRateLimits'
 };

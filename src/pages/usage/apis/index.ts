@@ -8,7 +8,8 @@ import {
   UsageBreakdownResponse,
   UsageExportEstimate,
   UsageExportRequest,
-  UsageMeta
+  UsageMeta,
+  UsersRateLimitsResponse
 } from '../config/types';
 
 export const USAGE_META = '/usage/meta';
@@ -18,6 +19,7 @@ export const USAGE_BREAKDOWN_EXPORT_ESTIMATE =
   '/usage/breakdown/export/estimate';
 export const USAGE_RATE_LIMITS = '/usage/rate-limits';
 export const USAGE_RATE_LIMITS_RESET = '/usage/rate-limits/reset';
+export const USAGE_RATE_LIMITS_USERS = '/usage/rate-limits/users';
 export const RATE_LIMIT_SETTINGS = '/rate-limit-settings';
 
 export const MODEL_ROUTE_TARGETS = '/model-route-targets';
@@ -43,6 +45,27 @@ export async function queryRateLimits(
   options?: any
 ): Promise<RateLimitsResponse> {
   return request<RateLimitsResponse>(USAGE_RATE_LIMITS, {
+    method: 'GET',
+    params,
+    cancelToken: options?.token
+  });
+}
+
+// The admin's cross-user limits table, one row per active user: the
+// effective limits (groups and deployment defaults resolved) paired with
+// the live window counters, plus the tooltip identity fields. Server-side
+// pagination and sorting; ``user_id`` narrows the table to one user.
+// Platform-wide admins only — the backend 403s everyone else.
+export async function queryUsersRateLimits(
+  params?: {
+    page?: number;
+    perPage?: number;
+    sort_by?: string;
+    user_id?: number;
+  },
+  options?: any
+): Promise<UsersRateLimitsResponse> {
+  return request<UsersRateLimitsResponse>(USAGE_RATE_LIMITS_USERS, {
     method: 'GET',
     params,
     cancelToken: options?.token

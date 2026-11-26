@@ -286,6 +286,37 @@ export interface RateLimitsResponse {
   user: UserRateLimits;
 }
 
+// One row of the admin's cross-user limits table: the effective limits
+// (groups and deployment defaults already resolved) with the live
+// counters, plus the identity fields the name tooltip renders. The
+// attributes are server-resolved from the attribute-derived groups and
+// absent when the user holds no group of that kind.
+export interface UserRateLimitUsage {
+  user_id: number;
+  username: string;
+  full_name?: string | null;
+  is_admin: boolean;
+  profession?: string | null;
+  department?: string | null;
+  business_unit?: string | null;
+  windows: RateLimitWindowUsage[];
+}
+
+export interface UsersRateLimitsResponse {
+  items: UserRateLimitUsage[];
+  pagination: {
+    page: number;
+    perPage: number;
+    total: number;
+    totalPage: number;
+  };
+  // Same semantics as RateLimitsResponse: 'local' / a usage_error means
+  // the counters are absent and the table renders limits only.
+  mode: 'redis' | 'local' | 'disabled';
+  generated_at: string;
+  usage_error?: string | null;
+}
+
 // The deployment-wide free-window schedule: whole free days plus a daily
 // window (which may wrap past midnight) in UTC wall-clock. During it the
 // gateway suspends every check and the limit counters freeze — usage

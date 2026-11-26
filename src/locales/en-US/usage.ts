@@ -171,9 +171,6 @@ export default {
     'Request rejected: the description could not be parsed — describe your work task',
   'usage.rateLimits.resetRejected.generic':
     'Request rejected — describe a concrete work task',
-  // The admin's editor for the pinned user's limits, on the same card.
-  'usage.rateLimits.editLimits': 'Edit limits',
-  'usage.rateLimits.editLimitsSuccess': 'Limits updated',
   'usage.rateLimits.duration.days':
     '{count, plural, one {# day} other {# days}}',
   'usage.rateLimits.duration.hours':
@@ -183,6 +180,10 @@ export default {
   'usage.rateLimits.duration.seconds':
     '{count, plural, one {# sec} other {# secs}}',
   'usage.rateLimits.noLimits': 'No rate limits configured.',
+  'usage.rateLimits.table.noUsersFound': 'No users match the current filters',
+  'usage.rateLimits.table.noUsers': 'No users to show',
+  'usage.rateLimits.table.noUsersSubTitle':
+    'The table lists every active user with their effective limits.',
 
   // --- Limits tab: free-window badge ---
   'usage.rateLimits.freeActive': 'Free hours',
