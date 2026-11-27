@@ -17,6 +17,7 @@ import type { PageActionType } from '@/config/types';
 import useTableFetch from '@/hooks/use-table-fetch';
 import { getUser, updateUser, updateUserLimits } from '@/pages/users/apis';
 import AddModal from '@/pages/users/components/add-modal';
+import { UserRoles } from '@/pages/users/config';
 import { FormData, ListItem } from '@/pages/users/config/types';
 import { SyncOutlined } from '@ant-design/icons';
 import { IconFont, NoResult } from '@gpustack/core-ui';
@@ -157,7 +158,15 @@ const UsersLimitsTable: React.FC = () => {
   const handleEditModalOk = async (values: FormData) => {
     if (!editUser?.data?.id) return;
     try {
-      await updateUser({ data: { ...values, id: editUser.data.id } });
+      await updateUser({
+        data: {
+          ...values,
+          // The form carries the role as the picker's 'admin'/'user' string;
+          // the API's UserUpdate wants the boolean.
+          is_admin: values.is_admin === UserRoles.ADMIN,
+          id: editUser.data.id
+        }
+      });
       setEditUser(null);
       message.success(intl.formatMessage({ id: 'common.message.success' }));
       fetchData();
