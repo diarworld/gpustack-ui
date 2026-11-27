@@ -38,9 +38,11 @@ import {
   USAGE_RATE_LIMITS_USERS_EXPORT_ESTIMATE
 } from '../../apis';
 import ExportDropdown from '../../components/export-dropdown';
+import UserAttributeFilters from '../../components/user-attribute-filters';
 import { UserRateLimitUsage } from '../../config/types';
 import useExportUsage from '../../services/use-export-usage';
 import useQueryUsageMetaData from '../../services/use-query-meta-data';
+import useQueryUserAttributeOptions from '../../services/use-query-user-attribute-options';
 import useQueryUsersRateLimits from '../services/use-query-users-rate-limits';
 import useLimitsColumns, { LimitColumnConfig } from './use-limits-columns';
 
@@ -48,6 +50,8 @@ const UsersLimitsTable: React.FC = () => {
   const intl = useIntl();
   const { detailData: metaData, fetchData: fetchMetaData } =
     useQueryUsageMetaData();
+  const { detailData: attributeOptions, fetchData: fetchAttributeOptions } =
+    useQueryUserAttributeOptions();
   const { fetchAPI, backend } = useQueryUsersRateLimits();
 
   const {
@@ -79,6 +83,10 @@ const UsersLimitsTable: React.FC = () => {
     exportWithPreflight({
       user_id: queryParams.user_id || undefined,
       sort_by: queryParams.sort_by,
+      // The attribute pickers narrow the file exactly as the table.
+      business_unit: queryParams.business_unit || undefined,
+      department: queryParams.department || undefined,
+      profession: queryParams.profession || undefined,
       format: 'xlsx'
     });
   };
@@ -88,6 +96,9 @@ const UsersLimitsTable: React.FC = () => {
     // provisioned account that never called would be unpickable — the
     // table must list every account's limits, not just its callers.
     fetchMetaData({ include_all_users: true });
+    // The attribute pickers' label lists (one request per page, shared
+    // with the other tabs through the fetch key).
+    fetchAttributeOptions({});
   }, []);
 
   const userOptions = useMemo(() => {
@@ -224,6 +235,14 @@ const UsersLimitsTable: React.FC = () => {
           onChange={handleUserChange}
           options={userOptions}
           placeholder={intl.formatMessage({ id: 'usage.filter.user' })}
+        />
+        {/* The attribute pickers narrow the rows to the users whose OIDC
+            attribute labels match — server-resolved, like the user_id
+            filter. */}
+        <UserAttributeFilters
+          value={queryParams}
+          onChange={(values) => handleQueryChange({ page: 1, ...values })}
+          options={attributeOptions}
         />
         <Button
           type="text"

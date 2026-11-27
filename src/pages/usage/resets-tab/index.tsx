@@ -25,9 +25,11 @@ import {
 } from '../apis';
 import ExportDropdown from '../components/export-dropdown';
 import { REJECTION_REASON_IDS } from '../components/rate-limits-card';
+import UserAttributeFilters from '../components/user-attribute-filters';
 import { RateLimitResetUsage } from '../config/types';
 import useExportUsage from '../services/use-export-usage';
 import useQueryUsageMetaData from '../services/use-query-meta-data';
+import useQueryUserAttributeOptions from '../services/use-query-user-attribute-options';
 
 // The decision model's task classifications, mapped to their locale
 // keys; a value the backend adds later falls back to the raw code.
@@ -47,6 +49,8 @@ const UsersRateLimitResets: React.FC = () => {
   const intl = useIntl();
   const { detailData: metaData, fetchData: fetchMetaData } =
     useQueryUsageMetaData();
+  const { detailData: attributeOptions, fetchData: fetchAttributeOptions } =
+    useQueryUserAttributeOptions();
   const {
     dataSource,
     queryParams,
@@ -67,6 +71,9 @@ const UsersRateLimitResets: React.FC = () => {
     // provisioned account that never called would be unpickable — the
     // table must list every account's presses, not just its callers.
     fetchMetaData({ include_all_users: true });
+    // The attribute pickers' label lists (one request per page, shared
+    // with the other tabs through the fetch key).
+    fetchAttributeOptions({});
   }, []);
 
   // "Export Table Data" streams the audit table as one file — the same
@@ -81,6 +88,9 @@ const UsersRateLimitResets: React.FC = () => {
       user_id: queryParams.user_id || undefined,
       outcome: queryParams.outcome || undefined,
       work_type: queryParams.work_type || undefined,
+      business_unit: queryParams.business_unit || undefined,
+      department: queryParams.department || undefined,
+      profession: queryParams.profession || undefined,
       format: 'xlsx'
     });
   };
@@ -300,6 +310,14 @@ const UsersRateLimitResets: React.FC = () => {
           placeholder={intl.formatMessage({
             id: 'usage.rateLimits.resets.status'
           })}
+        />
+        {/* The attribute pickers narrow the presses to the budget owners
+            whose OIDC attribute labels match — server-resolved, like the
+            user_id filter. */}
+        <UserAttributeFilters
+          value={queryParams}
+          onChange={(values) => handleQueryChange({ page: 1, ...values })}
+          options={attributeOptions}
         />
         <Button
           type="text"

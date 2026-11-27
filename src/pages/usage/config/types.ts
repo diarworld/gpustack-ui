@@ -108,6 +108,16 @@ export interface UsageMeta {
   };
 }
 
+// GET /usage/user-attribute-options — the overview tables' attribute
+// picker options, one sorted label list per kind. Platform admins only
+// (backend-gated); the labels are the OIDC attribute sync's display
+// names, the same values the tables' tooltips render.
+export interface UserAttributeOptions {
+  business_units: string[];
+  departments: string[];
+  professions: string[];
+}
+
 export type FilterOptionType = Omit<UsageFilterItem, 'label' | 'deleted'>;
 
 // The full breakdown filter set (route / user / api_key + org / user_group).

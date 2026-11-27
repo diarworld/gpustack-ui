@@ -671,6 +671,9 @@ export async function queryResourceEvents(
     resource_types?: string[];
     resource_name?: string;
     event_types?: string[];
+    business_unit?: string;
+    department?: string;
+    profession?: string;
     page?: number;
     perPage?: number;
   },
@@ -698,6 +701,11 @@ export async function queryResourceEvents(
         ? { event_types: data.event_types.join(',') }
         : {}),
       ...(data.resource_name ? { resource_name: data.resource_name } : {}),
+      // The attribute filters resolve to creator ids server-side; they
+      // ride along only when set.
+      ...(data.business_unit ? { business_unit: data.business_unit } : {}),
+      ...(data.department ? { department: data.department } : {}),
+      ...(data.profession ? { profession: data.profession } : {}),
       page: data.page ?? 1,
       perPage: data.perPage ?? 50
     },

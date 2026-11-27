@@ -10,6 +10,7 @@ import {
   UsageExportEstimate,
   UsageExportRequest,
   UsageMeta,
+  UserAttributeOptions,
   UsersRateLimitsResponse
 } from '../config/types';
 
@@ -30,6 +31,8 @@ export const USAGE_RATE_LIMITS_RESETS_EXPORT =
 export const USAGE_RATE_LIMITS_RESETS_EXPORT_ESTIMATE =
   '/usage/rate-limits/resets/export/estimate';
 export const RATE_LIMIT_SETTINGS = '/rate-limit-settings';
+
+export const USAGE_USER_ATTRIBUTE_OPTIONS = '/usage/user-attribute-options';
 
 export const MODEL_ROUTE_TARGETS = '/model-route-targets';
 
@@ -71,6 +74,9 @@ export async function queryUsersRateLimits(
     perPage?: number;
     sort_by?: string;
     user_id?: number;
+    business_unit?: string;
+    department?: string;
+    profession?: string;
   },
   options?: any
 ): Promise<UsersRateLimitsResponse> {
@@ -93,12 +99,29 @@ export async function queryRateLimitResets(
     user_id?: number;
     outcome?: string;
     work_type?: string;
+    business_unit?: string;
+    department?: string;
+    profession?: string;
   },
   options?: any
 ): Promise<RateLimitResetsResponse> {
   return request<RateLimitResetsResponse>(USAGE_RATE_LIMITS_RESETS, {
     method: 'GET',
     params,
+    cancelToken: options?.token
+  });
+}
+
+// The overview tables' attribute picker options — the sorted, distinct
+// Business Unit / Department / Profession labels the OIDC attribute sync
+// carries. Platform-wide admins only — the backend 403s everyone else.
+export async function queryUserAttributeOptions(
+  params?: Record<string, any>,
+  options?: any
+): Promise<UserAttributeOptions> {
+  return request<UserAttributeOptions>(USAGE_USER_ATTRIBUTE_OPTIONS, {
+    params,
+    method: 'GET',
     cancelToken: options?.token
   });
 }

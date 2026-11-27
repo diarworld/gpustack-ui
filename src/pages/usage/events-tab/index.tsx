@@ -21,7 +21,9 @@ import {
   ResourceEventItem
 } from '../apis/resource';
 import ResourceFilterBar from '../components/resource-filter-bar';
+import UserAttributeFilters from '../components/user-attribute-filters';
 import useExportUsage from '../services/use-export-usage';
+import useQueryUserAttributeOptions from '../services/use-query-user-attribute-options';
 import { parseRollup } from '../utils/time-buckets';
 import useQueryResourceEvents from './services/use-query-resource-events';
 
@@ -56,6 +58,17 @@ const ResourceEvents: React.FC = () => {
   const intl = useIntl();
   const canManageUsers = !!access.canSeeOrgAdmin;
   const scope = canManageUsers ? 'all' : 'self';
+  // The attribute pickers enumerate the whole Org structure's labels —
+  // a platform admin's surface, like the limits/resets tables' filters.
+  const canFilterByAttributes = !!access.canSeeAdmin;
+  const { detailData: attributeOptions, fetchData: fetchAttributeOptions } =
+    useQueryUserAttributeOptions();
+
+  useEffect(() => {
+    if (canFilterByAttributes) {
+      fetchAttributeOptions({});
+    }
+  }, [canFilterByAttributes]);
 
   // Users only ever see "Storage" in the product — never "Persistent Volume".
   const RESOURCE_TYPE_LABELS: Record<string, string> = useMemo(
@@ -132,10 +145,15 @@ const ResourceEvents: React.FC = () => {
 
   // All filters live in one query-params object; ``resourceType`` is single
   // (the backend filters by one) and ``nameQuery`` is the debounced substring.
+  // The attribute fields are camelCase here and map to the API's snake_case
+  // in fetchEvents, like the rest of the local params.
   type QueryParams = {
     dateRange: [dayjs.Dayjs, dayjs.Dayjs];
     eventTypes: string[];
     nameQuery: string;
+    businessUnit: string;
+    department: string;
+    profession: string;
     page: number;
     perPage: number;
   };
@@ -143,6 +161,9 @@ const ResourceEvents: React.FC = () => {
     dateRange: [dayjs().subtract(29, 'day'), dayjs()],
     eventTypes: [],
     nameQuery: '',
+    businessUnit: '',
+    department: '',
+    profession: '',
     perPage: 50,
     page: 1
   });
@@ -166,6 +187,9 @@ const ResourceEvents: React.FC = () => {
       scope,
       resource_name: params.nameQuery || undefined,
       event_types: params.eventTypes.length ? params.eventTypes : undefined,
+      business_unit: params.businessUnit || undefined,
+      department: params.department || undefined,
+      profession: params.profession || undefined,
       format: 'xlsx'
     });
   };
@@ -182,6 +206,9 @@ const ResourceEvents: React.FC = () => {
       scope,
       resource_name: params.nameQuery || undefined,
       event_types: params.eventTypes,
+      business_unit: params.businessUnit || undefined,
+      department: params.department || undefined,
+      profession: params.profession || undefined,
       page: params.page,
       perPage: 50
     });
@@ -342,6 +369,27 @@ const ResourceEvents: React.FC = () => {
                 }
               }}
             />
+            {/* Platform admins only: the pickers enumerate the whole Org
+                structure's labels, the same surface the limits/resets
+                tables' attribute filters are. */}
+            {canFilterByAttributes && (
+              <UserAttributeFilters
+                value={{
+                  business_unit: queryParams.businessUnit,
+                  department: queryParams.department,
+                  profession: queryParams.profession
+                }}
+                onChange={(values) =>
+                  fetchEvents({
+                    page: 1,
+                    businessUnit: values.business_unit ?? '',
+                    department: values.department ?? '',
+                    profession: values.profession ?? ''
+                  })
+                }
+                options={attributeOptions}
+              />
+            )}
           </>
         }
       />
