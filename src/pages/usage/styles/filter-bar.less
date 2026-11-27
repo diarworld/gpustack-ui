@@ -11,6 +11,10 @@
   gap: 8px;
   flex: 1;
   align-items: center;
+  /* Narrow screens: the filter controls wrap to a second row instead of
+     overflowing past the viewport edge (the attribute pickers made the
+     events bar long enough to hit this). */
+  flex-wrap: wrap;
 }
 
 .optionsWrapper {
